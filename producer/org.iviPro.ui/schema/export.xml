@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<siva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="sivaPlayer.xsd">
+  <projectInformation>
+    <languages defaultLangCode="de-de">
+      <language langCode="de-de" />
+    </languages>
+    <settings name="startmode" value="window" />
+    <settings name="size_swidth" value="800" />
+    <settings name="size_height" value="600" />
+    <settings name="area_left_width" value="0.2" />
+    <settings name="area_top_height" value="0.2" />
+    <settings name="area_bottom_height" value="0.0" />
+    <settings name="area_right_width" value="0.0" />
+    <settings name="skin" value="2" />
+  </projectInformation>
+  <sceneList REFsceneIDstart="NodeScene_1">
+    <scene REFresID="v_Scene_1" name="Scene-1" sceneID="NodeScene_1"
+      xPos="0.4527938342967245" yPos="0.2556053811659193">
+      <storyBoard REFactionIDend="load-NodeScene_2">
+        <trigger REFactionID="show-NodeAnnotationPicture_1"
+          endTime="00:00:07.307" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationPicture_1" />
+        <trigger REFactionID="show-NodeAnnotationRichtext_1"
+          endTime="00:00:07.307" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationRichtext_1" />
+        <trigger REFactionID="show-NodeAnnotationAudio_1"
+          endTime="00:00:07.307" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationAudio_1" />
+      </storyBoard>
+    </scene>
+    <scene REFresID="v_Scene_2" name="Scene-2" sceneID="NodeScene_2"
+      xPos="0.4527938342967245" yPos="0.437219730941704">
+      <storyBoard REFactionIDend="select-NodeSelection_1">
+        <trigger REFactionID="show-NodeAnnotationText_1"
+          endTime="00:00:09.316" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationText_1" />
+        <trigger REFactionID="show-NodeAnnotationRichtext_2"
+          endTime="00:00:09.316" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationRichtext_2" />
+        <trigger REFactionID="show-NodeAnnotationSubtitle_1"
+          endTime="00:00:09.316" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationSubtitle_1" />
+      </storyBoard>
+    </scene>
+    <scene REFresID="v_Scene_3" name="Scene-3" sceneID="NodeScene_3"
+      xPos="0.7976878612716763" yPos="1.0">
+      <storyBoard REFactionIDend="end-siva">
+        <trigger REFactionID="show-NodeAnnotationVideo_1"
+          endTime="00:00:09.225" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationVideo_1" />
+        <trigger REFactionID="show-NodeAnnotationAudio_2"
+          endTime="00:00:09.225" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationAudio_2" />
+        <trigger REFactionID="show-NodeAnnotationVideo_2"
+          endTime="00:00:09.225" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationVideo_2" />
+      </storyBoard>
+    </scene>
+  </sceneList>
+  <ressources>
+    <label resID="l_title_TocItem_1">
+      <content langCode="de-de">ROOT</content>
+    </label>
+    <label resID="l_title_TocItem_2">
+      <content langCode="de-de">Einleitung</content>
+    </label>
+    <label resID="l_title_TocItem_3">
+      <content langCode="de-de">Hauptteil</content>
+    </label>
+    <label resID="l_title_TocItem_4">
+      <content langCode="de-de">Punkt-1</content>
+    </label>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_Scene_1" videoCodec="flv">
+      <content href="videos/v_Scene_1-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <image resID="i_NodeAnnotationPicture_1">
+      <content href="pix/Picture_1-de_DE.jpg" langCode="de-de" />
+    </image>
+    <richPage resID="rp_NodeAnnotationRichtext_1">
+      <content href="richpages/RichText_1-de_DE.html" langCode="de-de" />
+    </richPage>
+    <audioStream audioCodec="libmp3lame" resID="a_NodeAnnotationAudio_1">
+      <content href="audios/Audio_1-de_DE.mp3" langCode="de-de" />
+    </audioStream>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_Scene_2" videoCodec="flv">
+      <content href="videos/v_Scene_2-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <plainText resID="pt_NodeAnnotationText_1">
+      <content langCode="de-de">Blablub</content>
+    </plainText>
+    <richPage resID="rp_NodeAnnotationRichtext_2">
+      <content href="richpages/RichText_2-de_DE.html" langCode="de-de" />
+    </richPage>
+    <subTitle resID="pt_st_NodeAnnotationSubtitle_1">
+      <content langCode="de-de">fsf g dfgdfg</content>
+    </subTitle>
+    <label resID="l_title_NodeSelection_1">
+      <content langCode="de-de">Neue Auswahl</content>
+    </label>
+    <image resID="i_Picture_2">
+      <content href="pix/Picture_2-de_DE.jpg" langCode="de-de" />
+    </image>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_Scene_3" videoCodec="flv">
+      <content href="videos/v_Scene_3-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_NodeAnnotationVideo_1" videoCodec="flv">
+      <content href="videos/Video_1-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <audioStream audioCodec="libmp3lame" resID="a_NodeAnnotationAudio_2">
+      <content href="audios/Audio_2-de_DE.mp3" langCode="de-de" />
+    </audioStream>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_NodeAnnotationVideo_2" videoCodec="flv">
+      <content href="videos/Video_2-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <label resID="l_title_NodeSelectionControl_1">
+      <content langCode="de-de">rechts</content>
+    </label>
+  </ressources>
+  <actions>
+    <endSiva actionID="end-siva" />
+    <loadVideoScene REFsceneID="NodeScene_1" actionID="load-NodeScene_1" />
+    <showImage REFresID="i_NodeAnnotationPicture_1" actionID="show-NodeAnnotationPicture_1"
+      pauseVideo="false">
+      <area screenArea="left" />
+    </showImage>
+    <showRichPage REFresID="rp_NodeAnnotationRichtext_1"
+      actionID="show-NodeAnnotationRichtext_1" pauseVideo="false">
+      <area screenArea="left" />
+    </showRichPage>
+    <playAudio REFresID="a_NodeAnnotationAudio_1" actionID="show-NodeAnnotationAudio_1"
+      muteVideo="false" pauseVideo="false" />
+    <loadVideoScene REFsceneID="NodeScene_2" actionID="load-NodeScene_2" />
+    <showPlainText REFresID="pt_NodeAnnotationText_1"
+      actionID="show-NodeAnnotationText_1" pauseVideo="false">
+      <area screenArea="left" />
+    </showPlainText>
+    <showRichPage REFresID="rp_NodeAnnotationRichtext_2"
+      actionID="show-NodeAnnotationRichtext_2" pauseVideo="false">
+      <area screenArea="left" />
+    </showRichPage>
+    <showSubTitle REFresID="pt_st_NodeAnnotationSubtitle_1"
+      actionID="show-NodeAnnotationSubtitle_1" pauseVideo="false" />
+    <showSelectionControl REFcontrolIDdefault="NodeSelectionControl_1"
+      REFresID="l_title_NodeSelection_1" actionID="select-NodeSelection_1"
+      timeout="00:00:06" type="default">
+      <area screenArea="left" />
+      <controls REFactionID="end-siva" REFresID="i_Picture_2"
+        controlID="NodeSelectionControl_2" />
+      <controls REFactionID="load-NodeScene_3" REFresID="l_title_NodeSelectionControl_1"
+        controlID="NodeSelectionControl_1" />
+    </showSelectionControl>
+    <loadVideoScene REFsceneID="NodeScene_3" actionID="load-NodeScene_3" />
+    <showVideo REFresID="v_NodeAnnotationVideo_1" actionID="show-NodeAnnotationVideo_1"
+      pauseVideo="false">
+      <area screenArea="left" />
+    </showVideo>
+    <playAudio REFresID="a_NodeAnnotationAudio_2" actionID="show-NodeAnnotationAudio_2"
+      muteVideo="false" pauseVideo="false" />
+    <showVideo REFresID="v_NodeAnnotationVideo_2" actionID="show-NodeAnnotationVideo_2"
+      pauseVideo="false">
+      <area screenArea="left" />
+    </showVideo>
+  </actions>
+  <tableOfContents REFresID="l_title_TocItem_1">
+    <contents REFactionID="load-NodeScene_1" REFresID="l_title_TocItem_2"
+      contentsNodeID="TocItem_2" />
+    <contents REFactionID="load-NodeScene_2" REFresID="l_title_TocItem_3"
+      contentsNodeID="TocItem_3">
+      <adjacencyRefListNode REFcontentsNodeID="TocItem_4" />
+    </contents>
+    <contents REFactionID="load-NodeScene_3" REFresID="l_title_TocItem_4"
+      contentsNodeID="TocItem_4" />
+  </tableOfContents>
+  <index />
+</siva>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="libs/platform-3.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/jna-3.5.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/vlcj-3.1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins">
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/eclipse/ui/internal/misc/**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="libs/MPEG7.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/httpclient-4.2.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/httpcore-4.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

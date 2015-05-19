@@ -1,0 +1,14 @@
+Checkout:
+- com.onpositive.richtexteditor
+- org.apache.log4j
+- org.iviPro.io
+- org.iviPro.ui
+- org.jmf.core
+
+Run Configuration -> Eclipse Application
+- Run an application "org.iviPro.application"
+- (x)=Arguments unter VM arguments "-Djava.library.path=C:\\WINDOWS\\system32"
+- Reiter Plugins Lanch with: "plugins selected below only" -> Deselect all -> Add required (Es sollten 35 plugins ausgew‰hlt werden)
+
+Abschlieﬂend ist noch der Ordner Ñffmpeg/ì (enthalten im Paket org.iviPro.ui) mitsamt dem Inhalt in das Verzeichnis zu kopieren, indem sich die eclipse.exe befindet. Ansonsten wird diese nicht gefunden.
+Abschlieﬂend ist noch aus dem Ordner ÑfobsForJMF/ì (enthalten im Paket org.iviPro.ui) das File fobs4jmf.dll in das Verzeichnis Windows\System32 zu kopieren.

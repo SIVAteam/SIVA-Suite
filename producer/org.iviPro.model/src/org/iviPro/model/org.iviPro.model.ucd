@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" size="3442,2059" id="org.iviPro.model" metadata="uml2-1.0" initialized="true" zoom="0.5" scrolledX="-468" scrolledY="-250" tag="1000" key="32303037303533312D31303030206F72672E69766950726F2E6D6F64656C2F64656C6C776F">
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.14/@sourceConnections.0 //@children.16/@sourceConnections.3 //@children.25/@sourceConnections.1 //@children.1/@sourceConnections.7 //@children.15/@sourceConnections.3 //@children.5/@sourceConnections.2" name="Scene" location="284,209" size="171,157" id="org.iviPro.model/Scene" runTimeClassModel="Scene(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Video;Lorg.iviPro.model.Project;),start,pROP_START,Scene(Ljava.lang.String;Lorg.iviPro.model.Video;Lorg.iviPro.model.Project;),pROP_END,video,end">
+    <children xsi:type="editmodel:CompartmentEditModel" size="120,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_START" id="org.iviPro.model/Scene#pROP_START"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_END" id="org.iviPro.model/Scene#pROP_END"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="video" id="org.iviPro.model/Scene#video"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="end" id="org.iviPro.model/Scene#end"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="start" id="org.iviPro.model/Scene#start"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="148,18">
+      <children xsi:type="editmodel:MethodEditModel" name="Scene" id="org.iviPro.model/Scene#Scene(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Video;Lorg.iviPro.model.Project;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model/Scene" source="//@children.0" target="//@children.4/@sourceConnections.0" targetEnd="//@children.0/@sourceConnections.0/@children.1" sourceEnd="//@children.0/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="84,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="1,1" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Scene-Soyatec::Import->org.iviPro.model/Video*org.iviPro.model/Scene-Standard::Call->org.iviPro.model/Video" source="//@children.0" target="//@children.5" targetEnd="//@children.0/@sourceConnections.1/@children.2" label="//@children.0/@sourceConnections.1/@children.0" sourceEnd="//@children.0/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" location="594,894" size="64,14" automaticRelocationAllowed="false" locationOnWireFromSource="205.99999999999997" distanceFromWire="3.000000000001213" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="118,157" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="61,0"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Project" location="989,524" size="264,373" id="org.iviPro.model/Project" runTimeClassModel="addLanguage(Ljava.util.Locale;),pROJECT_FILE_EXTENSION,tableOfContents,mediaObjects,getScene(Ljava.lang.String;Ljava.util.Locale;),defaultLanguage,pROP_LANGUAGES,saveToFile(),setCurrentLanguage(Ljava.util.Locale;),languages,Project(Lorg.iviPro.model.LocalizedString;Ljava.io.File;),removeLanguage(Ljava.lang.String;),getCurrentLanguage(),getSubdirectoryRichtext(),currentLanguage,sceneGraph,createProjectDirectoryStructure(),globalAnnotations">
+    <children xsi:type="editmodel:CompartmentEditModel" size="241,162">
+      <children xsi:type="editmodel:AttributeEditModel" name="currentLanguage" id="org.iviPro.model/Project#currentLanguage"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="defaultLanguage" id="org.iviPro.model/Project#defaultLanguage"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="sceneGraph" id="org.iviPro.model/Project#sceneGraph"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="globalAnnotations" id="org.iviPro.model/Project#globalAnnotations"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="mediaObjects" id="org.iviPro.model/Project#mediaObjects"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tableOfContents" id="org.iviPro.model/Project#tableOfContents"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="languages" id="org.iviPro.model/Project#languages"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_LANGUAGES" id="org.iviPro.model/Project#pROP_LANGUAGES"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROJECT_FILE_EXTENSION" id="org.iviPro.model/Project#pROJECT_FILE_EXTENSION"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="212,162">
+      <children xsi:type="editmodel:MethodEditModel" name="Project" id="org.iviPro.model/Project#Project(Lorg.iviPro.model.LocalizedString;Ljava.io.File;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addLanguage" id="org.iviPro.model/Project#addLanguage(Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="createProjectDirectoryStructure" id="org.iviPro.model/Project#createProjectDirectoryStructure()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getCurrentLanguage" id="org.iviPro.model/Project#getCurrentLanguage()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getScene" id="org.iviPro.model/Project#getScene(Ljava.lang.String;Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSubdirectoryRichtext" id="org.iviPro.model/Project#getSubdirectoryRichtext()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="removeLanguage" id="org.iviPro.model/Project#removeLanguage(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="saveToFile" id="org.iviPro.model/Project#saveToFile()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setCurrentLanguage" id="org.iviPro.model/Project#setCurrentLanguage(Ljava.util.Locale;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.8/@sourceConnections.0" autoLocated="true" id="org.iviPro.model/IFileBasedObject&lt;-org.iviPro.model/Project" source="//@children.1" target="//@children.4" targetEnd="//@children.1/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@sourceConnections.0/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="131,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="106,184" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Soyatec::Import->org.iviPro.model.graph/INodeAnnotationLeaf" source="//@children.1" target="//@children.15" targetEnd="//@children.1/@sourceConnections.1/@children.2" label="//@children.1/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" location="371,867" size="41,14" automaticRelocationAllowed="false" locationOnWireFromSource="48.0" distanceFromWire="-11.0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,218" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="210,33"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Soyatec::Import->org.iviPro.model/IMediaObject" source="//@children.1" target="//@children.8" targetEnd="//@children.1/@sourceConnections.2/@children.2" label="//@children.1/@sourceConnections.2/@children.0" sourceEnd="//@children.1/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="41,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="264,142" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,51"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Standard::Instantiate->org.iviPro.model/TocItem" source="//@children.1" target="//@children.12" targetEnd="//@children.1/@sourceConnections.3/@children.2" label="//@children.1/@sourceConnections.3/@children.0" sourceEnd="//@children.1/@sourceConnections.3/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate»" location="1094,400" size="61,14" automaticRelocationAllowed="false" locationOnWireFromSource="11.0" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="135,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="89,103"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Standard::Instantiate->org.iviPro.model/BeanList*org.iviPro.model/Project-Soyatec::Import->org.iviPro.model/BeanList*org.iviPro.model/Project-Standard::Call->org.iviPro.model/BeanList" source="//@children.1" target="//@children.20" targetEnd="//@children.1/@sourceConnections.4/@children.2" label="//@children.1/@sourceConnections.4/@children.0" sourceEnd="//@children.1/@sourceConnections.4/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import, Call»" size="119,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,82" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="218,354"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Standard::Instantiate->org.iviPro.model.graph/Graph*org.iviPro.model/Project-Soyatec::Import->org.iviPro.model.graph/Graph" source="//@children.1" target="//@children.11" targetEnd="//@children.1/@sourceConnections.5/@children.2" label="//@children.1/@sourceConnections.5/@children.0" sourceEnd="//@children.1/@sourceConnections.5/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="0,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,158" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="399,163"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Standard::Call->org.iviPro.model/LocalizedFile" source="//@children.1" target="//@children.18" targetEnd="//@children.1/@sourceConnections.6/@children.2" label="//@children.1/@sourceConnections.6/@children.0" sourceEnd="//@children.1/@sourceConnections.6/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="29,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="214,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="48,194"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Soyatec::Import->org.iviPro.model/Scene" source="//@children.1" target="//@children.0" targetEnd="//@children.1/@sourceConnections.7/@children.2" label="//@children.1/@sourceConnections.7/@children.0" sourceEnd="//@children.1/@sourceConnections.7/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="41,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,112" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="171,126"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Project-Standard::Call->org.iviPro.model/Video*org.iviPro.model/Project-Soyatec::Import->org.iviPro.model/Video" source="//@children.1" target="//@children.5" targetEnd="//@children.1/@sourceConnections.8/@children.2" label="//@children.1/@sourceConnections.8/@children.0" sourceEnd="//@children.1/@sourceConnections.8/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,337" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="185,0"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Visibility" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Picture" location="1139,1067" size="139,85" id="org.iviPro.model/Picture" runTimeClassModel="getImage(),Picture(Ljava.io.File;Lorg.iviPro.model.Project;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="116,36">
+      <children xsi:type="editmodel:MethodEditModel" name="Picture" id="org.iviPro.model/Picture#Picture(Ljava.io.File;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getImage" id="org.iviPro.model/Picture#getImage()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IPixelBasedObject&lt;-org.iviPro.model/Picture" source="//@children.2" target="//@children.5/@sourceConnections.0" targetEnd="//@children.2/@sourceConnections.0/@children.1" sourceEnd="//@children.2/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="69,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.7/@sourceConnections.1 //@children.5/@sourceConnections.3" name="ITimeBasedObject" location="1643,1169" size="161,89" id="org.iviPro.model/ITimeBasedObject" runTimeClassModel="duration,pROP_DURATION">
+    <children xsi:type="editmodel:CompartmentEditModel" size="138,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="duration" id="org.iviPro.model/ITimeBasedObject#duration"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_DURATION" id="org.iviPro.model/ITimeBasedObject#pROP_DURATION"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@sourceConnections.0" name="IFileBasedObject" location="1276,215" size="216,193" id="org.iviPro.model/IFileBasedObject" runTimeClassModel="getFiles(),getFile(Ljava.util.Locale;),file,pROP_FILE,IFileBasedObject(Lorg.iviPro.model.LocalizedFile;Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;),escapeFilename(Ljava.lang.String;),equals(Ljava.lang.Object;),IFileBasedObject(Ljava.io.File;Lorg.iviPro.model.Project;),setFile(Lorg.iviPro.model.LocalizedFile;),IFileBasedObject(Ljava.io.File;Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="106,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_FILE" id="org.iviPro.model/IFileBasedObject#pROP_FILE"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="193,126">
+      <children xsi:type="editmodel:MethodEditModel" name="IFileBasedObject" id="org.iviPro.model/IFileBasedObject#IFileBasedObject(Ljava.io.File;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="IFileBasedObject" id="org.iviPro.model/IFileBasedObject#IFileBasedObject(Lorg.iviPro.model.LocalizedFile;Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="org.iviPro.model/IFileBasedObject#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="escapeFilename" id="org.iviPro.model/IFileBasedObject#escapeFilename(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getFile" id="org.iviPro.model/IFileBasedObject#getFile(Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getFiles" id="org.iviPro.model/IFileBasedObject#getFiles()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setFile" id="org.iviPro.model/IFileBasedObject#setFile(Lorg.iviPro.model.LocalizedFile;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.13/@sourceConnections.0 //@children.11/@sourceConnections.1 //@children.12/@sourceConnections.0 //@children.0/@sourceConnections.0 //@children.25/@sourceConnections.0" autoLocated="true" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model/IFileBasedObject" source="//@children.4" target="//@children.6" targetEnd="//@children.4/@sourceConnections.0/@children.1" sourceEnd="//@children.4/@sourceConnections.0/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="108,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="135,445" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/IFileBasedObject-Soyatec::Import->org.iviPro.model/LocalizedFile*org.iviPro.model/IFileBasedObject-Standard::Instantiate->org.iviPro.model/LocalizedFile*org.iviPro.model/IFileBasedObject-Standard::Call->org.iviPro.model/LocalizedFile" source="//@children.4" target="//@children.18" targetEnd="//@children.4/@sourceConnections.1/@children.2" label="//@children.4/@sourceConnections.1/@children.0" sourceEnd="//@children.4/@sourceConnections.1/@children.1" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import, Call»" size="119,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="28,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="149,194"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@sourceConnections.1 //@children.1/@sourceConnections.8" name="Video" location="629,1060" size="202,193" id="org.iviPro.model/Video" runTimeClassModel="Video(Ljava.io.File;Lorg.iviPro.model.Project;),duration,setDuration(Ljava.lang.Long;),createPlayer(),scenes,getScene(Ljava.lang.String;Ljava.util.Locale;),getDuration(),createProcessor()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="146,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="scenes" id="org.iviPro.model/Video#scenes"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="duration" id="org.iviPro.model/Video#duration"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="179,108">
+      <children xsi:type="editmodel:MethodEditModel" name="Video" id="org.iviPro.model/Video#Video(Ljava.io.File;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="createPlayer" id="org.iviPro.model/Video#createPlayer()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="createProcessor" id="org.iviPro.model/Video#createProcessor()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDuration" id="org.iviPro.model/Video#getDuration()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getScene" id="org.iviPro.model/Video#getScene(Ljava.lang.String;Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDuration" id="org.iviPro.model/Video#setDuration(Ljava.lang.Long;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.2/@sourceConnections.0" autoLocated="true" id="org.iviPro.model/IPixelBasedObject&lt;-org.iviPro.model/Video" source="//@children.5" target="//@children.9" targetEnd="//@children.5/@sourceConnections.0/@children.1" sourceEnd="//@children.5/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="100,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="120,120" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Video-Standard::Call->org.iviPro.model/BeanList*org.iviPro.model/Video-Soyatec::Import->org.iviPro.model/BeanList*org.iviPro.model/Video-Standard::Instantiate->org.iviPro.model/BeanList" source="//@children.5" target="//@children.20" targetEnd="//@children.5/@sourceConnections.1/@children.2" label="//@children.5/@sourceConnections.1/@children.0" sourceEnd="//@children.5/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import, Call»" size="119,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="45,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="218,456"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/Video-Standard::Call->org.iviPro.model/Scene*org.iviPro.model/Video-Soyatec::Import->org.iviPro.model/Scene" source="//@children.5" target="//@children.0" targetEnd="//@children.5/@sourceConnections.2/@children.2" label="//@children.5/@sourceConnections.2/@children.0" sourceEnd="//@children.5/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="202,15" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="138,157"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/ITimeBasedObject&lt;-org.iviPro.model/Video" source="//@children.5" target="//@children.3" targetEnd="//@children.5/@sourceConnections.3/@children.1" sourceEnd="//@children.5/@sourceConnections.3/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="202,151" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,42"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.4/@sourceConnections.0 //@children.20/@sourceConnections.0" name="IAbstractBean" location="311,-495" size="270,445" id="org.iviPro.model/IAbstractBean" runTimeClassModel="addPropertyChangeListener(Ljava.beans.PropertyChangeListener;),IAbstractBean(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;),keywords,pROP_TIME,addPropertyChangeListener(Ljava.lang.String;Ljava.beans.PropertyChangeListener;),removePropertyChangeListener(Ljava.beans.PropertyChangeListener;),setDescription(Ljava.lang.String;),IAbstractBean(Ljava.lang.String;Lorg.iviPro.model.Project;),setDescription(Lorg.iviPro.model.LocalizedString;),pROP_DESCRIPTION,toString(),getDescription(),pROP_TITLE,setTitle(Lorg.iviPro.model.LocalizedString;),title,getTitles(),pROP_KEYWORDS,setProject(Lorg.iviPro.model.Project;),getDescriptions(),setTitle(Ljava.lang.String;),getProject(),getTitle(Ljava.util.Locale;),getTitle(),getDescription(Ljava.util.Locale;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="151,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_TITLE" id="org.iviPro.model/IAbstractBean#pROP_TITLE"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_TIME" id="org.iviPro.model/IAbstractBean#pROP_TIME"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_DESCRIPTION" id="org.iviPro.model/IAbstractBean#pROP_DESCRIPTION"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_KEYWORDS" id="org.iviPro.model/IAbstractBean#pROP_KEYWORDS"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="keywords" id="org.iviPro.model/IAbstractBean#keywords"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="247,306">
+      <children xsi:type="editmodel:MethodEditModel" name="IAbstractBean" id="org.iviPro.model/IAbstractBean#IAbstractBean(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addPropertyChangeListener" id="org.iviPro.model/IAbstractBean#addPropertyChangeListener(Ljava.beans.PropertyChangeListener;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addPropertyChangeListener" id="org.iviPro.model/IAbstractBean#addPropertyChangeListener(Ljava.lang.String;Ljava.beans.PropertyChangeListener;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDescription" id="org.iviPro.model/IAbstractBean#getDescription(Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDescription" id="org.iviPro.model/IAbstractBean#getDescription()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDescriptions" id="org.iviPro.model/IAbstractBean#getDescriptions()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getProject" id="org.iviPro.model/IAbstractBean#getProject()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTitle" id="org.iviPro.model/IAbstractBean#getTitle()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTitle" id="org.iviPro.model/IAbstractBean#getTitle(Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTitles" id="org.iviPro.model/IAbstractBean#getTitles()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="removePropertyChangeListener" id="org.iviPro.model/IAbstractBean#removePropertyChangeListener(Ljava.beans.PropertyChangeListener;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDescription" id="org.iviPro.model/IAbstractBean#setDescription(Lorg.iviPro.model.LocalizedString;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDescription" id="org.iviPro.model/IAbstractBean#setDescription(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setProject" id="org.iviPro.model/IAbstractBean#setProject(Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setTitle" id="org.iviPro.model/IAbstractBean#setTitle(Lorg.iviPro.model.LocalizedString;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setTitle" id="org.iviPro.model/IAbstractBean#setTitle(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="org.iviPro.model/IAbstractBean#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Audio" location="1657,795" size="147,103" id="org.iviPro.model/Audio" runTimeClassModel="setDuration(Ljava.lang.Long;),Audio(Ljava.io.File;Lorg.iviPro.model.Project;),getDuration()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="124,54">
+      <children xsi:type="editmodel:MethodEditModel" name="Audio" id="org.iviPro.model/Audio#Audio(Ljava.io.File;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getDuration" id="org.iviPro.model/Audio#getDuration()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDuration" id="org.iviPro.model/Audio#setDuration(Ljava.lang.Long;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="org.iviPro.model/IMediaObject&lt;-org.iviPro.model/Audio" source="//@children.7" target="//@children.9/@sourceConnections.0" targetEnd="//@children.7/@sourceConnections.0/@children.1" sourceEnd="//@children.7/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="70,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="1,1"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/ITimeBasedObject&lt;-org.iviPro.model/Audio" source="//@children.7" target="//@children.3" targetEnd="//@children.7/@sourceConnections.1/@children.1" sourceEnd="//@children.7/@sourceConnections.1/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="73,103" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="87,0" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.9/@sourceConnections.0 //@children.1/@sourceConnections.2" name="IMediaObject" location="1574,615" size="167,103" id="org.iviPro.model/IMediaObject" runTimeClassModel="pROP_CODEC,codec,IMediaObject(Ljava.io.File;Lorg.iviPro.model.Project;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="121,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_CODEC" id="org.iviPro.model/IMediaObject#pROP_CODEC"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="codec" id="org.iviPro.model/IMediaObject#codec"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="144,18">
+      <children xsi:type="editmodel:MethodEditModel" name="IMediaObject" id="org.iviPro.model/IMediaObject#IMediaObject(Ljava.io.File;Lorg.iviPro.model.Project;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IFileBasedObject&lt;-org.iviPro.model/IMediaObject" source="//@children.8" target="//@children.1/@sourceConnections.0" targetEnd="//@children.8/@sourceConnections.0/@children.1" sourceEnd="//@children.8/@sourceConnections.0/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="83,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.5/@sourceConnections.0" name="IPixelBasedObject" location="1350,795" size="246,121" id="org.iviPro.model/IPixelBasedObject" runTimeClassModel="dimension,pROP_DIMENSION,IPixelBasedObject(Ljava.io.File;Ljava.awt.Dimension;Lorg.iviPro.model.Project;),setDimension(II)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="140,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_DIMENSION" id="org.iviPro.model/IPixelBasedObject#pROP_DIMENSION"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="dimension" id="org.iviPro.model/IPixelBasedObject#dimension"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="223,36">
+      <children xsi:type="editmodel:MethodEditModel" name="IPixelBasedObject" id="org.iviPro.model/IPixelBasedObject#IPixelBasedObject(Ljava.io.File;Ljava.awt.Dimension;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setDimension" id="org.iviPro.model/IPixelBasedObject#setDimension(II)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.7/@sourceConnections.0 //@children.10/@sourceConnections.0" autoLocated="true" id="org.iviPro.model/IMediaObject&lt;-org.iviPro.model/IPixelBasedObject" source="//@children.9" target="//@children.8" targetEnd="//@children.9/@sourceConnections.0/@children.1" sourceEnd="//@children.9/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="120,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="83,103" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="RichText" location="1891,794" size="150,167" id="org.iviPro.model/RichText" runTimeClassModel="cHARSET,RichText(Ljava.lang.String;Lorg.iviPro.model.Project;),setContent(Ljava.lang.String;),RichText(Ljava.io.File;Lorg.iviPro.model.Project;),getContent()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="111,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="cHARSET" id="org.iviPro.model/RichText#cHARSET"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="127,72">
+      <children xsi:type="editmodel:MethodEditModel" name="RichText" id="org.iviPro.model/RichText#RichText(Ljava.lang.String;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="RichText" id="org.iviPro.model/RichText#RichText(Ljava.io.File;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getContent" id="org.iviPro.model/RichText#getContent()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setContent" id="org.iviPro.model/RichText#setContent(Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IMediaObject&lt;-org.iviPro.model/RichText" source="//@children.10" target="//@children.9/@sourceConnections.0" targetEnd="//@children.10/@sourceConnections.0/@children.1" sourceEnd="//@children.10/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="73,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="-27,-33" anchorKind="FixedAtEdge" attachSource="true"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/RichText-Soyatec::Import->org.iviPro.model/DummyFile*org.iviPro.model/RichText-Soyatec::Access->org.iviPro.model/DummyFile" source="//@children.10" target="//@children.19" targetEnd="//@children.10/@sourceConnections.1/@children.2" label="//@children.10/@sourceConnections.1/@children.0" sourceEnd="//@children.10/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Access, Import»" size="85,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="74,167" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/RichText-Standard::Call->org.iviPro.model/LocalizedFile" source="//@children.10" target="//@children.18" targetEnd="//@children.10/@sourceConnections.2/@children.2" label="//@children.10/@sourceConnections.2/@children.0" sourceEnd="//@children.10/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="29,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="28,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="144,194"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@sourceConnections.5" name="Graph" location="-915,199" size="398,243" id="org.iviPro.model.graph/Graph" runTimeClassModel="pROP_NODE_REMOVED,removeNode(Lorg.iviPro.model.graph.IGraphNode;),clear(),start,nodeList,Graph(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;),addNode(Lorg.iviPro.model.graph.IGraphNode;),searchAllNodes(Ljava.lang.Class;Z),pROP_NODE_ADDED,end">
+    <children xsi:type="editmodel:CompartmentEditModel" size="181,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_NODE_ADDED" id="org.iviPro.model.graph/Graph#pROP_NODE_ADDED"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_NODE_REMOVED" id="org.iviPro.model.graph/Graph#pROP_NODE_REMOVED"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="start" id="org.iviPro.model.graph/Graph#start"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="nodeList" id="org.iviPro.model.graph/Graph#nodeList"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="end" id="org.iviPro.model.graph/Graph#end"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="375,90">
+      <children xsi:type="editmodel:MethodEditModel" name="Graph" id="org.iviPro.model.graph/Graph#Graph(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addNode" id="org.iviPro.model.graph/Graph#addNode(Lorg.iviPro.model.graph.IGraphNode;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="clear" id="org.iviPro.model.graph/Graph#clear()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="removeNode" id="org.iviPro.model.graph/Graph#removeNode(Lorg.iviPro.model.graph.IGraphNode;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="searchAllNodes" id="org.iviPro.model.graph/Graph#searchAllNodes(Ljava.lang.Class;Z)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/Graph-Soyatec::Import->org.iviPro.model.graph/IGraphNode*org.iviPro.model.graph/Graph-Standard::Call->org.iviPro.model.graph/IGraphNode" source="//@children.11" target="//@children.13" targetEnd="//@children.11/@sourceConnections.0/@children.2" label="//@children.11/@sourceConnections.0/@children.0" sourceEnd="//@children.11/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="399,103" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="1,103"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model.graph/Graph" source="//@children.11" target="//@children.4/@sourceConnections.0" targetEnd="//@children.11/@sourceConnections.1/@children.1" sourceEnd="//@children.11/@sourceConnections.1/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="189,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="-40,65"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/Graph-Standard::Call->org.iviPro.model.graph/GraphChildList" source="//@children.11" target="//@children.21" targetEnd="//@children.11/@sourceConnections.2/@children.2" label="//@children.11/@sourceConnections.2/@children.0" sourceEnd="//@children.11/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="29,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="334,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="64,154"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/Graph-Soyatec::Import->org.iviPro.model.graph/NodeEnd*org.iviPro.model.graph/Graph-Standard::Instantiate->org.iviPro.model.graph/NodeEnd*org.iviPro.model.graph/Graph-Standard::Call->org.iviPro.model.graph/NodeEnd" source="//@children.11" target="//@children.22" targetEnd="//@children.11/@sourceConnections.3/@children.2" label="//@children.11/@sourceConnections.3/@children.0" sourceEnd="//@children.11/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import, Call»" size="119,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="74,243" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="66,0"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/Graph-Standard::Call->org.iviPro.model.graph/NodeSceneSequence*org.iviPro.model.graph/Graph-Soyatec::Import->org.iviPro.model.graph/NodeSceneSequence" source="//@children.11" target="//@children.23" targetEnd="//@children.11/@sourceConnections.4/@children.2" label="//@children.11/@sourceConnections.4/@children.0" sourceEnd="//@children.11/@sourceConnections.4/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="82,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="98,136"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/Graph-Soyatec::Import->org.iviPro.model.graph/NodeStart*org.iviPro.model.graph/Graph-Standard::Call->org.iviPro.model.graph/NodeStart*org.iviPro.model.graph/Graph-Standard::Instantiate->org.iviPro.model.graph/NodeStart" source="//@children.11" target="//@children.24" targetEnd="//@children.11/@sourceConnections.5/@children.2" label="//@children.11/@sourceConnections.5/@children.0" sourceEnd="//@children.11/@sourceConnections.5/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import, Call»" size="119,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="314,243" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="66,0"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@sourceConnections.3" name="TocItem" location="1035,209" size="179,103" id="org.iviPro.model/TocItem" runTimeClassModel="getChildren(),TocItem(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;),scene">
+    <children xsi:type="editmodel:CompartmentEditModel" size="111,18">
+      <children xsi:type="editmodel:AttributeEditModel" targetConnections="//@children.1/@sourceConnections.3" name="scene" id="org.iviPro.model/TocItem#scene"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="156,36">
+      <children xsi:type="editmodel:MethodEditModel" name="TocItem" id="org.iviPro.model/TocItem#TocItem(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="org.iviPro.model/TocItem#getChildren()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model/TocItem" source="//@children.12" target="//@children.4/@sourceConnections.0" targetEnd="//@children.12/@sourceConnections.0/@children.1" sourceEnd="//@children.12/@sourceConnections.0/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="87,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="-73,1"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/TocItem-Soyatec::Import->org.iviPro.model.graph/NodeScene" source="//@children.12" target="//@children.14" targetEnd="//@children.12/@sourceConnections.1/@children.2" label="//@children.12/@sourceConnections.1/@children.0" sourceEnd="//@children.12/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="0,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="4,103" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="230,0"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model/TocItem-Standard::Instantiate->org.iviPro.model/BeanList" source="//@children.12" target="//@children.20" targetEnd="//@children.12/@sourceConnections.2/@children.2" label="//@children.12/@sourceConnections.2/@children.0" sourceEnd="//@children.12/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate»" size="61,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,15" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="218,312"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.11/@sourceConnections.0 //@children.15/@sourceConnections.1 //@children.16/@sourceConnections.0" name="IGraphNode" location="-241,199" size="225,207" id="org.iviPro.model.graph/IGraphNode" runTimeClassModel="position,setParent(Lorg.iviPro.model.graph.IGraphNode;),hasChild(Lorg.iviPro.model.graph.IGraphNode;),getFirstChild(),isValidChildType(Lorg.iviPro.model.graph.IGraphNode;),getParent(),getFirstChild(Ljava.lang.Class;),children,parent,IGraphNode(Lorg.iviPro.model.LocalizedString;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.Project;),IGraphNode(Ljava.lang.String;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.Project;),toString()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="202,54">
+      <children xsi:type="editmodel:AttributeEditModel" name="children" id="org.iviPro.model.graph/IGraphNode#children"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="parent" id="org.iviPro.model.graph/IGraphNode#parent"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="position" id="org.iviPro.model.graph/IGraphNode#position"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="185,90">
+      <children xsi:type="editmodel:MethodEditModel" name="IGraphNode" id="org.iviPro.model.graph/IGraphNode#IGraphNode(Lorg.iviPro.model.LocalizedString;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getFirstChild" id="org.iviPro.model.graph/IGraphNode#getFirstChild()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasChild" id="org.iviPro.model.graph/IGraphNode#hasChild(Lorg.iviPro.model.graph.IGraphNode;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValidChildType" id="org.iviPro.model.graph/IGraphNode#isValidChildType(Lorg.iviPro.model.graph.IGraphNode;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="org.iviPro.model.graph/IGraphNode#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model.graph/IGraphNode" source="//@children.13" target="//@children.4/@sourceConnections.0" targetEnd="//@children.13/@sourceConnections.0/@children.1" sourceEnd="//@children.13/@sourceConnections.0/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="108,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="-61,120" attachSource="true"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/IGraphNode-Soyatec::Import->org.iviPro.model.graph/GraphChildList*org.iviPro.model.graph/IGraphNode-Standard::Instantiate->org.iviPro.model.graph/GraphChildList*org.iviPro.model.graph/IGraphNode-Standard::Call->org.iviPro.model.graph/GraphChildList" source="//@children.13" target="//@children.21" targetEnd="//@children.13/@sourceConnections.1/@children.2" label="//@children.13/@sourceConnections.1/@children.0" sourceEnd="//@children.13/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import, Call»" size="119,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="13,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="157,154"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Name" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.12/@sourceConnections.1 //@children.16/@sourceConnections.1 //@children.15/@sourceConnections.2" name="NodeScene" location="120,735" size="243,135" id="org.iviPro.model.graph/NodeScene" runTimeClassModel="getAnnotations(),isValidChildType(Lorg.iviPro.model.graph.IGraphNode;),scene,NodeScene(Lorg.iviPro.model.LocalizedString;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.Scene;Lorg.iviPro.model.Project;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="86,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="scene" id="org.iviPro.model.graph/NodeScene#scene"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="220,54">
+      <children xsi:type="editmodel:MethodEditModel" name="NodeScene" id="org.iviPro.model.graph/NodeScene#NodeScene(Lorg.iviPro.model.LocalizedString;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.Scene;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAnnotations" id="org.iviPro.model.graph/NodeScene#getAnnotations()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValidChildType" id="org.iviPro.model.graph/NodeScene#isValidChildType(Lorg.iviPro.model.graph.IGraphNode;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/NodeScene-Soyatec::Import->org.iviPro.model/Scene" source="//@children.14" target="//@children.0" targetEnd="//@children.14/@sourceConnections.0/@children.2" label="//@children.14/@sourceConnections.0/@children.0" sourceEnd="//@children.14/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="41,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="203,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="39,157"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model.graph/IGraphNode&lt;-org.iviPro.model.graph/NodeScene" source="//@children.14" target="//@children.16/@sourceConnections.0" targetEnd="//@children.14/@sourceConnections.1/@children.1" sourceEnd="//@children.14/@sourceConnections.1/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="121,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="662,-179" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/NodeScene-Soyatec::Import->org.iviPro.model.graph/INodeAnnotation" source="//@children.14" target="//@children.16" targetEnd="//@children.14/@sourceConnections.2/@children.2" label="//@children.14/@sourceConnections.2/@children.0" sourceEnd="//@children.14/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="0,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,56" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="213,228"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@sourceConnections.1" name="INodeAnnotationLeaf" location="-316,974" size="209,117" id="org.iviPro.model.graph/INodeAnnotationLeaf" runTimeClassModel="isValidChildType(Lorg.iviPro.model.graph.IGraphNode;),INodeAnnotationLeaf(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;),INodeAnnotationLeaf(Ljava.lang.String;Lorg.iviPro.model.Project;),adjustTimeToScene(Lorg.iviPro.model.graph.NodeScene;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="186,54">
+      <children xsi:type="editmodel:MethodEditModel" name="INodeAnnotationLeaf" id="org.iviPro.model.graph/INodeAnnotationLeaf#INodeAnnotationLeaf(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="adjustTimeToScene" id="org.iviPro.model.graph/INodeAnnotationLeaf#adjustTimeToScene(Lorg.iviPro.model.graph.NodeScene;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValidChildType" id="org.iviPro.model.graph/INodeAnnotationLeaf#isValidChildType(Lorg.iviPro.model.graph.IGraphNode;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotation&lt;-org.iviPro.model.graph/INodeAnnotationLeaf" source="//@children.15" target="//@children.16" targetEnd="//@children.15/@sourceConnections.0/@children.1" sourceEnd="//@children.15/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="54,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="158,261"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotationLeaf-Soyatec::Import->org.iviPro.model.graph/IGraphNode" source="//@children.15" target="//@children.13" targetEnd="//@children.15/@sourceConnections.1/@children.2" label="//@children.15/@sourceConnections.1/@children.0" sourceEnd="//@children.15/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="41,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="142,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="67,207"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotationLeaf-Soyatec::Import->org.iviPro.model.graph/NodeScene*org.iviPro.model.graph/INodeAnnotationLeaf-Standard::Call->org.iviPro.model.graph/NodeScene" source="//@children.15" target="//@children.14" targetEnd="//@children.15/@sourceConnections.2/@children.2" label="//@children.15/@sourceConnections.2/@children.0" sourceEnd="//@children.15/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="0,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="210,5" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,128"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotationLeaf-Standard::Call->org.iviPro.model/Scene" source="//@children.15" target="//@children.0" targetEnd="//@children.15/@sourceConnections.3/@children.2" label="//@children.15/@sourceConnections.3/@children.0" sourceEnd="//@children.15/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="29,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="150,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="23,157"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotationLeaf-Soyatec::Access->org.iviPro.model.graph/ScreenArea" source="//@children.15" target="//@children.26" targetEnd="//@children.15/@sourceConnections.4/@children.2" label="//@children.15/@sourceConnections.4/@children.0" sourceEnd="//@children.15/@sourceConnections.4/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Access»" size="50,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="1,57" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="118,98"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.15/@sourceConnections.0 //@children.14/@sourceConnections.2" name="INodeAnnotation" location="-420,579" size="212,261" id="org.iviPro.model.graph/INodeAnnotation" runTimeClassModel="INodeAnnotation(Ljava.lang.String;Lorg.iviPro.model.Project;),getEndRelativeToScene(),pauseVideo,getParentScene(),INodeAnnotation(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;),start,addOverlayPathItem(Lorg.iviPro.model.graph.OverlayPathItem;),screenArea,overlayPath,getStartRelativeToScene(),removeOverlayPathItem(Lorg.iviPro.model.graph.OverlayPathItem;),end">
+    <children xsi:type="editmodel:CompartmentEditModel" size="189,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="start" id="org.iviPro.model.graph/INodeAnnotation#start"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="end" id="org.iviPro.model.graph/INodeAnnotation#end"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pauseVideo" id="org.iviPro.model.graph/INodeAnnotation#pauseVideo"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="overlayPath" id="org.iviPro.model.graph/INodeAnnotation#overlayPath"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="screenArea" id="org.iviPro.model.graph/INodeAnnotation#screenArea"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="179,108">
+      <children xsi:type="editmodel:MethodEditModel" name="INodeAnnotation" id="org.iviPro.model.graph/INodeAnnotation#INodeAnnotation(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addOverlayPathItem" id="org.iviPro.model.graph/INodeAnnotation#addOverlayPathItem(Lorg.iviPro.model.graph.OverlayPathItem;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getEndRelativeToScene" id="org.iviPro.model.graph/INodeAnnotation#getEndRelativeToScene()"/>
+      <children xsi:type="editmodel:MethodEditModel" targetConnections="//@children.14/@sourceConnections.2" name="getParentScene" id="org.iviPro.model.graph/INodeAnnotation#getParentScene()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getStartRelativeToScene" id="org.iviPro.model.graph/INodeAnnotation#getStartRelativeToScene()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="removeOverlayPathItem" id="org.iviPro.model.graph/INodeAnnotation#removeOverlayPathItem(Lorg.iviPro.model.graph.OverlayPathItem;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.14/@sourceConnections.1" autoLocated="true" id="org.iviPro.model.graph/IGraphNode&lt;-org.iviPro.model.graph/INodeAnnotation" source="//@children.16" target="//@children.13" targetEnd="//@children.16/@sourceConnections.0/@children.1" sourceEnd="//@children.16/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="106,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="112,207" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotation-Standard::Call->org.iviPro.model.graph/NodeScene*org.iviPro.model.graph/INodeAnnotation-Soyatec::Import->org.iviPro.model.graph/NodeScene" source="//@children.16" target="//@children.14" targetEnd="//@children.16/@sourceConnections.1/@children.2" label="//@children.16/@sourceConnections.1/@children.0" sourceEnd="//@children.16/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="213,208" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,52"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotation-Soyatec::Import->org.iviPro.model.graph/OverlayPathItem" source="//@children.16" target="//@children.25" targetEnd="//@children.16/@sourceConnections.2/@children.2" label="//@children.16/@sourceConnections.2/@children.0" sourceEnd="//@children.16/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="41,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="213,93" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,120"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotation-Standard::Call->org.iviPro.model/Scene" source="//@children.16" target="//@children.0" targetEnd="//@children.16/@sourceConnections.3/@children.2" label="//@children.16/@sourceConnections.3/@children.0" sourceEnd="//@children.16/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="29,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="213,65" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,131"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/INodeAnnotation-Soyatec::Import->org.iviPro.model.graph/ScreenArea" source="//@children.16" target="//@children.26" targetEnd="//@children.16/@sourceConnections.4/@children.2" label="//@children.16/@sourceConnections.4/@children.0" sourceEnd="//@children.16/@sourceConnections.4/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="41,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="1,241" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="118,16"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="LocalizedString" location="773,-495" size="203,157" id="org.iviPro.model/LocalizedString" runTimeClassModel="getValue(),getSivaLangcode(Ljava.util.Locale;),LocalizedString(Ljava.lang.String;Ljava.util.Locale;),LocalizedString(Ljava.lang.String;),value,equals(Ljava.lang.Object;),language,getSivaLangcode()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="101,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="language" id="org.iviPro.model/LocalizedString#language"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="value" id="org.iviPro.model/LocalizedString#value"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="180,72">
+      <children xsi:type="editmodel:MethodEditModel" name="LocalizedString" id="org.iviPro.model/LocalizedString#LocalizedString(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="LocalizedString" id="org.iviPro.model/LocalizedString#LocalizedString(Ljava.lang.String;Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="org.iviPro.model/LocalizedString#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSivaLangcode" id="org.iviPro.model/LocalizedString#getSivaLangcode()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Name" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.4/@sourceConnections.1 //@children.1/@sourceConnections.6 //@children.10/@sourceConnections.2" name="LocalizedFile" location="1155,-495" size="179,193" id="org.iviPro.model/LocalizedFile" runTimeClassModel="getAbsolutePath(),getValue(),LocalizedFile(Ljava.io.File;Ljava.util.Locale;),value,equals(Ljava.lang.Object;),getLanguage(),language,getSivaLangcode(),LocalizedFile(Ljava.io.File;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="101,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="language" id="org.iviPro.model/LocalizedFile#language"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="value" id="org.iviPro.model/LocalizedFile#value"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="156,108">
+      <children xsi:type="editmodel:MethodEditModel" name="LocalizedFile" id="org.iviPro.model/LocalizedFile#LocalizedFile(Ljava.io.File;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="LocalizedFile" id="org.iviPro.model/LocalizedFile#LocalizedFile(Ljava.io.File;Ljava.util.Locale;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="org.iviPro.model/LocalizedFile#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getAbsolutePath" id="org.iviPro.model/LocalizedFile#getAbsolutePath()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSivaLangcode" id="org.iviPro.model/LocalizedFile#getSivaLangcode()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getValue" id="org.iviPro.model/LocalizedFile#getValue()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Name" methodSorter="Name" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.10/@sourceConnections.1" name="DummyFile" location="1890,1034" size="163,121" id="org.iviPro.model/DummyFile">
+    <children xsi:type="editmodel:CompartmentEditModel" size="140,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="dUMMY_FILE" id="org.iviPro.model/DummyFile#dUMMY_FILE"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,54">
+      <children xsi:type="editmodel:MethodEditModel" name="getAbsolutePath" id="org.iviPro.model/DummyFile#getAbsolutePath()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getName" id="org.iviPro.model/DummyFile#getName()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPath" id="org.iviPro.model/DummyFile#getPath()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.12/@sourceConnections.2 //@children.1/@sourceConnections.4 //@children.5/@sourceConnections.1 //@children.21/@sourceConnections.0" name="BeanList" location="-181,-495" size="218,535" id="org.iviPro.model/BeanList" runTimeClassModel="containsAll(Ljava.util.Collection;),subList(II),indexOf(Ljava.lang.Object;),lastIndexOf(Ljava.lang.Object;),pROP_ITEM_REMOVED,pROP_ITEM_ADDED,size(),iterator(),toString(),add(ILE;),clear(),removeAll(Ljava.util.Collection;),add(LE;),remove(Ljava.lang.Object;),addAll(Ljava.util.Collection;),toArray([LT;),contains(Ljava.lang.Object;),retainAll(Ljava.util.Collection;),set(ILE;),addAll(ILjava.util.Collection;),listIterator(I),toArray(),get(I),listIterator(),BeanList(Lorg.iviPro.model.Project;),isEmpty(),remove(I)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="164,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_ITEM_ADDED" id="org.iviPro.model/BeanList#pROP_ITEM_ADDED"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="pROP_ITEM_REMOVED" id="org.iviPro.model/BeanList#pROP_ITEM_REMOVED"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="195,450">
+      <children xsi:type="editmodel:MethodEditModel" name="BeanList" id="org.iviPro.model/BeanList#BeanList(Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="org.iviPro.model/BeanList#toString()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="remove" id="org.iviPro.model/BeanList#remove(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addAll" id="org.iviPro.model/BeanList#addAll(Ljava.util.Collection;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addAll" id="org.iviPro.model/BeanList#addAll(ILjava.util.Collection;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="add" id="org.iviPro.model/BeanList#add(LE;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="add" id="org.iviPro.model/BeanList#add(ILE;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="remove" id="org.iviPro.model/BeanList#remove(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="removeAll" id="org.iviPro.model/BeanList#removeAll(Ljava.util.Collection;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="clear" id="org.iviPro.model/BeanList#clear()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="contains" id="org.iviPro.model/BeanList#contains(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="containsAll" id="org.iviPro.model/BeanList#containsAll(Ljava.util.Collection;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="get" id="org.iviPro.model/BeanList#get(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="indexOf" id="org.iviPro.model/BeanList#indexOf(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isEmpty" id="org.iviPro.model/BeanList#isEmpty()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="iterator" id="org.iviPro.model/BeanList#iterator()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="lastIndexOf" id="org.iviPro.model/BeanList#lastIndexOf(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="listIterator" id="org.iviPro.model/BeanList#listIterator()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="listIterator" id="org.iviPro.model/BeanList#listIterator(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="size" id="org.iviPro.model/BeanList#size()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="subList" id="org.iviPro.model/BeanList#subList(II)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toArray" id="org.iviPro.model/BeanList#toArray()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toArray" id="org.iviPro.model/BeanList#toArray([LT;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="retainAll" id="org.iviPro.model/BeanList#retainAll(Ljava.util.Collection;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="set" id="org.iviPro.model/BeanList#set(ILE;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model/BeanList" source="//@children.20" target="//@children.6" targetEnd="//@children.20/@sourceConnections.0/@children.1" sourceEnd="//@children.20/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="218,223" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,223"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" showMethodsReturnType="true" showMethodsParameterNames="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.13/@sourceConnections.1 //@children.11/@sourceConnections.2" name="GraphChildList" location="-645,-223" size="164,153" id="org.iviPro.model.graph/GraphChildList" runTimeClassModel="add(LT;),addAll(ILjava.util.Collection;),addAll(Ljava.util.Collection;),add(ILT;),GraphChildList(Lorg.iviPro.model.graph.IGraphNode;Lorg.iviPro.model.Project;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="100,90">
+      <children xsi:type="editmodel:MethodEditModel" name="GraphChildList" id="org.iviPro.model.graph/GraphChildList#GraphChildList(Lorg.iviPro.model.graph.IGraphNode;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="add" id="org.iviPro.model.graph/GraphChildList#add(LT;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="add" id="org.iviPro.model.graph/GraphChildList#add(ILT;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addAll" id="org.iviPro.model.graph/GraphChildList#addAll(ILjava.util.Collection;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addAll" id="org.iviPro.model.graph/GraphChildList#addAll(Ljava.util.Collection;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="org.iviPro.model/BeanList&lt;-org.iviPro.model.graph/GraphChildList" source="//@children.21" target="//@children.20" targetEnd="//@children.21/@sourceConnections.0/@children.1" sourceEnd="//@children.21/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="165,77" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="1,349"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.11/@sourceConnections.3" name="NodeEnd" location="-907,539" size="132,99" id="org.iviPro.model.graph/NodeEnd">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,36">
+      <children xsi:type="editmodel:MethodEditModel" name="NodeEnd" id="org.iviPro.model.graph/NodeEnd#NodeEnd(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValidChildType" id="org.iviPro.model.graph/NodeEnd#isValidChildType(Lorg.iviPro.model.graph.IGraphNode;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.11/@sourceConnections.4" name="NodeSceneSequence" location="-931,-213" size="179,135" id="org.iviPro.model.graph/NodeSceneSequence">
+    <children xsi:type="editmodel:CompartmentEditModel" size="134,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="sceneSequence" id="org.iviPro.model.graph/NodeSceneSequence#sceneSequence"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="135,54">
+      <children xsi:type="editmodel:MethodEditModel" name="NodeSceneSequence" id="org.iviPro.model.graph/NodeSceneSequence#NodeSceneSequence(Lorg.iviPro.model.LocalizedString;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="NodeSceneSequence" id="org.iviPro.model.graph/NodeSceneSequence#NodeSceneSequence(Lorg.iviPro.model.LocalizedString;Lorg.eclipse.swt.graphics.Point;Lorg.iviPro.model.graph.Graph;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValidChildType" id="org.iviPro.model.graph/NodeSceneSequence#isValidChildType(Lorg.iviPro.model.graph.IGraphNode;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.11/@sourceConnections.5" name="NodeStart" location="-667,569" size="132,99" id="org.iviPro.model.graph/NodeStart">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,36">
+      <children xsi:type="editmodel:MethodEditModel" name="NodeStart" id="org.iviPro.model.graph/NodeStart#NodeStart(Lorg.iviPro.model.LocalizedString;Lorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="isValidChildType" id="org.iviPro.model.graph/NodeStart#isValidChildType(Lorg.iviPro.model.graph.IGraphNode;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.16/@sourceConnections.2" name="OverlayPathItem" location="764,209" size="148,189" id="org.iviPro.model.graph/OverlayPathItem" runTimeClassModel="time,height,width,getTimeRelativeTo(Lorg.iviPro.model.Scene;),OverlayPathItem(FFFFJLorg.iviPro.model.Project;),y,x">
+    <children xsi:type="editmodel:CompartmentEditModel" size="75,90">
+      <children xsi:type="editmodel:AttributeEditModel" name="height" id="org.iviPro.model.graph/OverlayPathItem#height"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="time" id="org.iviPro.model.graph/OverlayPathItem#time"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="width" id="org.iviPro.model.graph/OverlayPathItem#width"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="x" id="org.iviPro.model.graph/OverlayPathItem#x"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="y" id="org.iviPro.model.graph/OverlayPathItem#y"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="117,36">
+      <children xsi:type="editmodel:MethodEditModel" name="OverlayPathItem" id="org.iviPro.model.graph/OverlayPathItem#OverlayPathItem(FFFFJLorg.iviPro.model.Project;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTimeRelativeTo" id="org.iviPro.model.graph/OverlayPathItem#getTimeRelativeTo(Lorg.iviPro.model.Scene;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" id="org.iviPro.model/IAbstractBean&lt;-org.iviPro.model.graph/OverlayPathItem" source="//@children.25" target="//@children.4/@sourceConnections.0" targetEnd="//@children.25/@sourceConnections.0/@children.1" sourceEnd="//@children.25/@sourceConnections.0/@children.0" connectionRouterKind="Manhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="28,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="-229,81" attachSource="true"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="org.iviPro.model.graph/OverlayPathItem-Soyatec::Import->org.iviPro.model/Scene*org.iviPro.model.graph/OverlayPathItem-Standard::Call->org.iviPro.model/Scene" source="//@children.25" target="//@children.0" targetEnd="//@children.25/@sourceConnections.1/@children.2" label="//@children.25/@sourceConnections.1/@children.0" sourceEnd="//@children.25/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="64,14" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,78" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="171,78"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:EnumerationEditModel" targetConnections="//@children.16/@sourceConnections.4 //@children.15/@sourceConnections.4" name="ScreenArea" location="-660,933" size="117,157" id="org.iviPro.model.graph/ScreenArea" runTimeClassModel="LEFT%,BOTTOM%,OVERLAY%,TOP%,RIGHT%">
+    <children xsi:type="editmodel:CompartmentEditModel" size="70,90">
+      <children xsi:type="editmodel:EnumerationLiteralEditModel" name="RIGHT" id="org.iviPro.model.graph/ScreenArea#RIGHT%"/>
+      <children xsi:type="editmodel:EnumerationLiteralEditModel" name="LEFT" id="org.iviPro.model.graph/ScreenArea#LEFT%"/>
+      <children xsi:type="editmodel:EnumerationLiteralEditModel" name="OVERLAY" id="org.iviPro.model.graph/ScreenArea#OVERLAY%"/>
+      <children xsi:type="editmodel:EnumerationLiteralEditModel" name="BOTTOM" id="org.iviPro.model.graph/ScreenArea#BOTTOM%"/>
+      <children xsi:type="editmodel:EnumerationLiteralEditModel" name="TOP" id="org.iviPro.model.graph/ScreenArea#TOP%"/>
+    </children>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=3;Product=eUML2" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>

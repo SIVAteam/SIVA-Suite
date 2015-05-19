@@ -1,0 +1,1388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Beate Siegel (Universität Passau) -->
+<!-- Mit XMLSpy v2008 rel. 2 sp2 (http://www.altova.com) von Universität Passau (Universität Passau) bearbeitet -->
+<!--Created with Liquid XML Studio - 30 Day Trial Edition 7.1.0.1135 (http://www.liquid-technologies.com)-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="siva" type="Siva">
+		<xs:annotation>
+			<xs:documentation>The root element.</xs:documentation>
+		</xs:annotation>
+		<xs:key name="KeyVideoStream">
+			<xs:annotation>
+				<xs:documentation>Key for the videostreams. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/videoStream"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefActionShowVideo" refer="KeyVideoStream">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the videostream referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showVideo"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:keyref name="RefSceneStream" refer="KeyVideoStream">
+			<xs:annotation>
+				<xs:documentation>This reference checks if the target resID exists. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./sceneList/scene"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeyAudioStream">
+			<xs:annotation>
+				<xs:documentation>Key for the audiostreams. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/audioStream"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefActionPlayAudio" refer="KeyAudioStream">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the audiostream referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/playAudio"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeyImage">
+			<xs:annotation>
+				<xs:documentation>Key for the images. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/image"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefActionShowImage" refer="KeyImage">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the image referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showImage"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeyRichPage">
+			<xs:annotation>
+				<xs:documentation>Key for the richpages.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/richPage"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefActionShowRichPage" refer="KeyRichPage">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the richpage referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showRichPage"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeySubTitle">
+			<xs:annotation>
+				<xs:documentation>Key for the subtitles.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/subTitle"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefActionShowSubTitle" refer="KeySubTitle">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the subtitle referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showSubTitle"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeyPlainText">
+			<xs:annotation>
+				<xs:documentation>Key for the plaintexts. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/plainText"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefActionShowPlainText" refer="KeyPlainText">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the plaintext referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showPlainText"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeyLabel">
+			<xs:annotation>
+				<xs:documentation>Key for the labels.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/label"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefToC" refer="KeyLabel">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the label referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./tableOfContents"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:keyref name="RefToCContents" refer="KeyLabel">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the label referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./tableOfContents/contents"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:keyref name="RefActionControlLabel" refer="KeyLabel">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists for the label referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showSelectionControl"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+		<xs:key name="KeyScenes">
+			<xs:annotation>
+				<xs:documentation>Key for the scenes.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./sceneList/scene"/>
+			<xs:field xpath="@sceneID"/>
+		</xs:key>
+		<xs:keyref name="RefActionLoadScene" refer="KeyScenes">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target sceneID exists for the scene referenced in this loadSceneAction. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/loadVideoScene"/>
+			<xs:field xpath="@REFsceneID"/>
+		</xs:keyref>
+		<xs:keyref name="RefSceneIdStart" refer="KeyScenes">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target sceneID exists for the scene referenced in this action. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./sceneList"/>
+			<xs:field xpath="@REFsceneIDstart"/>
+		</xs:keyref>
+		<xs:keyref name="RefIndexScene" refer="KeyScenes">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target sceneID exists for the scene referenced in this keyword.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./index/keyword/scene"/>
+			<xs:field xpath="@REFsceneID"/>
+		</xs:keyref>
+		<xs:key name="KeyAction">
+			<xs:annotation>
+				<xs:documentation>Key for the actions.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/*"/>
+			<xs:field xpath="@actionID"/>
+		</xs:key>
+		<xs:keyref name="RefStoryboardEndAction" refer="KeyAction">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target actionID exists which is referenced as an end action in this scene. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./sceneList/scene/storyBoard"/>
+			<xs:field xpath="@REFactionIDend"/>
+		</xs:keyref>
+		<xs:keyref name="RefStoryBoardAction" refer="KeyAction">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target actionID exists which is referenced in this trigger. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./sceneList/scene/storyBoard/trigger"/>
+			<xs:field xpath="@REFactionID"/>
+		</xs:keyref>
+		<xs:keyref name="RefActionShowSelControl" refer="KeyAction">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target actionID exists which is referenced in this control.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showSelectionControl/controls"/>
+			<xs:field xpath="@REFactionID"/>
+		</xs:keyref>
+		<xs:keyref name="RefActionShowMarkControl" refer="KeyAction">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target actionID exists which is referenced in this control.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showMarkControl"/>
+			<xs:field xpath="@REFactionID"/>
+		</xs:keyref>
+		<xs:key name="KeyTrigger">
+			<xs:annotation>
+				<xs:documentation>Key for the triggers.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./sceneList/scene/storyBoard/trigger"/>
+			<xs:field xpath="@triggerID"/>
+		</xs:key>
+		<xs:keyref name="RefIndexTrigger" refer="KeyTrigger">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target triggerID exists which is referenced by the index. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./index/keyword/scene"/>
+			<xs:field xpath="@REFtriggerID"/>
+		</xs:keyref>
+		<xs:key name="KeyRessources">
+			<xs:annotation>
+				<xs:documentation>Key for all ressources. Needed when no special ressource has to be referenced.</xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./ressources/*"/>
+			<xs:field xpath="@resID"/>
+		</xs:key>
+		<xs:keyref name="RefMarkControlButtonLabel" refer="KeyRessources">
+			<xs:annotation>
+				<xs:documentation>This keyref checks if the target resID exists which is referenced by the button. </xs:documentation>
+			</xs:annotation>
+			<xs:selector xpath="./actions/showMarkControl/button"/>
+			<xs:field xpath="@REFresID"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="Siva">
+		<xs:annotation>
+			<xs:documentation>Definition of root element. Basically here the complete structure of a siva document is defined.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:annotation>
+				<xs:documentation>A projectInformation, a sceneList, ressources and actions are needed to build a SIVA-project. Optional parts are the tableOfContents and an index.</xs:documentation>
+			</xs:annotation>
+			<xs:element name="projectInformation" type="ProjectInformation">
+				<xs:annotation>
+					<xs:documentation>In this section all information that refer to the whole project can defined. On the one hand actions with ressources that are visible for the whole project can be stated here. On the other hand all available languages are listed here.</xs:documentation>
+				</xs:annotation>
+				<xs:keyref name="RefLanguage" refer="KeyLanguage">
+					<xs:annotation>
+						<xs:documentation>This keyref checks if the target langCode exists for the default language code. </xs:documentation>
+					</xs:annotation>
+					<xs:selector xpath="./languages"/>
+					<xs:field xpath="@defaultLangCode"/>
+				</xs:keyref>
+				<xs:key name="KeyLanguage">
+					<xs:annotation>
+						<xs:documentation>Key for the Language</xs:documentation>
+					</xs:annotation>
+					<xs:selector xpath="./languages/language"/>
+					<xs:field xpath="@langCode"/>
+				</xs:key>
+				<xs:unique name="UniqueLangCode">
+					<xs:annotation>
+						<xs:documentation>This constraint ensures that every language code can only appear once.</xs:documentation>
+					</xs:annotation>
+					<xs:selector xpath="./languages/language"/>
+					<xs:field xpath="@langCode"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="sceneList" type="SceneList">
+				<xs:annotation>
+					<xs:documentation>In this section all scenes of the project are defined. A startscene has to be identified. It is also possible to arrange scenes in sequences of scenes belonging together.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ressources">
+				<xs:annotation>
+					<xs:documentation>This is a collection of ressources (video, audio, richtext, plaintext, subtitle, image) which can be shown during the presentation of the interactive video project.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:choice>
+							<xs:element name="videoStream" type="VideoStream" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Defines a video stream via an URL. </xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniqueVideoStreamResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one videostream. Accordingly there can be only one link with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+							<xs:element name="audioStream" type="AudioStream" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Defines an audio stream via an URL.</xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniqueAudioStreamResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one audiostream. Accordingly there can be only one link with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+							<xs:element name="image" type="LinkedRessource" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Defines an image stream via an URL.</xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniqueImageResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one image. Accordingly there can be only one link with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+							<xs:element name="richPage" type="LinkedRessource" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Definies a rich page (with formattings) which is retrieved via an URL.</xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniqueRichPageResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one Richpage. Accordingly there can be only one link with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+							<xs:element name="plainText" type="PlainTextRessource" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Definies a plain text (without formattings) inline.</xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniquePlainTextResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one plaintext. Accordingly there can be only one string with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+							<xs:element name="subTitle" type="PlainTextRessource" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Definies a subtitle entry  (without formattings).</xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniqueSubTitleResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one subtitle. Accordingly there can be only one string with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+							<xs:element name="label" type="PlainTextRessource" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Defines a label for use with controls (without formattings).</xs:documentation>
+								</xs:annotation>
+								<xs:unique name="UniqueLabelResLangCode">
+									<xs:annotation>
+										<xs:documentation>Each langCode must be unique for one label. Accordingly there can be only one string with each language.  </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./content"/>
+									<xs:field xpath="@langCode"/>
+								</xs:unique>
+							</xs:element>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="UniqueResID">
+					<xs:annotation>
+						<xs:documentation>This constraint ensures that every resID can only appear once. The resID has to be unique over all ressources (of different types).</xs:documentation>
+					</xs:annotation>
+					<xs:selector xpath=".//*"/>
+					<xs:field xpath="@resID"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="actions">
+				<xs:annotation>
+					<xs:documentation>This element takes all definitions of actions. These are either called by a trigger of a scene or a storyBoard/trigger or by a shoControl/conrolOptionRef</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:choice>
+							<xs:element name="showVideo" type="ActionShowStream" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Shows an additional video stream.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="playAudio" type="ActionPlayAudio" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Plays an additional audio stream.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="showImage" type="ActionShowAnnotation" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Displays an image.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="showRichPage" type="ActionShowAnnotation" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Displayes a rich text ressource (richText).</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="showSubTitle" type="ActionShowSubtitle" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Displays a subtitle.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="showPlainText" type="ActionShowAnnotation" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Displays a simple text ressource (plainText).</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="showSelectionControl" type="ActionShowSelectionControl" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Shows buttons to select between several options. The buttons are presented in a pre-defined style and can be positioned in one of the areas around the video or as overlay over the video.  </xs:documentation>
+								</xs:annotation>
+								<xs:key name="KeyControlID">
+									<xs:annotation>
+										<xs:documentation>Key for the controls.</xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="./controls"/>
+									<xs:field xpath="@controlID"/>
+								</xs:key>
+								<xs:keyref name="RefControlIDDefault" refer="KeyControlID">
+									<xs:annotation>
+										<xs:documentation>This reference checks if the target controlID exists. </xs:documentation>
+									</xs:annotation>
+									<xs:selector xpath="."/>
+									<xs:field xpath="@REFcontrolIDdefault"/>
+								</xs:keyref>
+							</xs:element>
+							<xs:element name="showMarkControl" type="ActionShowMark" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Shows a button or a marked object that can be klicked. This control may move and so a path has to be defined. </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="loadVideoScene" type="ActionLoadScene" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Loads a scene of a video.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="endSiva" type="ActionEnd">
+								<xs:annotation>
+									<xs:documentation>This action indicates the end of the interactive video project.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+				<xs:unique name="UniqueAction">
+					<xs:annotation>
+						<xs:documentation>This constraint ensures that every actionID can only appear once. The actionID has to be unique over all actions (of different types).</xs:documentation>
+					</xs:annotation>
+					<xs:selector xpath=".//*"/>
+					<xs:field xpath="@actionID"/>
+				</xs:unique>
+			</xs:element>
+			<xs:element name="tableOfContents" type="TableOfContents" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element enables the author to create a table of contents. It does not refer to the structure of the video project, an own structure can be built.</xs:documentation>
+				</xs:annotation>
+				<xs:unique name="UniqueContentsNodeID">
+					<xs:selector xpath="./contents"/>
+					<xs:field xpath="@contentsNodeID"/>
+				</xs:unique>
+				<xs:key name="KeyContentsNodeID">
+					<xs:selector xpath="./contents"/>
+					<xs:field xpath="@contentsNodeID"/>
+				</xs:key>
+				<xs:keyref name="REFcontentsNodeID" refer="KeyContentsNodeID">
+					<xs:selector xpath="./contents/adjacencyRefListNode"/>
+					<xs:field xpath="@REFcontentsNodeID"/>
+				</xs:keyref>
+			</xs:element>
+			<xs:element name="index" type="Index" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This element provides the basic sturctures for a keyword search.</xs:documentation>
+				</xs:annotation>
+				<xs:unique name="UniqueKeyword">
+					<xs:annotation>
+						<xs:documentation>This constraint ensures that every keyword can only appear once. </xs:documentation>
+					</xs:annotation>
+					<xs:selector xpath="./keyword"/>
+					<xs:field xpath="@word"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ProjectInformation">
+		<xs:annotation>
+			<xs:documentation>Contains inforamtions about the whole project like available languages and annotations that are shown all of the time.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="languages" type="Languages">
+				<xs:annotation>
+					<xs:documentation>All languages that are provided by the project. The default language is set by the defaultLangCode.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="settings" type="Settings" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>All settings that are needed for the player like a color scheme, the start mode, the size of the player, etc..</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="projectRessources" type="ProjectRessource" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>All annotations that are shown during the whole project.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="projectStates" type="ProjectState" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>All global states of the project.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Languages">
+		<xs:annotation>
+			<xs:documentation>Defines all languages and the default language of the project.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="language" type="LangCode">
+				<xs:annotation>
+					<xs:documentation>All languages that can be used in the interactive video project.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="defaultLangCode" type="xs:language" use="required">
+			<xs:annotation>
+				<xs:documentation>Language code which is selected by default.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="LangCode">
+		<xs:annotation>
+			<xs:documentation>Defines all languages of a project.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="langCode" type="xs:language" use="required">
+			<xs:annotation>
+				<xs:documentation>The code of the language.  
+
+Language code: ISO639. 
+Country code: ISO3166.
+
+For example: en-us.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ProjectRessource">
+		<xs:annotation>
+			<xs:documentation>Defines all actions that are valid for the whole project.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="REFactionID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference to an action that opens a ressource that will be shown during the whole presentation of all scenes.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ProjectState">
+		<xs:annotation>
+			<xs:documentation>One state which is valid for the whole project.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="stateID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the state.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="initialValue" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The initial value, will be NULL most of the time.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="currentValue" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The current value. Is the same as the initialValue in the beginning, but is changed during replay of the video.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SceneList">
+		<xs:annotation>
+			<xs:documentation>All defined scenes, the start-scene and if necessary sequences.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="scene" type="Scene">
+				<xs:annotation>
+					<xs:documentation>A scene is a uniquely identified range of sequent frames. It's the elemental partition of an interactive video project. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="REFsceneIDstart" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference to the start scene. This scene will be played at the beginning of the interactiv video project.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Scene">
+		<xs:annotation>
+			<xs:documentation>A scene object.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="storyBoard" type="Storyboard">
+				<xs:annotation>
+					<xs:documentation>The storyboard lists the triggers which invoke the actions that effect the prompt of annotations.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="sceneID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>ID of the scene.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the videostream that contains the scene.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="name" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The name of the scene.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attributeGroup ref="RangeOfFrames">
+			<xs:annotation>
+				<xs:documentation>General attributes to define a start and end time.</xs:documentation>
+			</xs:annotation>
+		</xs:attributeGroup>
+		<xs:attributeGroup ref="Position"/>
+	</xs:complexType>
+	<xs:attributeGroup name="RangeOfFrames">
+		<xs:annotation>
+			<xs:documentation>General attributes to define a start and end time.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="startTime" type="xs:time" use="optional">
+			<xs:annotation>
+				<xs:documentation>Start time of the scene (in relation to the start time of the stream spezified in REFstreamID).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="endTime" type="xs:time" use="optional">
+			<xs:annotation>
+				<xs:documentation>End time of the scene. The end time of the stream will be used if not specified.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="Storyboard">
+		<xs:annotation>
+			<xs:documentation>This is the parent element for all time triggered events (element: trigger), like showing additional video streams and annotations. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:annotation>
+				<xs:documentation>0...n triggers can be added to a storyboard.</xs:documentation>
+			</xs:annotation>
+			<xs:element name="trigger" type="Trigger">
+				<xs:annotation>
+					<xs:documentation>A trigger denotes a singular frame OR a range of frames when a specific action (referenced by actionID) is performed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="REFactionIDend" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Action that is executed at the end of a scene. Usually it is a showControl-action, a loadVideoScene-action or a endSiva-action.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Trigger">
+		<xs:annotation>
+			<xs:documentation>Definiton of a trigger.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="triggerID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the trigger.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFactionID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference of the action to perform.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attributeGroup ref="RangeOfFrames"/>
+	</xs:complexType>
+	<xs:complexType name="Ressource">
+		<xs:annotation>
+			<xs:documentation>Any ressource that is static, especially text and still images.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="resID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the ressource.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Settings">
+		<xs:annotation>
+			<xs:documentation>All settings of the Project, like start mode of the player, size of the player window, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the setting.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="value" use="required">
+			<xs:annotation>
+				<xs:documentation>The value of the setting.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Content">
+		<xs:annotation>
+			<xs:documentation>Defines the content of a Linked Ressource</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="langCode" type="xs:language" use="required">
+			<xs:annotation>
+				<xs:documentation>The code of the language.  
+
+Language code: ISO639. 
+Country code: ISO3166.
+
+For example: en-us.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="href" type="xs:anyURI" use="required">
+			<xs:annotation>
+				<xs:documentation>Gives the URL where the player can download the stream.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="VideoStream">
+		<xs:annotation>
+			<xs:documentation>Definition of any video stream. This is retrived from the url given and must be given a video format identifier (which is not defined, yet).</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="LinkedRessource">
+				<xs:attribute name="containerFormat">
+					<xs:annotation>
+						<xs:documentation>Defines container format of the video.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="videoCodec" type="xs:string" default="">
+					<xs:annotation>
+						<xs:documentation>Defines the codec of the video. </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="audioCodec">
+					<xs:annotation>
+						<xs:documentation>Defines the audio codec of the video.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AudioStream">
+		<xs:annotation>
+			<xs:documentation>Definition of additional audio streams.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="LinkedRessource">
+				<xs:attribute name="audioCodec" type="xs:string" default="">
+					<xs:annotation>
+						<xs:documentation>Defines the format the audio file is provided in.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LinkedRessource">
+		<xs:annotation>
+			<xs:documentation>Static ressources that are retrieved by an URL, esp. rich pages and images.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Ressource">
+				<xs:sequence maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>At least one language (and one related URL) have to be specified.</xs:documentation>
+					</xs:annotation>
+					<xs:element name="content" type="Content">
+						<xs:annotation>
+							<xs:documentation>Content for specific language.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlainTextRessource">
+		<xs:annotation>
+			<xs:documentation>A text ressource without any formatting.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Ressource">
+				<xs:sequence maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>At least one language (and one related URL) have to be specified.</xs:documentation>
+					</xs:annotation>
+					<xs:element name="content">
+						<xs:annotation>
+							<xs:documentation>Content for specific language.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:simpleContent>
+								<xs:extension base="xs:string">
+									<xs:attribute name="langCode" type="xs:language" use="required">
+										<xs:annotation>
+											<xs:documentation>The code of the language.  
+
+Language code: ISO639. 
+Country code: ISO3166.
+
+For example: en-us.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:extension>
+							</xs:simpleContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Action" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Defines all actions in general.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="actionID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the action.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="pauseVideo" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>This boolean attribute defines whether the video should be paused when the action is performed or not. Default: FALSE.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ActionShow">
+		<xs:annotation>
+			<xs:documentation>Defines all actions that show annotations or controls either inline, moving inline (path) or in a screen area.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Action">
+				<xs:choice>
+					<xs:annotation>
+						<xs:documentation>Here the author can define the placement of the ressource. That can be inline, area and path. For controls that are supposed to move a path can be defined.</xs:documentation>
+					</xs:annotation>
+					<xs:element name="area" type="Area">
+						<xs:annotation>
+							<xs:documentation>The content is shown in one of the surrounding screen areas (defined in type ScreenArea)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="path" type="Path">
+						<xs:annotation>
+							<xs:documentation>The content is shown in an overlayed subwindow in the main screen area and moves along the path defined by a set of points.</xs:documentation>
+						</xs:annotation>
+						<xs:unique name="UniquePathTime">
+							<xs:annotation>
+								<xs:documentation>This Constraint ensures that every timestamp can only appear once. </xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="./point"/>
+							<xs:field xpath="@time"/>
+						</xs:unique>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Area">
+		<xs:annotation>
+			<xs:documentation>The area where a ressource is shown</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="screenArea" type="ScreenArea" use="required">
+			<xs:annotation>
+				<xs:documentation>The screenArea.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="ScreenArea">
+		<xs:annotation>
+			<xs:documentation>Defines the five possible screen areas where content may go, that is NOT inline.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="bottom"/>
+			<xs:enumeration value="top"/>
+			<xs:enumeration value="right"/>
+			<xs:enumeration value="left"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Path">
+		<xs:annotation>
+			<xs:documentation>Defines a path for moving objects. It takes a number of point elements with coordinates and a time as children.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:annotation>
+				<xs:documentation>At least one point has to be defined, a start and an end point.</xs:documentation>
+			</xs:annotation>
+			<xs:element name="point" type="Point">
+				<xs:annotation>
+					<xs:documentation>Defines the coordinates in the main screen area at a given point in time.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Point">
+		<xs:annotation>
+			<xs:documentation>Time and Position of a Ressource.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="time" type="xs:time" use="required">
+			<xs:annotation>
+				<xs:documentation>Time of the video in which the action is performed.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attributeGroup ref="SubWindow"/>
+	</xs:complexType>
+	<xs:attributeGroup name="SubWindow">
+		<xs:annotation>
+			<xs:documentation>General attributes to define the size and position of any subwindow showing additional content. </xs:documentation>
+		</xs:annotation>
+		<xs:attributeGroup ref="Position"/>
+		<xs:attributeGroup ref="SubWindowSize"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="SubWindowSize">
+		<xs:annotation>
+			<xs:documentation>General attributes to define the size of any subwindow showing additional content.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="xSize" type="xs:double" use="required">
+			<xs:annotation>
+				<xs:documentation>Width of the subwindow in relation to the size of the video (value between 0 and 1). -1 for self-sizing.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ySize" type="xs:double" use="required">
+			<xs:annotation>
+				<xs:documentation>Height of the subwindow  in relation to the size of the video (value between 0 and 1). -1 for self-sizing.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="Position">
+		<xs:annotation>
+			<xs:documentation>General attributes to define the position of an object. </xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="xPos" type="xs:double" use="optional">
+			<xs:annotation>
+				<xs:documentation>X position of the vertex/point  in relation to the size of the video (value between 0 and 1). Centered when not defined.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="yPos" type="xs:double" use="optional">
+			<xs:annotation>
+				<xs:documentation>Y position of the vertex/point in relation to the size of the video (value between 0 and 1). Centered when not defined.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:complexType name="Control">
+		<xs:annotation>
+			<xs:documentation>One control item, for example a button.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="controlID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the control.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFactionID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>A reference to the action. This may be a szene or a control.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference to a ressource. Possible ressource types are label, image and plaintext.  </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFresIDsec">
+			<xs:annotation>
+				<xs:documentation>Reference to a second ressource. Possible ressource types are label image and plaintext.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="ControlType">
+		<xs:annotation>
+			<xs:documentation>Defines all control types.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="alert"/>
+			<xs:enumeration value="default"/>
+			<xs:enumeration value="notification"/>
+			<xs:enumeration value="quiz"/>
+			<xs:enumeration value="selection"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ActionShowStream">
+		<xs:annotation>
+			<xs:documentation>Show video streams.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ActionShow">
+				<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:documentation>The ID of the referenced stream. </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="muteVideo" type="xs:boolean" default="false">
+					<xs:annotation>
+						<xs:documentation>Tells if audio output of the main video shall be muted. Defaults: FALSE.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionShowSubtitle">
+		<xs:annotation>
+			<xs:documentation>Shows a subtitle at the bottom of the video.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Action">
+				<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:documentation>The ID of the stream.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionPlayAudio">
+		<xs:annotation>
+			<xs:documentation>Start playing an additional audiostream.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Action">
+				<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:documentation>The ID of the stream.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="muteVideo" type="xs:boolean" default="true">
+					<xs:annotation>
+						<xs:documentation>Tells if audio output of the main video shall be muted. Defaults: TRUE.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionShowAnnotation">
+		<xs:annotation>
+			<xs:documentation>Defines all actions that show annotations or controls either inline, moving inline or in a screen area.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ActionShow">
+				<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:documentation>References the ressource (plaintext, subtitle, richpage, image, video) that is to be shown.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionShowSelectionControl">
+		<xs:annotation>
+			<xs:documentation>Show any controls that allow the user to interact.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ActionShowControlPanel">
+				<xs:sequence maxOccurs="unbounded">
+					<xs:element name="controls" type="Control">
+						<xs:annotation>
+							<xs:documentation>This element represents an option with a defined action.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="type" type="ControlType" use="required">
+					<xs:annotation>
+						<xs:documentation>Style of the buttons. </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="REFcontrolIDdefault" type="xs:IDREF">
+					<xs:annotation>
+						<xs:documentation>Reference to a control/button. This control will be marked by default.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="timeout" type="xs:time">
+					<xs:annotation>
+						<xs:documentation>If the timeout is set, the default controlId will be choosen after the given period of time.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionShowControlPanel">
+		<xs:annotation>
+			<xs:documentation>Shows a control panel with buttons. </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Action">
+				<xs:choice>
+					<xs:annotation>
+						<xs:documentation>Here the author can define the placement of the ressource. That can be area and path. For controls that are supposed to move a path can be defined.</xs:documentation>
+					</xs:annotation>
+					<xs:element name="area" type="Area">
+						<xs:annotation>
+							<xs:documentation>The content is shown in one of the surrounding screen areas (defined in type ScreenArea)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="path" type="Path">
+						<xs:annotation>
+							<xs:documentation>The content is shown in an overlayed subwindow in the main screen area and moves along the path defined by a set of points.</xs:documentation>
+						</xs:annotation>
+						<xs:unique name="UniqueSelControlTime">
+							<xs:annotation>
+								<xs:documentation>This Constraint ensures that every timestamp can only appear once. </xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="./point"/>
+							<xs:field xpath="@time"/>
+						</xs:unique>
+					</xs:element>
+				</xs:choice>
+				<xs:attribute name="REFresID" type="xs:IDREF">
+					<xs:annotation>
+						<xs:documentation>Reference to a label that will be shown as caption of the control panel.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActionShowMark">
+		<xs:annotation>
+			<xs:documentation>Shows a clickable marking of an object in the video.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Action">
+				<xs:choice>
+					<xs:element name="button" type="Button">
+						<xs:unique name="UniqueButtonTime">
+							<xs:annotation>
+								<xs:documentation>This Constraint ensures that every timestamp can only appear once. </xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="./buttonPath"/>
+							<xs:field xpath="@time"/>
+						</xs:unique>
+					</xs:element>
+					<xs:element name="polygon" type="Polygon">
+						<xs:unique name="UniquePolygonTime">
+							<xs:annotation>
+								<xs:documentation>This Constraint ensures that every timestamp can only appear once. </xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="./polygonalChain"/>
+							<xs:field xpath="@time"/>
+						</xs:unique>
+					</xs:element>
+					<xs:element name="ellipse" type="Ellipse">
+						<xs:unique name="UniqueEllipseTime">
+							<xs:annotation>
+								<xs:documentation>This Constraint ensures that every timestamp can only appear once. </xs:documentation>
+							</xs:annotation>
+							<xs:selector xpath="./ellipsePath"/>
+							<xs:field xpath="@time"/>
+						</xs:unique>
+					</xs:element>
+				</xs:choice>
+				<xs:attribute name="REFactionID" type="xs:IDREF" use="required">
+					<xs:annotation>
+						<xs:documentation>A reference to the action. This may be a szene or additional information.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="style" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>Style of the marking.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="duration">
+					<xs:annotation>
+						<xs:documentation>Duration shows how long the annotation of REFresID has to be shown.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Button">
+		<xs:annotation>
+			<xs:documentation>This is the parent element for a button.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="2" maxOccurs="unbounded">
+			<xs:element name="buttonPath" type="ButtonPathElement"/>
+		</xs:sequence>
+		<xs:attribute name="REFresID" type="xs:IDREF"/>
+	</xs:complexType>
+	<xs:complexType name="ButtonPathElement">
+		<xs:annotation>
+			<xs:documentation>One element of the path of the button.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="time" type="xs:time" use="required">
+			<xs:annotation>
+				<xs:documentation>Time of the video in which the ellipse is shown.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attributeGroup ref="Position">
+			<xs:annotation>
+				<xs:documentation>General attributes to define the position of a vertex/point.</xs:documentation>
+			</xs:annotation>
+		</xs:attributeGroup>
+	</xs:complexType>
+	<xs:complexType name="Ellipse">
+		<xs:annotation>
+			<xs:documentation>This is the parent element for a ellipse.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="2" maxOccurs="unbounded">
+			<xs:element name="ellipsePath" type="EllipsePathElement"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="EllipsePathElement">
+		<xs:annotation>
+			<xs:documentation>One element of the path of the ellipse.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="time" type="xs:time" use="required">
+			<xs:annotation>
+				<xs:documentation>Time of the video in which the ellipse is shown.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="lengthB" type="xs:integer" use="required">
+			<xs:annotation>
+				<xs:documentation>The length of the semiminor axis.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="lengthA" type="xs:integer" use="required">
+			<xs:annotation>
+				<xs:documentation>The length of the semimajor axis.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attributeGroup ref="Position">
+			<xs:annotation>
+				<xs:documentation>General attributes to define the position of a vertex/point.</xs:documentation>
+			</xs:annotation>
+		</xs:attributeGroup>
+	</xs:complexType>
+	<xs:complexType name="Polygon">
+		<xs:annotation>
+			<xs:documentation>This is the parent element for a polygon.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="2" maxOccurs="unbounded">
+			<xs:element name="polygonalChain" type="PolygonalChain"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PolygonalChain">
+		<xs:annotation>
+			<xs:documentation>This is the parent element for a polygonal chain.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="3" maxOccurs="unbounded">
+			<xs:annotation>
+				<xs:documentation>There have to be at least three vertices to define a polygon (that does not degenerate to a closed curve).</xs:documentation>
+			</xs:annotation>
+			<xs:element name="vertices" type="Vertex">
+				<xs:annotation>
+					<xs:documentation>All vertices that define the path round the polgon. The first position in the list defines the first vertex and the last position in the list defines the last vertex. There has to be an edge between the first and the last vertex.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="time" type="xs:time" use="required">
+			<xs:annotation>
+				<xs:documentation>Time of the video in which the polygonal chain is shown.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="Vertex">
+		<xs:annotation>
+			<xs:documentation>One point of a polygonal chain.</xs:documentation>
+		</xs:annotation>
+		<xs:attributeGroup ref="Position"/>
+	</xs:complexType>
+	<xs:complexType name="ActionLoadScene">
+		<xs:annotation>
+			<xs:documentation>Action to load a scene.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="actionID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the action.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFsceneID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>References the scene that has to be loaded.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ActionEnd">
+		<xs:annotation>
+			<xs:documentation>Action to end the interactive video.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="actionID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>The ID of the action.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ContentsNode">
+		<xs:annotation>
+			<xs:documentation>Node for tree of TOC.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="adjacencyRefListNode" type="AdjacencyRefListNode">
+				<xs:annotation>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="REFresID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference to a label which is caption of the subtree. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="contentsNodeID" type="xs:ID" use="required">
+			<xs:annotation>
+				<xs:documentation>ID of this node in this adjacency list</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFactionID" type="xs:IDREF">
+			<xs:annotation>
+				<xs:documentation>Reference to an action that can be triggered. Usually this action is a loadVideoScene action.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="AdjacencyRefListNode">
+		<xs:annotation>
+			<xs:documentation>Node for the Adjacency List in the TOC.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="REFcontentsNodeID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>list of REFs to nodes to which this node is connected</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TableOfContents">
+		<xs:annotation>
+			<xs:documentation>Definition of the Table of Contents</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="contents" type="ContentsNode">
+				<xs:annotation>
+					<xs:documentation>A tree that represents the table of contents.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="REFresID" type="xs:IDREF">
+			<xs:annotation>
+				<xs:documentation>Reference to a label which is caption of the table of contents.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="RessourceType">
+		<xs:annotation>
+			<xs:documentation>Defines all visible content types (except the main video).</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="control"/>
+			<xs:enumeration value="image"/>
+			<xs:enumeration value="plaintext"/>
+			<xs:enumeration value="richtext"/>
+			<xs:enumeration value="scene"/>
+			<xs:enumeration value="subtitle"/>
+			<xs:enumeration value="video"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Index">
+		<xs:annotation>
+			<xs:documentation>A list of keywords</xs:documentation>
+		</xs:annotation>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="keyword" type="Keyword">
+				<xs:annotation>
+					<xs:documentation>A list of keywords. No language has to be specified in this part. </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Keyword">
+		<xs:annotation>
+			<xs:documentation>Defines a keyword and its corresponding scene and/or ressource.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="scene" type="SceneREF">
+				<xs:annotation>
+					<xs:documentation>There can be several additional content that hits the keyword.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="word" type="xs:Name" use="required">
+			<xs:annotation>
+				<xs:documentation>One word in any language. </xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SceneREF">
+		<xs:annotation>
+			<xs:documentation>Reference from a keyword to a scene.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="REFsceneID" type="xs:IDREF" use="required">
+			<xs:annotation>
+				<xs:documentation>Reference to the scene that matches the keyword.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="REFtriggerID" type="xs:IDREF">
+			<xs:annotation>
+				<xs:documentation>Reference to a trigger that shows additional content. The video will jump to the scene at the time where the keyword shows as a ressource.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="ressourceType" type="RessourceType">
+			<xs:annotation>
+				<xs:documentation>Type of the additional content. This attribute can be seen as redundant, but it makes it easier and faster to search the keyword in a specified additional content.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+</xs:schema>

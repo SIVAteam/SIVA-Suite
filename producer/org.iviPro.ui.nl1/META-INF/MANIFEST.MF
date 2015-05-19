@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Nl1 Fragment
+Bundle-SymbolicName: org.iviPro.ui.nl1
+Bundle-Version: 1.0.0
+Fragment-Host: org.iviPro.ui;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Localization: OSGI-INF/l10n/bundle

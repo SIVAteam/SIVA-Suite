@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<siva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sivaPlayer.xsd">
+<projectInformation>
+<languages defaultLangCode="de-de">
+	<language langCode="de-de"/>
+</languages>
+</projectInformation>
+<sceneList REFsceneIDstart="NodeScene_1">
+	<scene REFresID="v_Scene_1" sceneID="NodeScene_1">
+		<storyBoard REFactionIDend="select-NodeSelection_1">
+			<trigger REFactionID="show-NodeAnnotationText_1" endTime="00:00:11" startTime="00:00:00" triggerID="trigger-NodeAnnotationText_1"/>
+		</storyBoard>
+	</scene>
+	<scene REFresID="v_Scene_2" sceneID="NodeScene_2">
+		<storyBoard REFactionIDend="select-NodeSelection_2">
+			<trigger REFactionID="show-NodeAnnotationText_2" endTime="00:00:13" startTime="00:00:00" triggerID="trigger-NodeAnnotationText_2"/>
+		</storyBoard>
+	</scene>
+	<scene REFresID="v_Scene_3" sceneID="NodeScene_3">
+		<storyBoard REFactionIDend="end-siva">
+			<trigger REFactionID="show-NodeAnnotationText_3" endTime="00:00:10" startTime="00:00:05" triggerID="trigger-NodeAnnotationText_3"/>
+		</storyBoard>
+	</scene>
+	<scene REFresID="v_Scene_4" sceneID="NodeScene_4">
+		<storyBoard REFactionIDend="end-siva">
+			<trigger REFactionID="show-NodeAnnotationText_4" endTime="00:00:19" startTime="00:00:00" triggerID="trigger-NodeAnnotationText_4"/>
+		</storyBoard>
+	</scene>
+	<scene REFresID="v_Scene_5" sceneID="NodeScene_5">
+		<storyBoard REFactionIDend="end-siva">
+			<trigger REFactionID="show-NodeAnnotationText_5" endTime="00:00:12" startTime="00:00:00" triggerID="trigger-NodeAnnotationText_5"/>
+		</storyBoard>
+	</scene>
+</sceneList>
+
+<ressources>
+	<videoStream resID="v_Scene_1">
+		<content href="videos/v_Scene_1-de_DE.flv" langCode="de-de"/>
+	</videoStream>
+	<plainText resID="pt_NodeAnnotationText_1">
+		<content langCode="de-de">sfsfasdfasdfsdf</content>
+	</plainText>
+	
+	<videoStream resID="v_Scene_2">
+		<content href="videos/v_Scene_2-de_DE.flv" langCode="de-de"/>
+	</videoStream>
+	<plainText resID="pt_NodeAnnotationText_2">
+		<content langCode="de-de">sfasdfsfdsdfsdf</content>
+	</plainText>
+	
+	<videoStream resID="v_Scene_3">
+		<content href="videos/v_Scene_3-de_DE.flv" langCode="de-de"/>
+	</videoStream>
+	<plainText resID="pt_NodeAnnotationText_3">
+		<content langCode="de-de">xfsdfsdfsdf</content>
+	</plainText>
+	
+	<videoStream resID="v_Scene_4">
+		<content href="videos/v_Scene_4-de_DE.flv" langCode="de-de"/>
+	</videoStream>
+	<plainText resID="pt_NodeAnnotationText_4">
+		<content langCode="de-de">sdfsdfsdfsfsdf</content>
+	</plainText>	
+	
+	<videoStream resID="v_Scene_5">
+		<content href="videos/v_Scene_5-de_DE.flv" langCode="de-de"/>
+	</videoStream>
+	<plainText resID="pt_NodeAnnotationText_5">
+		<content langCode="de-de">sdfsfasdfsdfsdf</content>
+	</plainText>
+
+
+	<label resID="l_title_NodeSelectionControl_2">
+		<content langCode="de-de">Unnamed fork 2</content>
+	</label>
+	<label resID="l_title_NodeSelectionControl_3">
+		<content langCode="de-de">Unnamed fork 3</content>
+	</label>
+	<label resID="l_title_NodeSelectionControl_1">
+		<content langCode="de-de">Unnamed fork 1</content>
+	</label>
+	<label resID="l_title_NodeSelectionControl_4">
+		<content langCode="de-de">Unnamed fork 4</content>
+	</label>
+
+</ressources>
+
+
+<actions>
+	<endSiva actionID="end-siva"/>
+
+	<loadVideoScene REFsceneID="NodeScene_1" actionID="load-NodeScene_1"/>
+	<showPlainText REFresID="pt_NodeAnnotationText_1" actionID="show-NodeAnnotationText_1">
+		<area screenArea="bottom"/>
+	</showPlainText>
+	<loadVideoScene REFsceneID="NodeScene_2" actionID="load-NodeScene_2"/>
+	<showPlainText REFresID="pt_NodeAnnotationText_2" actionID="show-NodeAnnotationText_2">
+		<area screenArea="bottom"/>
+	</showPlainText>
+	<loadVideoScene REFsceneID="NodeScene_3" actionID="load-NodeScene_3"/>
+	<showPlainText REFresID="pt_NodeAnnotationText_3" actionID="show-NodeAnnotationText_3">
+		<area screenArea="bottom"/>
+	</showPlainText>
+	<loadVideoScene REFsceneID="NodeScene_4" actionID="load-NodeScene_4"/>
+	<showPlainText REFresID="pt_NodeAnnotationText_4" actionID="show-NodeAnnotationText_4">
+		<area screenArea="bottom"/>
+	</showPlainText>
+	<loadVideoScene REFsceneID="NodeScene_5" actionID="load-NodeScene_5"/>
+	<showPlainText REFresID="pt_NodeAnnotationText_5" actionID="show-NodeAnnotationText_5">
+		<area screenArea="bottom"/>
+	</showPlainText>
+
+	<showSelectionControl REFcontrolIDdefault="NodeSelectionControl_1" actionID="select-NodeSelection_1" type="default">
+		<area screenArea="left"/>
+		<controls REFactionID="load-NodeScene_2" REFresID="l_title_NodeSelectionControl_1" controlID="NodeSelectionControl_1"/>
+		<controls REFactionID="load-NodeScene_5" REFresID="l_title_NodeSelectionControl_4" controlID="NodeSelectionControl_4"/>
+	</showSelectionControl>
+	<showSelectionControl REFcontrolIDdefault="NodeSelectionControl_2" actionID="select-NodeSelection_2" type="default">
+		<area screenArea="left"/>
+		<controls REFactionID="load-NodeScene_3" REFresID="l_title_NodeSelectionControl_2" controlID="NodeSelectionControl_2"/>
+		<controls REFactionID="load-NodeScene_4" REFresID="l_title_NodeSelectionControl_3" controlID="NodeSelectionControl_3"/>
+	</showSelectionControl>
+</actions>
+</siva>

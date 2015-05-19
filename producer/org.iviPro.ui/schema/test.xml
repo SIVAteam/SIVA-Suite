@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<siva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="sivaPlayer.xsd">
+  <projectInformation>
+    <languages defaultLangCode="de-de">
+      <language langCode="de-de" />
+    </languages>
+    <settings name="startmode" value="full" />
+    <settings name="size_width" value="800" />
+    <settings name="size_height" value="600" />
+    <settings name="area_left_width" value="0.2" />
+    <settings name="area_top_height" value="0.2" />
+    <settings name="area_bottom_height" value="0.2" />
+    <settings name="area_right_width" value="0.2" />
+    <settings name="skin" value="1" />
+    <projectRessources REFactionID="show-NodeAnnotationSubtitle_1" />
+    <projectRessources REFactionID="show-NodeAnnotationPicture_1" />
+  </projectInformation>
+  <sceneList REFsceneIDstart="NodeScene_1">
+    <scene REFresID="v_Scene_1" name="Szene" sceneID="NodeScene_1"
+      xPos="0.6586666666666666" yPos="0.3971774193548387">
+      <storyBoard REFactionIDend="select-NodeSelection_1">
+        <trigger REFactionID="show-NodeAnnotationPicture_2"
+          endTime="00:00:07.946" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationPicture_2" />
+      </storyBoard>
+    </scene>
+    <scene REFresID="v_Scene_2" name="Szene-3" sceneID="NodeScene_3"
+      xPos="0.2986666666666667" yPos="0.9959677419354839">
+      <storyBoard REFactionIDend="end-siva">
+        <trigger REFactionID="show-NodeAnnotationSubtitle_2"
+          endTime="00:00:10.960" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationSubtitle_2" />
+      </storyBoard>
+    </scene>
+    <scene REFresID="v_Scene_3" name="Szene-4" sceneID="NodeScene_2"
+      xPos="1.0" yPos="1.0">
+      <storyBoard REFactionIDend="end-siva">
+        <trigger REFactionID="show-NodeAnnotationRichtext_1"
+          endTime="00:00:18.815" startTime="00:00:00.000"
+          triggerID="trigger-NodeAnnotationRichtext_1" />
+      </storyBoard>
+    </scene>
+  </sceneList>
+  <ressources>
+    <subTitle resID="pt_st_NodeAnnotationSubtitle_1">
+      <content langCode="de-de">Globaler Subtitel</content>
+    </subTitle>
+    <image resID="i_NodeAnnotationPicture_1">
+      <content href="pix/Picture_1-de_DE.jpg" langCode="de-de" />
+    </image>
+    <label resID="l_title_TocItem_1">
+      <content langCode="de-de">Inhaltsverzeichnis</content>
+    </label>
+    <label resID="l_title_TocItem_2">
+      <content langCode="de-de">Start</content>
+    </label>
+    <label resID="l_title_TocItem_3">
+      <content langCode="de-de">Ende</content>
+    </label>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_Scene_1" videoCodec="flv">
+      <content href="videos/v_Scene_1-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <image resID="i_NodeAnnotationPicture_2">
+      <content href="pix/Picture_1-de_DE.jpg" langCode="de-de" />
+    </image>
+    <label resID="l_title_NodeSelection_1">
+      <content langCode="de-de">Auswahl</content>
+    </label>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_Scene_2" videoCodec="flv">
+      <content href="videos/v_Scene_2-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <subTitle resID="pt_st_NodeAnnotationSubtitle_2">
+      <content langCode="de-de">bla blub untertitel</content>
+    </subTitle>
+    <label resID="l_title_NodeSelectionControl_1">
+      <content langCode="de-de">Test</content>
+    </label>
+    <image resID="i_Picture_1">
+      <content href="pix/Picture_1-de_DE.jpg" langCode="de-de" />
+    </image>
+    <videoStream audioCodec="libmp3lame" containerFormat="flv"
+      resID="v_Scene_3" videoCodec="flv">
+      <content href="videos/v_Scene_3-de_DE.flv" langCode="de-de" />
+    </videoStream>
+    <richPage resID="rp_NodeAnnotationRichtext_1">
+      <content href="richpages/RichText_1-de_DE.html" langCode="de-de" />
+    </richPage>
+    <label resID="l_title_NodeSelectionControl_2">
+      <content langCode="de-de">Rechts</content>
+    </label>
+  </ressources>
+  <actions>
+    <showSubTitle REFresID="pt_st_NodeAnnotationSubtitle_1"
+      actionID="show-NodeAnnotationSubtitle_1" pauseVideo="false" />
+    <showImage REFresID="i_NodeAnnotationPicture_1" actionID="show-NodeAnnotationPicture_1"
+      pauseVideo="false">
+      <area screenArea="left" />
+    </showImage>
+    <endSiva actionID="end-siva" />
+    <loadVideoScene REFsceneID="NodeScene_1" actionID="load-NodeScene_1" />
+    <showImage REFresID="i_NodeAnnotationPicture_2" actionID="show-NodeAnnotationPicture_2"
+      pauseVideo="false">
+      <area screenArea="left" />
+    </showImage>
+    <showSelectionControl REFresID="l_title_NodeSelection_1"
+      actionID="select-NodeSelection_1" type="default">
+      <path>
+        <point time="00:00:00.000" xPos="-1.0" xSize="-1.0" yPos="-1.0"
+          ySize="-1.0" />
+      </path>
+      <controls REFactionID="load-NodeScene_3" REFresID="l_title_NodeSelectionControl_1"
+        REFresIDsec="i_Picture_1" controlID="NodeSelectionControl_1" />
+      <controls REFactionID="load-NodeScene_2" REFresID="l_title_NodeSelectionControl_2"
+        controlID="NodeSelectionControl_2" />
+    </showSelectionControl>
+    <loadVideoScene REFsceneID="NodeScene_3" actionID="load-NodeScene_3" />
+    <showSubTitle REFresID="pt_st_NodeAnnotationSubtitle_2"
+      actionID="show-NodeAnnotationSubtitle_2" pauseVideo="false" />
+    <loadVideoScene REFsceneID="NodeScene_2" actionID="load-NodeScene_2" />
+    <showRichPage REFresID="rp_NodeAnnotationRichtext_1"
+      actionID="show-NodeAnnotationRichtext_1" pauseVideo="false">
+      <area screenArea="left" />
+    </showRichPage>
+  </actions>
+  <tableOfContents REFresID="l_title_TocItem_1">
+    <contents REFactionID="load-NodeScene_1" REFresID="l_title_TocItem_2"
+      contentsNodeID="TocItem_2" />
+    <contents REFactionID="load-NodeScene_2" REFresID="l_title_TocItem_3"
+      contentsNodeID="TocItem_3" />
+  </tableOfContents>
+  <index />
+</siva>

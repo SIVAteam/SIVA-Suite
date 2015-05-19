@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="target-definition-3.8.2" sequenceNumber="7">
+<locations>
+<location path="${workspace_loc}/org.iviPro.target/eclipse-sdk-3.8.2" type="Directory"/>
+<location path="${workspace_loc}/org.iviPro.target/gef" type="Directory"/>
+</locations>
+</target>
