@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="target-definition-3.8.2" sequenceNumber="42">
+<locations>
+<location path="${project_loc}/gef" type="Directory"/>
+<location path="${project_loc}/eclipse-sdk-3.8.2" type="Directory"/>
+</locations>
+</target>
