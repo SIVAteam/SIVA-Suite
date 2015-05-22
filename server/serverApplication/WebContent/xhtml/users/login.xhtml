@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.login_title}</ui:define>
+        <ui:define name="contextHelp">
+            <h:outputLink id="contexHelp"
+                value="#{request.contextPath}/xhtml/common/help.jsf#loginPage"
+                target="_blank">#{lang.get_help_link}</h:outputLink>
+        </ui:define>
+		<ui:define name="content">
+			<h1>#{lang.login_title}</h1>
+			         <h:message for="loginForm" class="confirmMessage" />
+            <h:messages globalOnly="true" class="errorMessage" />
+			
+			<h:form id="loginForm">
+				<div class="row">
+					<div class="col1">#{lang.user_field_email}</div>
+					<div class="col2">
+                        <h:inputText id="username" value="#{loginBean.username}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" tabindex="100" />
+                    </div>
+                    <div class="col3"><h:message for="username" /></div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.user_field_password}<br /><h:outputLink value="#{request.contextPath}/xhtml/users/recoverPassword.jsf">#{lang.login_password_forgotten}</h:outputLink></div>
+					<div class="col2">
+						<h:inputSecret id="password" value="#{loginBean.password}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" tabindex="101" />
+					</div>
+					<div class="col3"><h:message for="password" /></div>
+				</div>
+				<div class="row">
+					<div class="col1 button_space">&nbsp;</div>
+					<div class="col2">
+						<h:inputHidden id="redirect" value="#{loginBean.redirectURL}" />
+						<h:commandButton action="#{authenticationAction.login}" value="#{lang.login_login_button}" tabindex="102" />
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

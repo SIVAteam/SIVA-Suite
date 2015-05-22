@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.logout_title}</ui:define>
+		<ui:define name="content">
+			<h1>#{lang.logout_title}</h1>
+			<p>#{lang.logout_text}</p>
+			<ul class="navigation subnavigation">
+				<li><h:outputLink value="#{request.contextPath}/xhtml/users/login.jsf">#{lang.back_to_login_link}</h:outputLink></li>
+			</ul>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

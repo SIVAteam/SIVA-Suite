@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.editGroup_title}</ui:define>
+        <ui:define name="contextHelp"><h:outputLink id="contexHelp" value="#{request.contextPath}/xhtml/common/help.jsf#editGroup" target="_blank">#{lang.get_help_link}</h:outputLink></ui:define>
+		<ui:define name="content">
+			<f:metadata>
+				<f:event listener="#{authenticationAction.prePopulateUsername}"
+					type="preRenderView" />
+				<f:viewParam name="groupId" value="#{groupBean.id}" required="true">
+					<f:convertNumber />
+				</f:viewParam>
+				<f:event listener="#{groupAction.recoverId}" type="preRenderView" />
+				<f:event listener="#{groupAction.editGroup}" type="preRenderView" />
+			</f:metadata>
+			<div class="breadcrumb"><a href="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.listGroups_title}</a> &gt;</div>
+            <h1 class="narrowTitle">#{lang.editGroup_title}</h1>
+			<ul class="navigation">
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.back_to_groups_link}</h:outputLink></li>
+			</ul>
+			<h:form id="editGroupForm">
+			<h:inputHidden binding="#{groupBean.hiddenGroupId}" />
+				<div class="row">
+					<div class="col1">#{lang.group_field_group}</div>
+					<div class="col2">
+						<h:inputText id="title" value="#{groupBean.title}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" validator="LengthValidator">
+                            <f:attribute name="minLengthValidator" value="3" />
+                            <f:attribute name="lengthValidator_tooShort_message" value="#{lang.lengthValidator_tooShort_message}" />
+                            <f:attribute name="maxLengthValidator" value="250" />
+                            <f:attribute name="lengthValidator_tooLong_message" value="#{lang.lengthValidator_tooLong_message}" />
+                        </h:inputText>
+					</div>
+					<div class="col3">
+						<h:message for="title" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.group_field_visibility}</div>
+					<div class="col2">
+						<h:selectOneRadio value="#{groupBean.visible}">
+							<f:selectItem itemValue="#{false}" itemLabel="#{lang.yes}" />
+							<f:selectItem itemValue="#{true}" itemLabel="#{lang.no}" />
+						</h:selectOneRadio>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.group_field_tutors}</div>
+					<div class="col2">
+						<p>
+							<ui:repeat value="#{userListBean.list}" var="entry">
+								<h:outputText
+									value="#{entry.user.lastName}, #{entry.user.firstName}#{entry.user.title != null ? ', ' : ''}#{entry.user.title}" />
+								<br />
+							</ui:repeat>
+						</p>
+						<ul class="navigation subnavigation noSubnavigationSpace">
+							<li><h:outputLink
+									value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}">#{lang.editGroup_add_and_remove_tutors_link}</h:outputLink></li>
+						</ul>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.group_field_users}</div>
+					<div class="col2">
+						<ul class="navigation subnavigation noSubnavigationSpace">
+							<li><h:outputLink
+									value="#{request.contextPath}/xhtml/groups/addUsers.jsf?groupId=#{groupBean.id}">#{lang.editGroup_add_and_remove_users_link}</h:outputLink></li>
+						</ul>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1 button_space">&nbsp;</div>
+					<div class="col2">
+						<h:inputHidden value="#{groupBean.id}" />
+						<h:commandButton action="#{groupAction.editGroup}"
+							value="#{lang.editGroup_save_group_button}" />
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{videoBean.title}</ui:define>
+		<ui:define name="content">
+			<f:metadata>
+				<f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView"/>
+				<f:viewParam name="videoId" value="#{videoBean.id}" required="false" />
+				<f:viewParam name="password" value="#{videoBean.password}" required="false" />
+				<f:viewParam name="token" value="#{tokenBean.token}" converter="hu.converters.tokenConverter" required="false" />
+				<f:event listener="#{videoAction.watchVideo}" type="preRenderView" />
+				<f:viewAction listener="#{videoAction.watchVideo}" />
+			</f:metadata>
+			<h1 class="narrowTitle">#{videoBean.title}</h1>
+			<ul class="navigation">
+				<li><h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.back}</h:outputLink></li>
+			</ul>
+			<div class="table">
+				<div class="row">
+                    <div class="col2 description newlines">#{videoBean.description}</div>
+                </div>
+            </div>
+            <div class="sivaPlayer" style="display:none;">
+   				<div class="sivaPlayer_configuration">
+   					<span class="style_width">100%</span>
+   					<span class="style_height">auto</span>
+					<span class="common_autoStart">true</span>
+					<span class="common_annotationSidebarOverlay">false</span>
+					<span class="style_primaryColor">#567EA2</span>
+					<span class="style_secondaryColor">#ffffff</span>
+					<span class="common_log">true</span>
+					<span class="common_useSecretLogin">false</span>
+					<span class="common_annotationSidebarVisibility">onStart</span>
+   				</div>
+  			</div>
+  			<script src="#{request.contextPath}/sivaPlayerVideos/#{videoBean.directory}/XML/export.js?token=#{videoBean.sivaPlayerSession.sessionToken}" type="text/javascript"></script>
+  			<script src="#{request.contextPath}/resources/SivaPlayer/js/initSivaPlayer.js?lang=de,en" type="text/javascript"></script>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

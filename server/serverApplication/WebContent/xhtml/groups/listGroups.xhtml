@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:sivaserver="http://sivaserver.de/tags">
+
+<body>
+    <ui:composition template="../layout.xhtml">
+        <ui:define name="title">#{lang.listGroups_title}</ui:define>
+        
+        <ui:define name="mobileCss">
+            .list td:nth-of-type(1):before {
+                content:"#{lang.grouptable_title}:\0000a0";
+            }
+            
+            .list td:nth-of-type(2):before {
+                content:"#{lang.grouptable_owners}:\0000a0";
+            }
+            
+            .list td:nth-of-type(3):before {
+                content:"#{lang.grouptable_signed_up}:\0000a0";
+            }
+            
+            .list td:nth-of-type(4):before {
+                content:"#{lang.grouptable_options}:\0000a0";
+            }
+        </ui:define>
+        
+        <ui:define name="contextHelp">
+            <h:outputLink id="contexHelp"
+                value="#{request.contextPath}/xhtml/common/help.jsf#manageGroups"
+                target="_blank">#{lang.get_help_link}</h:outputLink>
+        </ui:define>
+
+        <ui:define name="content">
+            <f:metadata>
+                <f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView"/>
+                <f:viewParam name="page" value="#{groupListBean.page}" required="false" />
+                <f:viewParam name="sortDirection" value="#{groupListBean.sortDirection}" required="false" />
+                <f:viewParam name="list" value="#{groupListBean.listShown}" required="false" />
+                <f:event listener="#{groupListAction.listGroups}" type="preRenderView" />
+            </f:metadata>
+
+            <h1>#{lang.listGroups_title}</h1>
+            <h:message for="listGroupsTable" class="confirmMessage" />
+            <h:messages globalOnly="true" class="errorMessage" />
+
+            <ui:fragment rendered="#{sessionData.userId == null}">
+                <p>
+                    <h:outputText value="#{lang.listGroups_login_note}" escape="false" />
+                </p>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{groupListBean.ownedAvailable}">
+            <ul class="navigation subnavigation noSubnavigationSpace">
+                <li>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/createGroup.jsf">
+                        #{lang.listGroups_create_group_button}
+                    </h:outputLink>
+                </li>
+            </ul>
+            </ui:fragment>
+
+            <ul class="tabs">
+                <li>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf?list=all&amp;sortDirection=#{groupListBean.sortDirection}" class="#{groupListBean.listShown == 'all' ? 'current' : ''}" rendered="#{groupListBean.allAvailable}">#{lang.grouptable_all_groups_link}</h:outputLink>
+                </li>
+                <li>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf?list=attended&amp;sortDirection=#{groupListBean.sortDirection}" class="#{groupListBean.listShown == 'attended' ? 'current' : ''}" rendered="#{groupListBean.attendedAvailable}">#{lang.grouptable_attended_groups_link}</h:outputLink>
+                </li>
+                <li>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf?list=owned&amp;sortDirection=#{groupListBean.sortDirection}" class="#{groupListBean.listShown == 'owned' ? 'current' : ''}" rendered="#{groupListBean.ownedAvailable}">#{lang.grouptable_owned_groups_link}</h:outputLink>
+                </li>
+            </ul>
+
+            <h:dataTable id="listGroupsTable" value="#{groupListBean.list}" var="entry" styleClass="list">
+                <h:column>
+                    <f:facet name="header">
+                        #{lang.grouptable_title}&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf?sortDirection=ASC&amp;list=#{groupListBean.listShown}">&uarr;</h:outputLink>&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf?sortDirection=DESC&amp;list=#{groupListBean.listShown}">&darr;</h:outputLink>
+                    </f:facet>
+                    #{entry.group.title} 
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        #{lang.grouptable_owners}
+                    </f:facet>
+                    #{entry.getOwnersSeperated()}
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        #{lang.grouptable_signed_up}
+                    </f:facet>
+                    <h:outputText value="#{lang.yes}" rendered="#{entry.currentUserSignedUp}" />
+                    <h:outputText value="#{lang.owner}" rendered="#{entry.currentUserOwner}" />
+                    <h:outputText value="#{lang.no}" rendered="#{!entry.currentUserSignedUp and !entry.currentUserOwner}" />
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">
+                        #{lang.grouptable_options}
+                    </f:facet>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/signUp.jsf?groupId=#{entry.group.id}" class="tableLink" rendered="#{entry.signUpAvailable}">#{lang.listGroups_signup_link}</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/signOff.jsf?groupId=#{entry.group.id}" class="tableLink" rendered="#{entry.signOffAvailable}">#{lang.listGroups_signoff_link}</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{entry.group.id}" class="tableLink" rendered="#{entry.showVideosAvailable}">#{lang.listGroups_show_videos_link}</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/editGroup.jsf?groupId=#{entry.group.id}" class="tableLink" rendered="#{entry.editAvailable}">#{lang.listGroups_edit_link}</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/addUsers.jsf?groupId=#{entry.group.id}" class="tableLink" rendered="#{entry.editAvailable}">#{lang.listGroups_users_link}</h:outputLink>
+                    <h:outputLink value="#{request.contextPath}/xhtml/groups/deleteGroup.jsf?groupId=#{entry.group.id}" class="tableLink" rendered="#{entry.deleteAvailable}">#{lang.listGroups_delete_link}</h:outputLink>
+                </h:column>
+            </h:dataTable>
+
+            <div class="pagination">
+                <span class="label">#{lang.pagination_label}</span>
+                <span class="pages"><sivaserver:pagination url="#{request.contextPath}/xhtml/groups/listGroups.jsf?list=#{groupListBean.listShown}&amp;sortDirection=#{groupListBean.sortDirection}" currentPage="#{groupListBean.page}" pages="#{groupListBean.pages}" currentClass="current" /></span>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

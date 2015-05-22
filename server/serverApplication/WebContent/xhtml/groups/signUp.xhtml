@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.signUp_title}</ui:define>
+		<ui:define name="contextHelp">
+			<h:outputLink id="contexHelp"
+				value="#{request.contextPath}/xhtml/common/help.jsf#signUpForGroup"
+				target="_blank">#{lang.get_help_link}</h:outputLink>
+		</ui:define>
+		<ui:define name="content">
+			<div class="breadcrumb"><a href="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.listGroups_title}</a> &gt;</div>
+            <h1>#{lang.signUp_title}</h1>
+			<f:metadata>
+			
+                <f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView"/>
+                <f:viewParam id="groupId" name="groupId" value="#{groupBean.id}" required="true" requiredMessage="#{lang.get_invalid_url}">
+                    <f:convertNumber />
+                </f:viewParam>
+                <f:event listener="#{groupAttendanceAction.addUser}" type="preRenderView" />
+            </f:metadata>
+			<p><h:outputText value="#{lang.signUp_text}" escape="false" /></p>
+			<p class="showName"><b>#{lang.group_field_group}</b> #{groupBean.title}</p>
+            
+			<h:form id="signUpForm">
+			<ul class="navigation subnavigation subnavigationSpace">
+				<li><h:inputHidden value="#{groupBean.id}" /><h:commandButton action="#{groupAttendanceAction.addUser}" value="#{lang.yes}" /></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.no}</h:outputLink></li>
+			</ul>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

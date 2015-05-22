@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:sivaserver="http://sivaserver.de/tags">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.listVideos_title}</ui:define>
+		<ui:define name="mobileCss">
+            .list td:nth-of-type(1):before {
+                content:"#{lang.videotable_video}:\0000a0";
+            }
+            
+            .list td:nth-of-type(2):before {
+                content:"#{lang.videotable_group}:\0000a0";
+            }
+            
+            .list td:nth-of-type(3):before {
+                content:"#{lang.videotable_active}:\0000a0";
+            }
+            
+            .list td:nth-of-type(4):before {
+                content:"#{sessionData.userId != null ? lang.videotable_participated : lang.videotable_options}:\0000a0";
+            }
+            
+            .list td:nth-of-type(5):before {
+                content:"#{lang.videotable_options}:\0000a0";
+            }
+        </ui:define>
+		<ui:define name="contextHelp"><h:outputLink id="contexHelp" value="#{request.contextPath}/xhtml/common/help.jsf#manageVideos" target="_blank">#{lang.get_help_link}</h:outputLink></ui:define>
+        <ui:define name="content">
+		    <f:metadata>
+                <f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView" />
+                <f:viewParam id="groupId" name="groupId" value="#{groupBean.id}">
+                    <f:convertNumber />
+                </f:viewParam>
+                <f:viewParam name="list" value="#{videoListBean.type}" />
+                <f:viewParam name="sortColumn" value="#{videoListBean.sortColumn}" />
+                <f:viewParam name="sortDirection" value="#{videoListBean.sortDirection}" />
+                <f:viewParam name="page" value="#{videoListBean.page}">
+                    <f:validateLongRange minimum="0" />
+                    <f:convertNumber />
+                </f:viewParam>
+                <f:event listener="#{videoListAction.listVideosForUser}" type="preRenderView"/>
+            </f:metadata>
+			<h1 class="narrowTitle">#{lang.listVideos_title}</h1>
+			<ui:fragment rendered="#{videoListBean.createButtonAvailable}">
+                <ul class="navigation subnavigation noSubnavigationSpace">
+				    <li><h:outputLink value="#{request.contextPath}/xhtml/videos/createVideo.jsf?groupId=#{groupBean.id}">#{lang.listVideos_create_video_button}</h:outputLink></li>
+			    </ul>
+			</ui:fragment>
+			<h:message for="listVideosTable" class="confirmMessage" />
+            <h:messages globalOnly="true" class="errorMessage" />
+            <ui:fragment rendered="#{sessionData.userId == null}">
+			 <p>
+				<h:outputText value="#{lang.listVideos_login_note}" escape="false" />
+			 </p>
+			</ui:fragment>
+			<ul class="tabs">
+				<li><h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf"
+                    class="#{videoListBean.type == null and groupBean.id == null ? 'current' : ''}">#{lang.videotable_all_videos_link}</h:outputLink></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?list=Active"
+                    class="#{videoListBean.type == 'Active' ? 'current' : ''}" rendered="#{groupBean.id == null}">#{lang.videotable_active_videos_link}</h:outputLink></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?list=Inactive"
+                    class="#{videoListBean.type == 'Inactive' ? 'current' : ''}" rendered="#{groupBean.id == null}">#{lang.videotable_inactive_videos_link}</h:outputLink></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{groupBean.id}"
+                    class="#{groupBean.id != null ? 'current' : ''}" rendered="#{groupBean.id != null}">#{lang.videotable_group_link}</h:outputLink></li>
+			</ul>
+			<h:dataTable id="listVideosTable" value="#{videoListBean.list}" var="entry" styleClass="list">
+               <h:column>
+                <f:facet name="header">
+                 #{lang.videotable_video}&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{groupBean.id}&amp;list=#{videoListBean.type}&amp;sortColumn=Title&amp;sortDirection=ASC">&uarr;</h:outputLink>&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{groupBean.id}&amp;list=#{videoListBean.type}&amp;sortColumn=Title&amp;sortDirection=DESC">&darr;</h:outputLink>  
+                </f:facet>
+                <b>#{entry.video.title}<br />(#{entry.video.directory})</b> 
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.videotable_group}&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{groupBean.id}&amp;list=#{videoListBean.type}&amp;sortColumn=Group&amp;sortDirection=ASC">&uarr;</h:outputLink>&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{groupBean.id}&amp;list=#{videoListBean.type}&amp;sortColumn=Group&amp;sortDirection=DESC">&darr;</h:outputLink>  
+                </f:facet>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{entry.group.id}">#{entry.group.title}</h:outputLink> 
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.videotable_active}  
+                </f:facet>
+                <h:outputText value="#{entry.active}" />
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.videotable_participated}  
+                </f:facet>
+                #{entry.video.views}
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.videotable_options}  
+                </f:facet>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/accessVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.participationButtonAvailable}">#{lang.listVideos_participate_link}</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/downloadVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.zipDownloadButtonAvailable}">#{lang.listVideos_zip_download_link}</h:outputLink>
+                <h:outputLink value="#{entry.video.chromeAppURL}" target="_blank" class="tableLink" rendered="#{entry.chromeAppDownloadButtonAvailable}">#{lang.listVideos_chromeApp_download_link}</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/startVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.startButtonAvailable}">#{lang.listVideos_start_video_link}</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/stopVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.stopButtonAvailable}">#{lang.listVideos_stop_video_link}</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/editVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.editButtonAvailable}">#{lang.listVideos_edit_video_link}</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/deleteVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.deleteButtonAvailable}">#{lang.listQuesitonnaires_delete_video_link}</h:outputLink> 
+               </h:column> 
+            </h:dataTable>
+			<div class="pagination">
+                <span class="label">#{lang.pagination_label}</span> 
+                <span class="pages"><sivaserver:pagination url="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{groupBean.id}&amp;list=#{videoListBean.type}&amp;sortColumn=#{videoListBean.sortColumn}&amp;sortDirection=#{videoListBean.sortDirection}" currentPage="#{videoListBean.page}" pages="#{videoListBean.pages}" currentClass="current" /></span>
+            </div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

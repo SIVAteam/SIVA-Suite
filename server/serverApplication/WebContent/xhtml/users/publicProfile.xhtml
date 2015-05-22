@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">	
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{userBean.lastName}, #{userBean.firstName}#{userBean.academicTitle != null ? ', ' : ''}#{userBean.academicTitle}</ui:define>
+		<ui:define name="content">
+			<f:metadata>
+			<f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView"/>
+				<f:viewParam name="userId" value="#{userBean.id}" required="false" />
+				<f:event listener="#{userAction.getPublicProfile}" type="preRenderView" />
+			</f:metadata>
+
+			<h1 class="narrowTitle">#{userBean.lastName}, #{userBean.firstName}#{userBean.academicTitle != null ? ', ' : ''}#{userBean.academicTitle}</h1>
+			<ul class="navigation">
+				<li><h:outputLink value="javascript:history:back()">#{lang.back}</h:outputLink></li>
+			</ul>
+			<form id="#publicProfileForm">
+				<div class="row">
+						<ui:fragment rendered="#{userBean.photoAvailable}">
+						 <div class="col1">
+							<h:graphicImage class="profilePhoto" value="/photos/#{userBean.id}.jpg?t=#{session.lastAccessedTime}" />
+						 </div>
+						</ui:fragment>
+						<div class="col2">
+							<p>
+								<h:outputText value="#{lang.user_field_gender_male}" rendered="#{userBean.gender == 'Male'}" />
+								<h:outputText value="#{lang.user_field_gender_female}" rendered="#{userBean.gender != 'Male'}" />
+							</p>
+							<p>
+								<h:outputText value="#{lang.user_field_country_germany}" rendered="#{userBean.country == 'Germany'}" />
+								<h:outputText value="#{lang.user_field_country_austria}" rendered="#{userBean.country == 'Austria'}" />
+								<h:outputText value="#{lang.user_field_country_switzerland}" rendered="#{userBean.country == 'Switzerland'}" />
+							</p>
+						</div>
+						<div class="col3">
+							
+						</div>
+				</div>
+			</form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

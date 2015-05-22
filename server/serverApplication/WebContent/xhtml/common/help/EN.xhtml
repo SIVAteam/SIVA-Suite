@@ -1,0 +1,393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+     
+<body>
+    <ui:composition>
+
+        <ul>
+            <li><a href="#homePage">Home Page</a></li>
+            <li><a href="#register">Register</a></li>
+            <li><a href="#loginPage">Login Page</a>
+                <ul>
+                    <li><a href="#loginForgotten">Forgotten password</a></li>
+                </ul>
+            </li>
+            <li><a href="#editProfile">Edit Profile</a></li>
+            <li><a href="#dashboard">Dashboard</a>
+                <ul>
+                    <li><a href="#manageGroups">Manage Groups</a>
+                        <ul>
+                            <li><a href="#signUpForGroup">Sign Up For Group</a></li>
+                            <li><a href="#signOffFromGroup">Sign Off From Group</a></li>
+                            <li><a href="#createGroup">Create Group</a>
+                                <ul>
+                                    <li><a href="#addRemoveUser">Add/Remove Registered
+                                            User</a></li>
+                                    <li><a href="#addRemoveTutor">Add/Remove Tutor</a></li>
+                                </ul></li>
+                            <li><a href="#editGroup">Edit Group</a></li>
+                            <li><a href="#deleteGroup">Delete Group</a></li>
+                        </ul></li>
+                    <li><a href="#manageVideos">Manage Videos</a>
+                        <ul>
+                         	<li><a href="#createVideo">Create Video</a></li>
+                            <li><a href="#editVideo">Edit Video</a></li>
+                            <li><a href="#generateToken">Access Tokens</a></li>
+                            <li><a href="#addUsers">Add Users to Video</a></li>
+                            <li><a href="#distributeEvaluationReport">Edit Publication
+                            Settings</a></li>
+                    <li><a href="#deleteVideo">Delete Video</a></li>
+                        </ul>
+                    </li>
+            <li><a href="#manageUsers">Manage Users</a>
+                <ul>
+                    <li><a href="#createTutorOrAdmin">Create User</a></li>
+                    <li><a href="#searchRegisteredUser">Search Registered User</a></li>
+                    <li><a href="#banUser">Ban user</a></li>
+                    <li><a href="#unbanUser">Unban user</a></li>
+                    <li><a href="#editUser">Edit User</a></li>
+                    <li><a href="#deleteUser">Delete User</a></li>
+                </ul></li>
+        </ul>
+        </li>
+        <li><a href="#contact">Contact</a></li>
+
+        </ul>
+        <h2>
+                    <a name="homePage">Home Page</a>
+                </h2>
+                <p>
+                    Put the token you received in the field called "Video Token" to get
+                    direct access to the assigned video.<br />Use the menu on
+                    top to navigate through the provided functionality.
+                </p>
+                <h2>
+                    <a name="register">Register</a>
+                </h2>
+                <p>
+                    Create a new account to get further access to groups,
+                    and videos.<br />You have to provide the following
+                    information:
+
+                </p>
+                <ul>
+                    <li>a valid e-mail address</li>
+                    <li>a safe password (letter-figure-symbol
+                        combination)<br />Has to contain at least three of the following character sets: 
+                         <ul>
+                          <li>lower-case letters</li>
+                          <li>upper-case letters</li>
+                          <li>figures</li>
+                          <li>special characters</li>
+                         </ul>
+                        </li>
+                    <li>your academic title</li>
+                    <li>your first name</li>
+                    <li>your last name</li>
+                    <li>your gender</li>
+                    <li>your country</li>
+                </ul>
+                <p>
+                	Your first name, last name, country and gender are published on your profile page.
+                	Further data can be entered optionally. You can set whether this optional data should be shown in your public profile.
+                </p>
+                <h2>
+                    <a name="loginPage">Login Page</a>
+                </h2>
+                <p>
+                    Login here with your e-mail address and password to get access to
+                    the dashboard and additional functions.<br />Before you can login
+                    you have to <a href="#register">register</a>.
+                </p>
+                <h2>
+                    <a name="loginForgotten">Forgotten password</a>
+                </h2>
+                <p>
+                    If you have forgotten your password, use this function set a new one. Simply click on "Forgotten?" and enter
+                    your e-mail address. The system will send you an email with a special link inside. Following this
+                    link you will be redirected to a page where you can enter your new password.<br />    
+                </p>
+                <p class="note">
+                        <span>Note:</span> This link is only two days valid.
+                </p>
+                <h2>
+                    <a name="editProfile">Edit Profile</a>
+                </h2>
+                <p>
+                    The profile page offers you to change your personal details.<br />The
+                    required details:
+                </p>
+                <ul>
+                    <li>your e-mail address</li>
+                    <li>your password (at least 7 characters, letter-figure-symbol
+                        combination)<br />Has to contain at least three of the following character sets: 
+                         <ul>
+                          <li>lower-case letters</li>
+                          <li>upper-case letters</li>
+                          <li>figures</li>
+                          <li>special characters</li>
+                         </ul>
+                    </li>
+                    <li>your academic title</li>
+                    <li>your first name</li>
+                    <li>your last name</li>
+                    <li>your gender</li>
+                    <li>your country</li>
+                </ul>
+                <p>
+                	Your first name, last name, country and gender are published on your profile page.
+                	Further data can be entered optionally. You can set whether this optional data should be shown in your public profile.
+                </p>
+                <h2>
+                    <a name="dashboard">Dashboard</a>
+                </h2>
+                <p>The dashboard provides the entry point to additional
+                    functions for logged in users.</p>
+                <ul>
+                    <li>Authorized get the possibility to <a href="#signUpForGroup">edit their profile</a>.
+                    </li>
+                    <li>Authorized participants get a list of all available groups
+                        which they can <a href="#signUpForGroup">sign up</a> for or <a href="#signOffFromGroup">sign off</a> from.
+                    </li>
+                    <li>Authorized tutors additionally get the opportunity to <a
+                        href="#createGroup">create</a>, <a href="#createGroup">edit</a>
+                        and <a href="#deleteGroup">delete groups</a> as well as an option
+                        to <a href="#addRemoveUser">add and remove registered users
+                            from the list of participants</a>. Within those groups videos
+                        can be <a href="#createVideo">created</a>, <a
+                        href="#editVideo">edited</a> and <a
+                        href="#deleteVideo">deleted</a>.
+                    </li>
+                    <li>Authorized administrators additionally get the opportunity
+                        to see a list of the registered users as well as an option to <a
+                        href="#createTutorOrAdmin">create tutors or administrators</a>, <a
+                        href="#banUser">ban</a>, <a href="#editUser">edit</a> or <a
+                        href="#deleteUser">delete users</a>. A search function is also
+                        provided.
+                    </li>
+                </ul>
+                <h3>
+                    <a name="manageGroups">Manage Groups</a>
+                </h3>
+                <p>Here you get a list of all the available groups that you can
+                    sign up for. You have tabs to order the groups. <br/>
+                    You can display all visible groups, the groups you are attendant 
+                    off or groups which you do own.</p>
+                <h4>
+                    <a name="signUpForGroup">Sign Up For Group</a>
+                </h4>
+                <p>Using this button you can sign up for an group. If you are
+                    signed up, you will get access to videos a tutor releases
+                    within this group.</p>
+                <h4>
+                    <a name="signOffFromGroup">Sign Off From Group</a>
+                </h4>
+                <p>If you are no longer interested in the videos a
+                    certain group provides, you can sign off from the group using this
+                    button.</p>
+                <h4>
+                    <a name="createGroup">Create Group</a>
+                </h4>
+                <p>
+                    To <a href="#createVideo">create a video</a> you
+                    first have to set up an group to which it can be assigned after.<br />To
+                    create an group you have to provide:
+                </p>
+                <ul>
+                    <li>a group name</li>
+                    <li>an annotation whether the group should be only visible for attendants or not</li>
+                </ul>
+                <h5>
+                    <a name="addRemoveUser">Add/Remove Registered User</a>
+                </h5>
+                <p>
+                    To add/remove a user to/from your group click the button "add user
+                    to group"/"remove user from group" within the row of the selected user - navigate through
+                    the lists pages by clicking the page-numbers.<br />Using the
+                    search box simplifies the process of adding users.
+                </p>
+                <h5>
+                    <a name="addRemoveTutor">Add/Remove Tutor</a>
+                </h5>
+                <p>
+                    To add/remove a tutor to/from your group click the button "add
+                    tutor to group"/"remove tutor from group" within the row of the selected tutor - navigate
+                    through the lists pages by clicking the page-numbers.<br />Using
+                    the search box simplifies the process of adding users.
+                </p>
+                <h4>
+                    <a name="editGroup">Edit Group</a>
+                </h4>
+                <p>The following information about your group can be changed:</p>
+                <ul>
+                    <li>the group name</li>
+                    <li>the annotation whether the group should be only visible for attendants or not</li>
+                </ul>
+                <p>
+                    <a href="#addRemoveUser">Read here how to add/remove users
+                        to/from your group.</a>
+                </p>
+                <h4>
+                    <a name="deleteGroup">Delete Group</a>
+                </h4>
+                <p>Using this button you will delete an group.</p>
+                <p class="note">
+                    <span>Note:</span> All corresponding data gets lost! This includes
+                    videos.
+                </p>
+                <h3>
+                    <a name="manageVideos">Manage Videos</a>
+                </h3>
+                
+                <p>List all available videos with their related actions.<br />The
+                    list additionally contains all the relevant information such as the
+                    corresponding group and the current status of the
+                    video.<br />There are arrows to order the videos.</p>
+                <h4>
+                    <a name="createVideo">Create Video</a>
+                </h4>
+                <p>To create a new video the following information is
+                    needed:</p>
+                <ul>
+                    <li>a video name</li>
+                    <li>the group to which the video belongs</li>
+                    <li>an optional description</li>
+                    <li>the publication settings</li>             
+                </ul>
+                <h4>
+                    <a name="editVideo">Edit Video</a>
+                </h4>
+                <p>
+                    The following video data can be edited:
+                </p>
+                <ul>
+                    <li>the video name</li>
+                    <li>the group to which the video belongs</li>
+                    <li>the optional description</li>
+                </ul>
+                <h4>
+                    <a name="distributeVideo">Edit Publication Settings</a>
+                </h4>
+                <p>To distribute a previously created videos make use of
+                    one of the following possibilities:</p>
+                <ul>
+                    <li>Set the optional activation time for the video.</li>
+                    <li>Set the optional deactivation time for the video.</li>
+                    <li>Define a general password that allows to enter the video
+                        if this publication setting was set.</li>
+                    <li>Generate a list of tokens if this publication setting was set.</li>
+                    <li>Send token to specific registered users if this publication setting was set.</li>
+                </ul>
+                <h5>
+                    <a name="addUsers">Add Users to Video</a>
+                </h5>
+                <p>
+                    You can use this page to invite users to enter a video. Use the button "add user to video" to invite a user.
+                    To remove an already invited user use the "remove user from video" button. You may use the search field to easily locate a user
+                    you want to invite.
+                    <br />
+                    Instead of inviting registered users, you can also invite users by entering a list of e-mail addresses.
+                    Each e-mail address has to be entered in a seperate line into the field labeled "send tokens to list".
+                </p>
+                <h5>
+                    <a name="generateToken">Access Tokens</a>
+                </h5>
+                <p>
+                    Here you can set the number of generated tokens and generate a printable list of tokens.
+                </p>
+                <h4>
+                    <a name="deleteVideo">Delete Video</a>
+                </h4>
+                <p>To delete a video click on the "delete" button on the right.</p>
+                <p class="note">
+                    <span>Note:</span> All corresponding data is getting lost!
+                </p>
+                <h3>
+                    <a name="manageUsers">Manage Users</a>
+                </h3>
+                <p>
+                The list of users can be ordered with tabs. You can show all users, 
+                only tutors or only administartors.
+                   <br/> You can see a list of all registered users with shortcuts to <a
+                        href="#banUser">ban/unban</a>, <a href="#editUser">edit</a> or <a
+                        href="#deleteUser">delete</a> a user.<br />Using the field on top
+                    allows you to <a href="#searchRegisteredUser">search for an
+                        existing user</a>, clicking on "Create User" lets you <a
+                        href="#createTutorOrAdmin">create a new tutor or administrator</a>.
+                </p>
+                <h4>
+                    <a name="createTutorOrAdmin">Create User</a>
+                </h4>
+                <p>
+                    Create a new tutor or administrator within the application.<br />At
+                    first you have to select whether you want to create a tutor or an
+                    administrator, then you have to enter the following additionally
+                    required details of the new user:
+                </p>
+                <ul>
+                    <li>his/her (valid) e-mail address</li>
+                    <li>his/her academic title</li>
+                    <li>his/her first name</li>
+                    <li>his/her last name</li>
+                    <li>his/her gender</li>
+                    <li>your country</li>
+                </ul>
+                <p><br />You can also create a normal user in the same way explained above.</p>
+                <p class="note">
+                    <span>Note:</span> The user gets a new generated password sent by email after creating him.
+                </p>
+                <h4>
+                    <a name="searchRegisteredUser">Search Registered User</a>
+                </h4>
+                <p>Searching for a user providing an e-mail address or name.</p>
+                <p class="note">
+                    <span>Note:</span> You have to enter a complete firstname, lastname or email-adress to find the searched user.
+                </p>
+                <h4>
+                    <a name="banUser">Ban user</a>
+                </h4>
+                <p>Banning a user prohibits him to login any longer hence he
+                    gets locked out of the area for registered users.</p>
+                <h4>
+                    <a name="unbanUser">Unban user</a>
+                </h4>
+                <p>Unban the specified user to enable him to login again.</p>
+                <h4>
+                    <a name="editUser">Edit User</a>
+                </h4>
+                <p>
+                    This page offers you to change a users information.<br />The
+                    information that can be changed is:
+                </p>
+                <ul>
+                    <li>his e-mail address</li>
+                    <li>his academic title</li>
+                    <li>his first name</li>
+                    <li>his last name</li>
+                    <li>his gender</li>
+                    <li>your country</li>
+                    <li>his role</li>
+                </ul>
+                <p><br />In addition it is possible to reset his password to a new one
+                    which gets randomly generated and is sent to him in an e-mail.</p>
+                <h4>
+                    <a name="deleteUser">Delete User</a>
+                </h4>
+                <p>This button deletes a user from the system.</p>
+                <p class="note">
+                    <span>Note:</span> Deleting a tutor results in removing him from
+                    all his groups and videos - should there be no assigned
+                    tutors left, the group is set to "invisible". To bring this group
+                    back online an administrator has to assign a tutor to it.
+                </p>
+                <h2>
+                    <a name="contact">Contact</a>
+                </h2>
+                <p>Send a message to the system administrator, report bugs you
+                    noticed or suggest improvements.</p>
+    </ui:composition>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.error_bad_request_title}</ui:define>
+		<ui:define name="contextHelp">
+			<h:outputLink id="contexHelp"
+				value="#{request.contextPath}/xhtml/common/help.jsf"
+				target="_blank">#{lang.get_help_link}</h:outputLink>
+		</ui:define>
+		<ui:define name="content">
+			<h1>#{lang.error_bad_request_title}</h1>
+			<p><h:outputText value="#{lang.error_bad_request}" escape="false" /></p>
+			<ul class="navigation subnavigation">
+				<li><h:outputLink value="#{request.contextPath}/xhtml/common/start.jsf">#{lang.back_to_home_link}</h:outputLink></li>
+			</ul>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

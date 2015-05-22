@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.editVideo_title}</ui:define>
+		<ui:define name="contextHelp">
+			<h:outputLink id="contexHelp"
+				value="#{request.contextPath}/xhtml/common/help.jsf#editVideo"
+				target="_blank">#{lang.get_help_link}</h:outputLink>
+		</ui:define>
+		<ui:define name="content">
+			<f:metadata>
+				<f:event listener="#{authenticationAction.prePopulateUsername}"
+					type="preRenderView" />
+				<f:viewParam name="videoId" value="#{videoBean.id}"
+					required="true">
+					<f:convertNumber />
+				</f:viewParam>
+				<f:event listener="#{videoAction.editVideo}"
+					type="preRenderView" />
+			</f:metadata>
+			<div class="breadcrumb">
+				<a
+					href="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.listVideos_title}</a>
+				&gt;
+			</div>
+			<h1 class="narrowTitle">#{lang.editVideo_title}</h1>
+			<ul class="navigation">
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{videoBean.groupId}">#{lang.back_to_videos_link}</h:outputLink></li>
+			</ul>
+			<h:message for="createVideoForm" class="confirmMessage" />
+			<h:messages globalOnly="true" class="errorMessage" />
+			<h:form id="createVideoForm" enctype="multipart/form-data">
+				<h:inputHidden binding="#{videoBean.hiddenId}" />
+				<div class="row">
+					<div class="col1">#{lang.video_field_title}</div>
+					<div class="col2">
+						<h:inputText id="title" value="#{videoBean.title}"
+							class="#{component.valid ? '' : 'error'}" required="true"
+							requiredMessage="#{lang.field_required}" validator="LengthValidator">
+                            <f:attribute name="minLengthValidator" value="3" />
+                            <f:attribute name="lengthValidator_tooShort_message" value="#{lang.lengthValidator_tooShort_message}" />
+                            <f:attribute name="maxLengthValidator" value="250" />
+                            <f:attribute name="lengthValidator_tooLong_message" value="#{lang.lengthValidator_tooLong_message}" />
+                        </h:inputText>
+					</div>
+					<div class="col3">
+						<h:message for="title" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_group}</div>
+					<div class="col2 col2Textarea">
+						<h:selectOneMenu id="group" value="#{videoBean.groupId}"
+							class="#{component.valid ? '' : 'error'}" required="true"
+							requiredMessage="#{lang.select_required}">
+							<f:selectItems value="#{videoBean.groups}" var="group"
+								itemValue="#{group.id}" itemLabel="#{group.title}" />
+						</h:selectOneMenu>
+					</div>
+					<div class="col3 col3Textarea">
+						<h:message for="group" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">
+						#{lang.video_field_description} <span class="description">#{lang.field_optional}</span>
+					</div>
+					<div class="col2 col2Textarea">
+						<h:inputTextarea id="description"
+							value="#{videoBean.description}"
+							class="#{component.valid ? '' : 'error'}" />
+					</div>
+					<div class="col3 col3Textarea">
+						<h:message for="description" />
+					</div>
+				</div>
+				<div class="separator">
+                    <div></div>
+                    <h3>#{lang.editVideo_upload_subtitle}</h3>
+                    <div></div>
+                </div>
+                <div class="row">
+					<div class="col1">#{videoBean.videoAvailable ? lang.video_field_replace_video : lang.video_field_video}</div>
+					<div class="col2">
+				   		<h:inputFile id="video" value="#{videoBean.video}"
+						class="#{component.valid ? '' : 'error'}"
+						validator="UploadValidator">
+							<f:attribute name="maxSize" value="2000" />
+                            <f:attribute name="uploadValidator_tooBig_message" value="#{lang.uploadValidator_tooBig_message}" />
+                            <f:attribute name="fileTypes" value="application/zip,application/x-zip-compressed" />
+                            <f:attribute name="uploadValidator_wrongFileType_message" value="#{lang.uploadValidator_wrongFileType_message}" />
+						</h:inputFile>
+						<br /> <span class="description">(#{lang.video_field_video_format})</span>
+					</div>
+					<div class="col3">
+						<h:message for="video" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_zip_download}</div>
+					<div class="col2">
+				   		<h:selectOneRadio value="#{videoBean.zipDownloadEnabled}">
+							<f:selectItem itemValue="#{true}" itemLabel="#{lang.yes}" />
+							<f:selectItem itemValue="#{false}" itemLabel="#{lang.no}" />
+						</h:selectOneRadio>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_chrome_app}</div>
+					<div class="col2">
+				   		<h:inputText id="chromeAppURL" value="#{videoBean.chromeAppURL}" />	
+					</div>
+				</div>
+				<div class="separator">
+                    <div></div>
+                    <h3>#{lang.editVideo_publication_subtitle}</h3>
+                    <div></div>
+                </div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_publication}</div>
+					<div class="col2 col2Textarea">
+						<h:outputText
+							rendered="#{videoBean.participationRestriction == 'Public'}"
+							value="#{lang.video_field_publication_registered_and_anonymous_users}" />
+						<h:outputText
+							rendered="#{videoBean.participationRestriction == 'Password'}"
+							value="#{lang.video_field_publication_password}" />
+						<h:outputText
+							rendered="#{videoBean.participationRestriction == 'GroupAttendants'}"
+							value="#{lang.video_field_publication_group_attendees}" />
+						<h:outputText
+							rendered="#{videoBean.participationRestriction == 'Registered'}"
+							value="#{lang.video_field_publication_registered_users}" />
+						<h:outputText
+							rendered="#{videoBean.participationRestriction == 'Token'}"
+							value="#{lang.video_field_publication_tokens}" />
+					</div>
+				</div>
+				<div class="row">
+                    <div class="col1">
+                        #{lang.editPublicationSettings_start_time}
+                        <span class="description">#{lang.field_optional}</span>
+                    </div>
+                    <div class="col2">
+                        <h:inputText id="startTime" value="#{videoBean.start}" class="#{component.valid ? '' : 'error'}" converterMessage="#{lang.time_invalid}">
+                            <f:convertDateTime pattern="#{lang.time_format}" />
+                        </h:inputText><br />
+                        <span class="description">#{lang.time_format_description}</span>
+                    </div>
+                    <div class="col3"><h:message for="startTime" /></div>
+                </div>
+                <div class="row">
+                    <div class="col1">
+                        #{lang.editPublicationSettings_end_time}
+                        <span class="description">#{lang.field_optional}</span>
+                    </div>
+                    <div class="col2">
+                        <h:inputText id="endTime" value="#{videoBean.stop}" class="#{component.valid ? '' : 'error'}" converterMessage="#{lang.time_invalid}" validator="DateComparisonValidator">
+                            <f:convertDateTime pattern="#{lang.time_format}" />
+                            <f:attribute name="dateComparisonValidatorOtherIsSmaller" value="true" />
+                            <f:attribute name="dateComparisonValidatorThisTooSmallMessage" value="#{lang.editPublicationSettings_start_after_end}" />
+                            <f:attribute name="dateComparisonValidatorCompareToId" value="createVideoForm:startTime" />
+                            <f:attribute name="dateComparisonValidatorOtherMissingMessage" value="#{lang.editPublicationSettings_start_missing}" />
+                        </h:inputText><br />
+                        <span class="description">#{lang.time_format_description}</span>
+                    </div>
+                    <div class="col3"><h:message for="endTime" /></div>
+                </div>
+                <ui:fragment rendered="#{videoBean.passwordAvailable}">
+                    <div class="row">
+                        <div class="col1">#{lang.editPublicationSettings_password}</div>
+                        <div class="col2">
+                            <h:inputText id="password" value="#{videoBean.password}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" validator="LengthValidator">
+                                <f:attribute name="maxLengthValidator" value="#{lang.editPublicationSettings_password_max_length}" />
+                                <f:attribute name="lengthValidator_tooLong_message" value="#{lang.editPublicationSettings_password_too_long}" />
+                            </h:inputText>
+                        </div>
+                        <div class="col3"><h:message for="password" /></div>
+                    </div>
+                </ui:fragment>
+                <ui:fragment rendered="#{videoBean.tokenAvailable}">
+                    <div class="row">
+                        <div class="col1">
+                            #{lang.editPublicationSettings_add_and_remove_users}
+                        </div>
+                        <div class="col2">
+                            <ul class="navigation subnavigation noSubnavigationSpace">
+                                <li>
+                                    <h:outputLink value="#{request.contextPath}/xhtml/videos/addUsers.jsf?videoId=#{videoBean.id}">
+                                        #{lang.editPublicationSettings_add_and_remove_users_link}
+                                    </h:outputLink>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col1">
+                            #{lang.generateToken}
+                        </div>
+                        <div class="col2">
+                            <ul class="navigation subnavigation noSubnavigationSpace">
+                                <li>
+                                    <h:outputLink value="#{request.contextPath}/xhtml/videos/generateToken.jsf?videoId=#{videoBean.id}">
+                                        #{lang.generateToken}
+                                    </h:outputLink>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </ui:fragment>
+				<div class="row">
+					<div class="col1 button_space">&nbsp;</div>
+					<div class="col2">
+						<h:commandButton action="#{videoAction.editVideo}"
+							value="#{lang.editVideo_save_video_link}" />
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

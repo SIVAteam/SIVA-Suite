@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jstl/core">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.createVideo_title}</ui:define>
+		<ui:define name="contextHelp">
+			<h:outputLink id="contexHelp"
+				value="#{request.contextPath}/xhtml/common/help.jsf#createVideo"
+				target="_blank">#{lang.get_help_link}</h:outputLink>
+		</ui:define>
+		<ui:define name="content">
+			<f:metadata>
+				<f:event listener="#{authenticationAction.prePopulateUsername}"
+					type="preRenderView" />
+				<f:viewParam name="groupId" value="#{videoBean.groupId}">
+					<f:convertNumber />
+				</f:viewParam>
+			</f:metadata>
+			<div class="breadcrumb"><a href="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.listVideos_title}</a> &gt;</div>
+            <h1 class="narrowTitle">#{lang.createVideo_title}</h1>
+			<ul class="navigation">
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/videos/listVideos.jsf?groupId=#{videoBean.groupId}">#{lang.back_to_videos_link}</h:outputLink></li>
+			</ul>
+			<h:form id="createVideoForm">
+				<div class="row">
+					<div class="col1">#{lang.video_field_title}</div>
+					<div class="col2">
+						<h:inputText id="title" value="#{videoBean.title}"
+							class="#{component.valid ? '' : 'error'}" required="true"
+							requiredMessage="#{lang.field_required}" validator="LengthValidator">
+                            <f:attribute name="minLengthValidator" value="3" />
+                            <f:attribute name="lengthValidator_tooShort_message" value="#{lang.lengthValidator_tooShort_message}" />
+                            <f:attribute name="maxLengthValidator" value="250" />
+                            <f:attribute name="lengthValidator_tooLong_message" value="#{lang.lengthValidator_tooLong_message}" />
+                        </h:inputText>
+					</div>
+					<div class="col3">
+						<h:message for="title" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_group}</div>
+					<div class="col2 col2Textarea">
+						<h:selectOneMenu id="group" value="#{videoBean.groupId}"
+							class="#{component.valid ? '' : 'error'}" required="true"
+							requiredMessage="#{lang.select_required}">
+							<f:selectItems value="#{videoBean.groups}" var="group"
+								itemValue="#{group.id}" itemLabel="#{group.title}" />
+						</h:selectOneMenu>
+					</div>
+					<div class="col3 col3Textarea">
+						<h:message for="group" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">
+						#{lang.video_field_description} <span class="description">#{lang.field_optional}</span>
+					</div>
+					<div class="col2 col2Textarea">
+						<h:inputTextarea id="description"
+							value="#{videoBean.description}"
+							class="#{component.valid ? '' : 'error'}" />
+					</div>
+					<div class="col3 col3Textarea">
+						<h:message for="description" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_publication}</div>
+					<div class="col2 col2Textarea">
+						<h:selectOneMenu id="videoPublication"
+							value="#{videoBean.participationRestriction}"
+							class="#{component.valid ? '' : 'error'}" required="true"
+							requiredMessage="#{lang.select_required}">
+							<c:if test="#{configuration.containsArrayValue('participation_restriction', 'Password')}">
+								<f:selectItem itemValue="Password" itemLabel="#{lang.video_field_publication_password}" />
+							</c:if>
+							<c:if test="#{configuration.containsArrayValue('participation_restriction', 'GroupAttendants')}">
+								<f:selectItem itemValue="GroupAttendants" itemLabel="#{lang.video_field_publication_group_attendees}" />
+							</c:if>
+							<c:if test="#{configuration.containsArrayValue('participation_restriction', 'Registered')}">
+								<f:selectItem itemValue="Registered" itemLabel="#{lang.video_field_publication_registered_users}" />
+							</c:if>
+							<c:if test="#{configuration.containsArrayValue('participation_restriction', 'Public')}">
+								<f:selectItem itemValue="Public" itemLabel="#{lang.video_field_publication_registered_and_anonymous_users}" />
+							</c:if>
+							<c:if test="#{configuration.containsArrayValue('participation_restriction', 'Token')}">
+								<f:selectItem itemValue="Token" itemLabel="#{lang.video_field_publication_tokens}" />
+							</c:if>
+						</h:selectOneMenu>
+					</div>
+					<div class="col3 col3Textarea">
+						<h:message for="videoPublication" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1 button_space">&nbsp;</div>
+					<div class="col2">
+						<h:commandButton
+							action="#{videoAction.createVideo}"
+							value="#{lang.createVideo_create_video_button}" />
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

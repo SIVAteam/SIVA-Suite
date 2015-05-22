@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.dashboard_title}</ui:define>
+		<ui:define name="contextHelp">
+			<h:outputLink id="contexHelp"
+				value="#{request.contextPath}/xhtml/common/help.jsf#dashboard"
+				target="_blank">#{lang.get_help_link}</h:outputLink>
+		</ui:define>
+		<ui:define name="content">
+			<h1>#{lang.dashboard_title}</h1>
+			<ul class="navigation subnavigation subnavigationSpace">
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/users/editProfile.jsf">#{lang.dashboard_edit_profile_link}</h:outputLink></li>
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.dashboard_manage_videos_link}</h:outputLink></li>
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.dashboard_manage_groups_link}</h:outputLink></li>
+				<ui:fragment rendered="#{userAction.visibleForAdministrators}">
+					<li><h:outputLink
+							value="#{request.contextPath}/xhtml/users/listUsers.jsf">#{lang.dashboard_manage_users_link}</h:outputLink></li>
+				</ui:fragment>
+			</ul>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

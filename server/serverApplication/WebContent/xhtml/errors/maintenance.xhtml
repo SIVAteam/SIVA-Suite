@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title><ui:insert name="title" /></title>
+	<meta name="HandheldFriendly" content="True" />
+	<meta name="MobileOptimized" content="320" />
+	<meta name="viewport" content="width=device-width" />
+
+	<link rel="stylesheet" media="screen"
+		href="#{brandingConfiguration.getStylePoperty('style')}"
+		type="text/css" />
+	<link rel="stylesheet"
+		media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)"
+		href="#{brandingConfiguration.getStylePoperty('mobile')}"
+		type="text/css" />
+	<link rel="stylesheet" media="print"
+		href="#{brandingConfiguration.getStylePoperty('print')}"
+		type="text/css" />
+	<style type="text/css">
+        @media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+            <ui:insert name="mobileCss" />
+        }
+    </style>
+	<link rel="icon"
+		href="#{brandingConfiguration.getStylePoperty('favicon')}"
+		type="image/x-icon" />
+</h:head>
+<h:body>
+	<f:view>
+		<div id="header">
+			<div class="main">
+				<div id="logo">
+					<img src="#{brandingConfiguration.getStylePoperty('logo')}"
+						alt="#{brandingConfiguration.getBrandingText('logo_alt')}" />
+				</div>
+			</div>
+		</div>
+		<div id="content">
+			<div class="main">
+				<h1>#{lang.error_maintenance_title}</h1>
+				<p>
+					<h:outputText value="#{lang.error_maintenance}" escape="false" />
+				</p>
+			</div>
+			<div id="content_spacer"></div>
+		</div>
+		<div id="footer">
+		</div>
+	</f:view>
+</h:body>
+</html>

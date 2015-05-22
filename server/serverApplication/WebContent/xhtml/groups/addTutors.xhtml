@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:sivaserver="http://sivaserver.de/tags">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.addTutors_title}</ui:define>
+		<ui:define name="contextHelp"><h:outputLink id="contexHelp" value="#{request.contextPath}/xhtml/common/help.jsf#addRemoveTutor" target="_blank">#{lang.get_help_link}</h:outputLink></ui:define>
+        <ui:define name="content">
+		    <f:metadata>
+                <f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView"/>
+                <f:viewParam id="groupId" name="groupId" value="#{groupBean.id}">
+                    <f:convertNumber />
+                </f:viewParam>
+                <f:viewParam name="list" value="#{userListBean.userType}" />
+                <f:viewParam name="sortColumn" value="#{userListBean.sortColumn}" />
+                <f:viewParam name="sortDirection" value="#{userListBean.sortDirection}" />
+                <f:viewParam name="page" value="#{userListBean.page}">
+                    <f:validateLongRange minimum="0" />
+                    <f:convertNumber />
+                </f:viewParam>
+                <f:viewParam name="searchQuery" value="#{userListBean.searchQuery}" />
+                <f:viewParam name="userId" value="#{userBean.id}">
+                    <f:convertNumber />
+                </f:viewParam>
+                <f:viewParam name="action" value="#{userListBean.action}" />
+                <f:event listener="#{groupOwnershipAction.listAssociatedUsers}" type="preRenderView"/>
+            </f:metadata>
+			<div class="breadcrumb"><a href="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.listGroups_title}</a> &gt; <a href="#{request.contextPath}/xhtml/groups/editGroup.jsf?groupId=#{groupBean.id}">#{lang.editGroup_title}</a> &gt;</div>
+            <h1 class="narrowTitle">#{lang.addTutors_title}</h1>
+			<ul class="navigation">
+				<li><h:outputLink value="#{request.contextPath}/xhtml/groups/editGroup.jsf?groupId=#{groupBean.id}">
+				#{lang.back_to_group_link}</h:outputLink></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/groups/addUsers.jsf?groupId=#{groupBean.id}">
+				#{lang.addTutors_add_users_link}</h:outputLink></li>
+			</ul>
+			<h:message for="listUsersTable" class="confirmMessage" />
+            <h:messages globalOnly="true" class="errorMessage" />
+                    <h:form  id="searchForm">
+                <label>#{lang.search_label}</label> <h:inputText id="searchQuery" value="#{userListBean.searchQuery}" /> 
+                <h:commandButton action="#{userListAction.listUsers}" value="#{lang.search_button}" />
+            </h:form>
+            <ul class="tabs">
+                <li><h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=Tutor&amp;searchQuery=#{userListBean.searchQuery}"
+                    class="#{userListBean.userType == 'Tutor' ? 'current' : ''}">#{lang.usertable_only_tutors_link}</h:outputLink></li>
+                <li><h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=Administrator&amp;searchQuery=#{userListBean.searchQuery}"
+                    class="#{userListBean.userType == 'Administrator' ? 'current' : ''}">#{lang.usertable_only_administrators_link}</h:outputLink></li>
+            </ul>
+            <h:form id="addTutorsForm">
+            <h:dataTable id="listUsersTable" value="#{userListBean.list}" var="entry" styleClass="list">
+               <h:column>
+                <f:facet name="header">
+                 #{lang.usertable_name}&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=Name&amp;sortDirection=ASC&amp;searchQuery=#{userListBean.searchQuery}">&uarr;</h:outputLink>&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=Name&amp;sortDirection=DESC&amp;searchQuery=#{userListBean.searchQuery}">&darr;</h:outputLink>  
+                </f:facet>
+                #{entry.user.lastName}, #{entry.user.firstName}#{entry.user.title != null ? ', ' : ''}#{entry.user.title} 
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.usertable_email}&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=Email&amp;sortDirection=ASC&amp;searchQuery=#{userListBean.searchQuery}">&uarr;</h:outputLink>&nbsp;<h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=Email&amp;sortDirection=DESC&amp;searchQuery=#{userListBean.searchQuery}">&darr;</h:outputLink>  
+                </f:facet>
+                <h:outputLink value="mailto:#{entry.user.email}">#{entry.user.email}</h:outputLink> 
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.usertable_role}  
+                </f:facet>
+                 <h:outputText value="#{lang.usertable_role_administrator}" rendered="#{entry.user.userType == 'Administrator'}" />
+                 <h:outputText value="#{lang.usertable_role_tutor}" rendered="#{entry.user.userType == 'Tutor'}" />
+                 <h:outputText value="#{lang.usertable_role_user}" rendered="#{entry.user.userType == 'Participant'}" />
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.usertable_banned}  
+                </f:facet>
+                <h:outputText value="#{lang.yes}" rendered="#{entry.user.banned}" />
+                <h:outputText value="#{lang.no}" rendered="#{!entry.user.banned}" /> 
+               </h:column>
+               <h:column>
+                <f:facet name="header">
+                 #{lang.usertable_options}  
+                </f:facet>
+                <h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=#{userListBean.sortColumn}&amp;sortDirection=#{userListBean.sortDirection}&amp;searchQuery=#{userListBean.searchQuery}&amp;page=#{userListBean.page}&amp;action=add&amp;userId=#{entry.user.id}" class="tableLink" rendered="#{entry.addable}">#{lang.addTutors_add_tutor_to_group_button}</h:outputLink>
+                <h:outputLink value="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=#{userListBean.sortColumn}&amp;sortDirection=#{userListBean.sortDirection}&amp;searchQuery=#{userListBean.searchQuery}&amp;page=#{userListBean.page}&amp;action=remove&amp;userId=#{entry.user.id}" class="tableLink selectedLink" rendered="#{entry.removable}">#{lang.addTutors_remove_tutor_from_group_button}</h:outputLink>
+               </h:column> 
+            </h:dataTable>
+            </h:form>
+            <div class="pagination">
+                <span class="label">#{lang.pagination_label}</span> 
+                <span class="pages"><sivaserver:pagination url="#{request.contextPath}/xhtml/groups/addTutors.jsf?groupId=#{groupBean.id}&amp;list=#{userListBean.userType}&amp;sortColumn=#{userListBean.sortColumn}&amp;sortDirection=#{userListBean.sortDirection}&amp;searchQuery=#{userListBean.searchQuery}" currentPage="#{userListBean.page}" pages="#{userListBean.pages}" currentClass="current" /></span>
+            </div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

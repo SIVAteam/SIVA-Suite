@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+   
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.privacy_title}</ui:define>
+		<ui:define name="content">
+			<h1>#{lang.privacy_title}</h1>
+			<h:outputText value="#{brandingConfiguration.getBrandingText('privacy')}" escape="false" />
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

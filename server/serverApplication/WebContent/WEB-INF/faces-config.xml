@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+	version="2.0">
+	<application>
+		<locale-config>
+			<default-locale>en</default-locale>
+			<supported-locale>de</supported-locale>
+		</locale-config>
+		<message-bundle>hu.configuration.CommonMessages</message-bundle>
+		<resource-bundle>
+			<base-name>hu.configuration.CommonMessages</base-name>
+			<var>lang</var>
+		</resource-bundle>
+	</application>
+	<lifecycle>
+		<phase-listener>hu.util.AccessRestrictionEnforcer</phase-listener>
+		<phase-listener>hu.util.InstallationInvoker</phase-listener>
+		<phase-listener>hu.util.MaintenanceModeEnforcer</phase-listener>
+	</lifecycle>
+	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>login</from-outcome>
+			<to-view-id>/xhtml/users/login.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>restrictionError</from-outcome>
+			<to-view-id>/xhtml/errors/restrictionError.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+</faces-config>

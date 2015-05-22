@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition>
+		<div class="col1">
+			<p><h:outputText value="#{brandingConfiguration.getBrandingText('info')}" escape="false" /></p>
+		</div>
+		<div class="col2">
+			<h2>#{lang.footer_links_title}</h2>
+			<ul>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/common/help.jsf">#{lang.footer_help_link}</h:outputLink></li>
+                <li><h:outputLink value="#{request.contextPath}/xhtml/common/contact.jsf">#{lang.footer_contact_link}</h:outputLink></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/common/privacy.jsf">#{lang.footer_privacy_link}</h:outputLink></li>
+				<li><h:outputLink value="#{request.contextPath}/xhtml/common/imprint.jsf">#{lang.footer_imprint_link}</h:outputLink></li>
+			</ul>
+		</div>
+		<div class="col3">
+			<h2>#{lang.footer_copyright_title}</h2>
+			<p><h:outputText value="#{brandingConfiguration.getBrandingText('copyright')}" escape="false" /><a href="#" id="topLink"></a></p>
+		</div>
+		<script type="text/javascript">
+		  /* <![CDATA[ */		
+		      window.onload = onloadJs();
+		  /* ]]> */
+		</script>
+	</ui:composition>
+</body>
+</html>

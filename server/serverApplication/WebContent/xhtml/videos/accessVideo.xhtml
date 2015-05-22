@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../layout.xhtml">
+	<ui:define name="title">#{lang.enter_video_title}</ui:define>
+	<ui:define name="contextHelp">
+		<h:outputLink id="contexHelp"
+			value="#{request.contextPath}/xhtml/common/help.jsf#homePage"
+			target="_blank">#{lang.get_help_link}</h:outputLink>
+	</ui:define>
+	<ui:define name="content">
+		<f:metadata>
+			<f:event listener="#{authenticationAction.prePopulateUsername}"
+				type="preRenderView" />
+			<f:viewParam name="videoId"
+				value="#{videoBean.id}" required="false" />
+			<f:viewParam name="token" value="#{tokenBean.token}"
+				converter="hu.converters.tokenConverter" required="false" />
+			<f:event listener="#{videoAction.accessVideo}"
+				type="preRenderView" />
+			<f:viewAction action="#{videoAction.accessVideo}" />
+		</f:metadata>
+		<h1 class="narrowTitle">#{lang.enter_video_title}</h1>
+        <h:messages globalOnly="true" class="errorMessage" />
+		<ul class="navigation">
+		</ul>
+		<h:form id="accessForm">
+			<ui:fragment rendered="#{videoBean.passwordAvailable}">
+				<div class="row">
+					<div class="col1">#{lang.enter_video_password}</div>
+					<div class="col2">
+						<h:inputSecret id="password"
+							value="#{videoBean.password}"
+							class="#{component.valid ? '' : 'error'}" required="true"
+		                            requiredMessage="#{lang.field_required}" />
+						<br /> <span class="description">#{lang.enter_video_password_description}</span>
+					</div>
+					<div class="col3">
+						<h:message for="password" />
+					</div>
+				</div>
+				</ui:fragment>
+				<ui:fragment rendered="#{videoBean.tokenAvailable}">
+					<div class="row">
+						<div class="col1">#{lang.enter_video_token}</div>
+						<div class="col2">
+							<h:inputSecret id="token"
+								value="#{tokenBean.token}"
+								class="#{component.valid ? '' : 'error'}" required="true"
+		                            requiredMessage="#{lang.field_required}">
+								<f:converter converterId="hu.converters.tokenConverter" />
+							</h:inputSecret>
+							<br /> <span class="description">#{lang.enter_video_token_description}</span>
+						</div>
+						<div class="col3">
+							<h:message for="token" />
+						</div>
+					</div>
+				</ui:fragment>
+				<div class="row">
+							<div class="col1 button_space">&nbsp;</div>
+							<div class="col2">
+								<h:inputHidden binding="#{videoBean.hiddenId}" />
+								<h:inputHidden name="videoId"
+									value="#{videoBean.id}" />
+								<h:commandButton
+									action="#{videoAction.accessVideo}"
+									value="#{lang.enter_video_title}" rendered="#{videoBean.passwordAvailable || videoBean.tokenAvailable}" />
+							</div>
+				</div>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

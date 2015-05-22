@@ -1,0 +1,87 @@
+html,body {
+background-color:#fff!important;
+font-family:Arial,Verdana,sans-serif;
+}
+
+#content {
+border-top:10px solid #12212F;
+border-bottom:10px solid #12212F;
+}
+
+.bars {
+top:1.5em;
+width:70%;
+border-bottom:2px solid gray;
+border-left:2px solid gray;
+padding-top:1px;
+margin:1em 1em 0 6em;
+}
+
+.bar,.yaxislabels .label {
+height:24px;
+margin-top:5px;
+margin-bottom:5px;
+}
+
+.bar {
+text-align:right;
+color:#FFF;
+height:17px;
+padding-top:3px;
+padding-bottom:3px;
+text-shadow:1px 1px 0 #000;
+}
+
+.bar1 {
+background:#77a1c7;
+}
+
+.bar2 {
+background:#567ea2;
+}
+
+.bar3 {
+background:#355572;
+}
+
+.bar4 {
+background:#213b53;
+}
+
+.yaxislabels {
+float:left;
+width:75px;
+vertical-align:middle;
+margin-top:16px;
+}
+
+.yaxislabels .label {
+text-align:right;
+}
+
+.valuelabel {
+margin-right:.5em;
+font-size:10pt;
+}
+
+.xaxislabels {
+width:70%;
+margin:.2em 1em 1em 6em;
+}
+
+.xaxislabels .label {
+text-align:center;
+}
+
+#listTokenTable {
+font-size:150%;
+width:100%;
+}
+
+#listTokenTable td {
+padding:10px;
+}
+
+#header,#footer,#contexHelp,#content #contexHelp,#content .navigation,#content .breadcrumb {
+display:none;
+}

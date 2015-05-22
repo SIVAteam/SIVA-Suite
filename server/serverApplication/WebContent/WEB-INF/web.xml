@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>SivaServer</display-name>
+  <welcome-file-list>
+    <welcome-file>xhtml/common/start.jsf</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>*.jsf</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
+    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+    <param-value>client</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.sun.faces.autoCompleteOffOnViewState</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.sun.faces.sendPoweredByHeader</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+    <param-value>/WEB-INF/taglib.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>com.sun.faces.enableViewStateIdRendering</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <session-config>
+    <session-timeout>5400</session-timeout>
+  </session-config>
+  <error-page>
+    <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+    <location>/login.html</location>
+  </error-page>
+  <error-page>
+    <error-code>400</error-code>
+    <location>/xhtml/errors/400.jsf</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/xhtml/errors/restrictionError.jsf</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/xhtml/errors/restrictionError.jsf</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/xhtml/errors/404.jsf</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/xhtml/errors/500.jsf</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.NoClassDefFoundError</exception-type>
+    <location>/xhtml/errors/404.jsf</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/xhtml/errors/commonError.jsf</location>
+  </error-page>
+  <servlet>
+    <servlet-name>Photo Servlet</servlet-name>
+    <servlet-class>hu.util.PhotoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  <servlet-name>Photo Servlet</servlet-name>
+    <url-pattern>/photos/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Branding Servlet</servlet-name>
+    <servlet-class>hu.util.BrandingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  <servlet-name>Branding Servlet</servlet-name>
+    <url-pattern>/branding/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Video Servlet</servlet-name>
+    <servlet-class>hu.api.VideoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Video Servlet</servlet-name>
+    <url-pattern>/videos/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Siva Player Video Servlet</servlet-name>
+    <servlet-class>hu.api.SivaPlayerVideoServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Siva Player Video Servlet</servlet-name>
+    <url-pattern>/sivaPlayerVideos/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>SivaPlayer Token API</servlet-name>
+    <servlet-class>hu.api.SivaPlayerTokenServlet</servlet-class>
+  </servlet>
+  <security-constraint>
+    <display-name>Restricted</display-name>
+    <web-resource-collection>
+      <web-resource-name>XHTML</web-resource-name>
+      <url-pattern>*.xhtml</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <description>Only let 'developer's access XHTML pages</description>
+      <role-name>developer</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-role>
+  	<role-name>developer</role-name>
+  </security-role>
+  <security-constraint>
+	<web-resource-collection>
+    	<web-resource-name>Siva Player SSL</web-resource-name>
+   		<url-pattern>/*</url-pattern>
+	</web-resource-collection>
+	<user-data-constraint>
+		<transport-guarantee>NONE</transport-guarantee>
+	</user-data-constraint>
+  </security-constraint>
+</web-app>

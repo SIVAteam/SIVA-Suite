@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+        <ui:composition>
+        	<f:metadata>
+                <f:event listener="#{authenticationAction.prePopulateUsername}" type="preRenderView" />             
+         	</f:metadata>
+                <div id="logo">
+                        <h:outputLink value="#{request.contextPath}/xhtml/common/start.jsf" class="desktop"><img
+                                src="#{brandingConfiguration.getStylePoperty('logo')}" alt="#{brandingConfiguration.getBrandingText('logo_alt')}" /></h:outputLink>
+                        <h:outputLink value="#{request.contextPath}/xhtml/common/start.jsf" class="mobile"><img
+                                src="#{brandingConfiguration.getStylePoperty('logo_mobile')}" alt="#{brandingConfiguration.getBrandingText('logo_alt')}" /></h:outputLink>
+                </div>
+                <h:form id="languages">
+                		<h:commandLink class="de" action="#{authenticationAction.changeLocale('DE')}" rendered="#{sessionData.locale != 'DE'}"></h:commandLink>
+                		<h:commandLink class="en" action="#{authenticationAction.changeLocale('EN')}" rendered="#{sessionData.locale == 'DE'}"></h:commandLink>
+                </h:form>
+                <h:form id="headerLoginForm" rendered="#{sessionData.userId == null}">
+                        <label>#{lang.user_field_email} <h:inputText id="username" value="#{loginBean.username}" tabindex="1" /></label>
+                        <label>#{lang.user_field_password} <h:outputLink value="#{request.contextPath}/xhtml/users/recoverPassword.jsf">#{lang.login_password_forgotten}</h:outputLink><h:inputSecret id="password" value="#{loginBean.password}" tabindex="2" /></label>
+                        <h:inputHidden id="redirect" value="#{loginBean.redirectURL}" />
+                        <h:commandButton action="#{authenticationAction.login}" value="#{lang.login_login_button}" />
+                </h:form>
+                <h:form id="headerLogoutForm" rendered="#{sessionData.userId != null}">
+                        <label>#{lang.header_user} <span><h:outputText value="#{authenticatedUserBean.user.title}&nbsp;" rendered="#{authenticatedUserBean.user.title != null}" /> <h:outputText value="#{authenticatedUserBean.user.firstName}" />&nbsp;<h:outputText value="#{authenticatedUserBean.user.lastName}" /> (<h:outputLink value="#{request.contextPath}/xhtml/users/editProfile.jsf">#{lang.header_edit_profile_link}</h:outputLink>)
+                        </span></label>
+                        <h:commandButton action="#{authenticationAction.logout}" value="#{lang.login_logout_button}" />
+                </h:form>
+                <div class="navigation">
+                        <h:outputLink value="#{request.contextPath}/xhtml/common/start.jsf">#{lang.header_home_link}</h:outputLink>
+                        <h:outputLink value="#{request.contextPath}/xhtml/users/listUsers.jsf" rendered="#{sessionData.userId != null and sessionData.userType == 'Administrator'}">#{lang.header_users_link}</h:outputLink>
+                        <h:outputLink value="#{request.contextPath}/xhtml/users/register.jsf" rendered="#{sessionData.userId == null}">#{lang.header_register_link}</h:outputLink>
+                        <h:outputLink value="#{request.contextPath}/xhtml/groups/listGroups.jsf">#{lang.header_groups_link}</h:outputLink>
+                        <h:outputLink value="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.header_videos_link}</h:outputLink>
+                        <ui:insert name="contextHelp" />
+                </div>
+        </ui:composition>
+</body>
+</html>

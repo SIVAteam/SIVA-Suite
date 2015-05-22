@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+<body>
+    <ui:composition>
+
+		<ul>
+			<li><a href="#homePage">Startseite</a></li>
+			<li><a href="#register">Registrieren</a></li>
+			<li><a href="#loginPage">Login</a>
+                <ul>
+                    <li><a href="#loginForgotten">Passwort vergessen</a></li>
+                </ul>
+            </li>
+			<li><a href="#editProfile">Profil bearbeiten</a></li>
+			<li><a href="#dashboard">Dashboard</a>
+				<ul>
+					<li><a href="#manageGroups">Gruppen verwalten</a>
+						<ul>
+							<li><a href="#signUpForGroup">Bei Gruppe anmelden</a></li>
+							<li><a href="#signOffFromGroup">Von Gruppe abmelden</a></li>
+							<li><a href="#createGroup">Gruppe anlegen</a>
+								<ul>
+									<li><a href="#addRemoveUser">Benutzer hinzufügen/entfernen</a></li>
+									<li><a href="#addRemoveTutor">Dozenten hinzufügen/entfernen</a></li>
+								</ul></li>
+							<li><a href="#editGroup">Gruppe bearbeiten</a></li>
+							<li><a href="#deleteGroup">Gruppe löschen</a></li>
+						</ul></li>
+					<li><a href="#manageVideos">Videos verwalten</a>
+						<ul>
+							<li><a href="#createVideo">Video anlegen</a></li>
+							<li><a href="#editVideo">Video bearbeiten</a></li>
+							<li><a href="#generateToken">Videoschlüssel</a></li>
+							<li><a href="#addUsers">Benutzer zur Video hinzufügen</a></li>
+							<li><a href="#distributeEvaluationReport">Veröffentlichungseinstellungen bearbeiten</a></li>
+                    <li><a href="#deleteVideo">Video löschen</a></li>
+						</ul>
+					</li>
+			<li><a href="#manageUsers">Benutzer verwalten</a>
+				<ul>
+					<li><a href="#createTutorOrAdmin">Benutzer anlegen</a></li>
+					<li><a href="#searchRegisteredUser">Benutzer suchen</a></li>
+					<li><a href="#banUser">Benutzer sperren</a></li>
+                    <li><a href="#unbanUser">Benutzer entsperren</a></li>
+                    <li><a href="#editUser">Benutzer bearbeiten</a></li>
+					<li><a href="#deleteUser">Benutzer löschen</a></li>
+				</ul></li>
+		</ul>
+		</li>
+		<li><a href="#contact">Kontakt</a></li>
+
+		</ul>
+		<h2>
+                    <a name="homePage">Startseite</a>
+                </h2>
+                <p>
+                    Geben Sie den Videoschlüssel, den Sie erhalten haben in das Feld "Videoschlüssel", um direkt zum jeweiligen Video zu gelangen.<br />
+                    Nutzen Sie die Navigation im Kopfbereich zur Navigation durch die Website und zur Nutzung deren Fuktionen.
+                </p>
+                <h2>
+                    <a name="register">Registrieren</a>
+                </h2>
+                <p>
+                    Erstellen Sie ein neues Benutzerkonto, um erweiterten Zugriff auf Gruppen und Videos zu erhalten.<br />
+                    Die folgenden Informationen sind dafür erforderlich:
+                </p>
+                <ul>
+                    <li>eine gültige E-Mail-Adresse</li>
+                    <li>ein sicheres Passwort (eine Buchstaben-/Zahlen-/Zeichenkombination)<br />
+                    Dieses muss mindestens 3 der folgenden vier Zeichenkategorien enthalten: 
+                         <ul>
+                          <li>Kleinbuchstaben</li>
+                          <li>Großbuchstaben</li>
+                          <li>Zahlen</li>
+                          <li>Sonderzeichen</li>
+                         </ul>
+                        </li>
+                    <li>Ihr akademischer Titel</li>
+                    <li>Ihr Vorname</li>
+                    <li>Ihr Nachname</li>
+                    <li>Ihr Geschlecht</li>
+                    <li>Ihr Land</li>
+                </ul>
+                <p>
+                	Ihr Vorname, Nachname, Land und Geschlecht wird dann in Ihrem Profil veröffentlicht.
+                	Alle weiteren Angaben sind optional und können wahlweise für das öffentliche Profil aktiviert oder deaktiviert werden.
+                </p>
+                <h2>
+                    <a name="loginPage">Login</a>
+                </h2>
+                <p>
+                    Sie können sich hier mit Ihrer E-Mail-Adresse und Ihrem Passwort einloggen und so zum Dashboard und erweiterten Funktionen gelangen.<br />
+                    Bevor Sie sich einloggen können, müssen Sie sich <a href="#register">registrieren</a>.
+                </p>
+                <h2>
+                    <a name="loginForgotten">Passwort vergessen</a>
+                </h2>
+                <p>
+                    Haben Sie Ihr Passwort vergessen, erhalten Sie über diese Funktion ein neues Passwort zu setzen. Dazu klicken Sie auf "Vergessen?" und geben 
+                    die E-Mail-Adresse ein mit der Sie sich registriert haben. Das System schickt Ihnen dann eine E-Mail in der sich ein Link befindet. Folgen Sie diesem
+                    Link. Sie werden auf eine Seite verwiesen, auf der Sie Ihr neues Passwort zweimal eingeben müssen.<br />
+                </p>
+                <p class="note"><span>Hinweis:</span> Dieser Link ist nur zwei Tage gültig.</p>
+                <h2>
+                    <a name="editProfile">Profil bearbeiten</a>
+                </h2>
+                <p>
+                    Die Profil-Bearbeiten-Seite bietet Ihnen die Möglichkeit, Ihre Benutzerdaten zu ändern.<br />
+                    Obligatorische Benutzerdaten sind:
+                </p>
+                <ul>
+                    <li>Ihre E-Mail-Adresse</li>
+                    <li>Ihr sicheres Passwort (mindestens 7 Zeichen lang und eine Buchstaben-/Zahlen-/Zeichenkombination)<br />
+                    Dieses muss mindestens 3 der folgenden vier Zeichenkategorien enthalten: 
+                         <ul>
+                          <li>Kleinbuchstaben</li>
+                          <li>Großbuchstaben</li>
+                          <li>Zahlen</li>
+                          <li>Sonderzeichen</li>
+                         </ul>
+                        </li>
+                    <li>Ihr akademischer Titel</li>
+                    <li>Ihr Vorname</li>
+                    <li>Ihr Nachname</li>
+                    <li>Ihr Geschlecht</li>
+                    <li>Ihr Land</li>
+                </ul>
+                <p>
+                	Ihr Vorname, Nachname, Land und Geschlecht wird dann in Ihrem Profil veröffentlicht.
+                	Alle weiteren Angaben sind optional und können wahlweise für das öffentliche Profil aktiviert oder deaktiviert werden.
+                </p>
+                <h2>
+                    <a name="dashboard">Dashboard</a>
+                </h2>
+                <p>Das Dashboard bietet Ihnen die Möglichkeit auf erweiterte Funktionalitäten zuzugreifen.</p>
+                <ul>
+                    <li>Sie können Ihr <a href="#signUpForGroup">Profil bearbeiten</a>.
+                    </li>
+                    <li>Sie erhalten eine Liste aller verfügbaren Gruppen. Bei diesen können Sie sich <a href="#signUpToGroup">an-</a> oder <a href="#signOffFromGroup">abmelden</a>.
+                    </li>
+                    <li>Autorisierte Dozenten oder Administratoren erhalten zusätzlich die Möglichkeit, Gruppen <a href="#createGroup">anzulegen</a>, <a href="#createGroup">zu bearbeiten</a>
+                        und <a href="#deleteGroup">zu löschen</a>. Weiterhin können diese Benutzergruppen <a href="#addRemoveUser">Benutzer als Teilnehmer hinzufügen oder von entfernen</a>.
+                        Für Gruppen können Videos <a href="#createVideo">angelegt</a>, <a href="#editVideo">bearbeitet</a> oder <a href="#deleteVideo">gelöscht</a> werden.
+                    </li>
+                    <li>Autorisierte Administratoren können zusätzlich auf die Benutzerliste zugreifen und darüber Benutzer <a href="#createTutorOrAdmin">erstellen</a>, <a href="#editUser">bearbeiten</a>, <a href="#banUser">sperren</a> und <a href="#deleteUser">löschen</a>.
+                    In der Benutzerliste kann ebenfalls nach bestimmten Benutzern gesucht werden.
+                    </li>
+                </ul>
+                <h3>
+                    <a name="manageGroups">Produktgruppen verwalten</a>
+                </h3>
+                <p>Über die Liste der Produktgruppen können Sie sich zu bei einer Gruppe anmelden oder sich von einer solchen abmelden.<br/>
+                    Mit Hilfe der Reiter können Sie die Liste weiter einschränken. Sie können dabei wählen, ob Sie alle Gruppen oder nur Gruppen bei denen Sie Teilnehmer oder Besitzer sind.</p>
+                <h4>
+                    <a name="signUpForGroup">Bei Gruppe anmelden</a>
+                </h4>
+                <p>Dieser Button ermöglicht es Ihnen, sich bei der jeweiligen Gruppe anzumelden.
+                Sind Sie bei einer Gruppe angemeldet, erhalten Sie Zugriff auf Videos, die der Dozent dieser Gruppe ausschließlich für Teilnehmer freischaltet.
+                </p>
+                <h4>
+                    <a name="signOffFromGroup">Von Gruppe abmelden</a>
+                </h4>
+                <p>Sie können sich von einer Gruppe abmelden, wenn Sie an dieser nicht mehr teilnehmen und deshalb nicht mehr auf die Videos dieser Gruppe zugreifen müssen.</p>
+                <h4>
+                    <a name="createGroup">Gruppe anlegen</a>
+                </h4>
+                <p>
+                    Zum <a href="#createVideo">Anlegen eines Videos</a> benötigen Sie zunächst eine Gruppe, welcher diese dann zugeordnet werden kann.<br />
+                    Dazu sind folgende Eingaben erforderlich:
+                </p>
+                <ul>
+                    <li>der Gruppenname</li>
+                    <li>die Sichtbarkeit der Gruppe (Ist die Gruppe für jedermann sichtbar oder nur für Teilnehmer?)</li>
+                </ul>
+                <h5>
+                    <a name="addRemoveUser">Benutzer hinzufügen/entfernen</a>
+                </h5>
+                <p>
+                    Zum Hinzufügen bzw. Entfernen von Benutzer zu bzw. von einer Gruppe stehen Ihnen entsprechende Buttons zur Verfügung.<br />
+                    Nutzen Sie die Suche, um entsprechende Benutzer schneller zu finden.
+                </p>
+                <h5>
+                    <a name="addRemoveTutor">Dozenten hinzufügen/entfernen</a>
+                </h5>
+                <p>
+                    Zum Hinzufügen bzw. Entfernen weiterer Dozenten zu bzw. von einer Gruppe stehen Ihnen entsprechende Buttons zur Verfügung.<br />
+                    Nutzen Sie die Suche, um entsprechende Benutzer schneller zu finden.
+                </p>
+                <h4>
+                    <a name="editGroup">Gruppe bearbeiten</a>
+                </h4>
+                <p>Die folgenden Daten können bearbeitet werden:</p>
+                <ul>
+                    <li>der Gruppenname</li>
+                    <li>die Sichtbarkeit der Gruppe (Ist die Gruppe für jedermann sichtbar oder nur für Teilnehmer?)</li>
+                </ul>
+                <p>
+                    <a href="#addRemoveUser">Lesen Sie hier, wie Sie Benutzer in die Teilnehmerliste eintragen bzw. davon entfernen.</a>
+                </p>
+                <h4>
+                    <a name="deleteGroup">Gruppe löschen</a>
+                </h4>
+                <p>Mit Hilfe dieses Buttons können Sie eine Gruppe löschen.</p>
+                <p class="note">
+                    <span>Hinweis:</span> Alle mit der Gruppe verknüpften Daten gehen beim Löschen dieser verloren. Dies umfasst auch alle darin enthaltenen Videos.
+                </p>
+                <h3>
+                    <a name="manageVideos">Videos verwalten</a>
+                </h3>
+                
+                <p>Hier finden Sie eine Liste aller verfügbaren Videos sowie der für Sie verfügbaren Optionen.<br />
+                    Zusätzlich bereitgestellte Informationen sind die zugehörige Gruppe und der aktuelle Status des Videos.<br />
+                    Zum Sortieren klicken Sie auf die entsprechenden Pfeile.
+                 </p>
+                <h4>
+                    <a name="createVideo">Video anlegen</a>
+                </h4>
+                <p>Zum Anlegen eines neuen Videos können die folgenden Informationen angegeben werden:</p>
+                <ul>
+                    <li>der Videoname</li>
+                    <li>die Gruppe zur dieses Video gehört</li>
+                    <li>eine optionale Beschreibung</li>
+                    <li>die Veröffentlichungsart für das Video</li>
+                </ul>
+                <h4>
+                    <a name="editVideo">Video bearbeiten</a>
+                </h4>
+                <p>
+                    Folgende Videodaten können bearbeitet werden:
+                </p>
+                <ul>
+                    <li>der Videoname</li>
+                    <li>die Gruppe zu der das Video gehört</li>
+                    <li>die optionale Beschreibung</li>
+                </ul>
+                <h4>
+                    <a name="distributeVideo">Veröffentlichungseinstellungen bearbeiten</a>
+                </h4>
+                <p>Zur Veröffentlichung eines Videos stehen die folgenden Möglichkeiten zur Verfügung:</p>
+                <ul>
+                    <li>das Setzen eines optionalen Aktivierungszeitpunkts</li>
+                    <li>das Setzen eines optionalen Deaktivierungszeitpunkts</li>
+                    <li>das Definieren eines Passworts zum Beantworten des Videos, sofern diese Veröffentlichungsart festgelegt wurde</li>
+                    <li>das Generieren einer Liste von Videoschlüsseln, sofern diese Veröffentlichungsart festgelegt wurde</li>
+                    <li>das Senden von Videoschlüsseln an Benutzer, sofern diese Veröffentlichungsart festgelegt wurde</li>
+                </ul>
+                <h5>
+                    <a name="addUsers">Benutzer einem Video hinzufügen</a>
+                </h5>
+                <p>
+                    Auf dieser Seite wählen Sie Benutzer aus, die das Projeckt betreten dürfen.<br />
+                    Um einen Benutzer hinzuzufügen, klicken Sie einfach auf "Benutzer zu Video hinzufügen". 
+                    Um einen Benutzer wieder zu entfernen, klicken Sie auf "Benutzer von Video entfernen".<br />
+                    Über Suche ist es möglich Benutzer zu suchen.
+                    <br />
+                    Ist der Video zu einem Video durch Schlüssel geregelt, haben Sie ferner die Möglichkeit Videoschlüssel an eine
+                    Liste mit E-Mail-Adressen zu senden. <br />
+                    Dazu tragen Sie zeilenweise E-Mail-Adressen in das dafür vorgesehene Feld ein und  klicken auf "Videoschlüssel an Liste senden". 
+                </p>
+                <h5>
+                    <a name="generateToken">Videoschlüssel</a>
+                </h5>
+                <p>
+                    Hier können Sie die Anzahl der zu generierenden Schlüssel angeben und sich diese in Form einer ausdruckbaren Liste generieren lassen.
+                </p>
+                <h4>
+                    <a name="deleteVideo">Video löschen</a>
+                </h4>
+                <p>Hier können Sie das jeweilige Video löschen</p>
+                <p class="note">
+                    <span>Hinweis:</span> Alle mit dem Video verknüpften Daten werden unwiderruflich gelöscht.
+                </p>
+                <h3>
+                    <a name="manageUsers">Benutzer verwalten</a>
+                </h3>
+                <p>
+                Die Benutzerliste kann mit Hilfe der Registerkarten eingeschränkt werden. Mögliche Einschränkungen sind die ausschließliche Auflistung von Dozenten oder Administratoren.
+                <br/>Neben dem jeweiligen Benutzer finden Sie Optionen zum <a
+                        href="#banUser">Sperren/Entsperren</a>, <a href="#editUser">Bearbeiten</a> oder <a
+                        href="#deleteUser">Löschen</a> des Benutzers.<br />Das Suchformular ermöglicht es Ihnen, <a href="#searchRegisteredUser">einen bestimmten Benutzer zu suchen</a>. Darüber befindet sich ein Button zum <a
+                        href="#createTutorOrAdmin">Anlegen eines neuen Benutzers</a>.
+                </p>
+                <h4>
+                    <a name="createTutorOrAdmin">Benutzer anlegen</a>
+                </h4>
+                <p>
+                    Hier haben Administratoren die Möglichkeit, neue Benutzer, Dozenten oder Administratoren anzulegen.
+                    Erforderliche Daten dafür sind:
+                </p>
+                <ul>
+                    <li>eine gültige E-Mail-Adresse</li>
+                    <li>der akademische Titel</li>
+                    <li>der Vorname</li>
+                    <li>der Nachname</li>
+                    <li>das Geschlecht</li>
+                    <li>das Land</li>
+                    <li>der Benutzertyp</li>
+                </ul>
+                <p class="note">
+                    <span>Hinweis:</span> Dem neune Benutzer wird ein für ihn generiertes Passwort an die angegebene E-Mail-Adresse geschickt.
+                </p>
+                <h4>
+                    <a name="searchRegisteredUser">Benutzer suchen</a>
+                </h4>
+                <p>Sie können nach dem Vornamen, Nachnamen oder der E-Mail-Adresse des Benutzers suchen.</p>
+                <p class="note">
+                    <span>Hinweis:</span> Sie müssen einen vollständigen Vornamen, Nachnamen oder eine vollständige E-Mail-Adresse für die Suche eines bestimmten Benutzers angeben.
+                </p>
+                <h4>
+                    <a name="banUser">Benutzer sperren</a>
+                </h4>
+                <p>Das Sperren eines Benutzers hat zur Folge, dass sich dieser nicht mehr einloggen und somit nicht mehr die Funktionen registrierter Benutzer nutzen kann.</p>
+                <h4>
+                    <a name="unbanUser">Benutzer entsperren</a>
+                </h4>
+                <p>Das Entsperren eines Benutzers ermöglicht es diesem, sich wieder einzuloggen.</p>
+                <h4>
+                    <a name="editUser">Benutzer bearbeiten</a>
+                </h4>
+                <p>
+                    Mit Hilfe dieser Seite können Sie die Benutzerdaten bearbeiten<br />
+                    Folgende Daten sind obligatorisch:
+                </p>
+                <ul>
+                    <li>die E-Mail-Adresse</li>
+                    <li>der akademische Titel</li>
+                    <li>der Vorname</li>
+                    <li>der Nachname</li>
+                    <li>das Geschlecht</li>
+                    <li>das Land</li>
+                    <li>der Benutzertyp</li>
+                </ul>
+                <p><br />Ferner kann das Passwort des Benutzers zurückgesetzt werden. Dabei wird ein neues zufälliges Passwort generiert und diesem per E-Mail zugesendet.</p>
+                <h4>
+                    <a name="deleteUser">Benutzer löschen</a>
+                </h4>
+                <p>Hier können Sie den jeweiligen Benutzer löschen.</p>
+                <p class="note">
+                    <span>Hinweis:</span> Das Löschen eines Dozenten hat zur Folge, dass alle Verknüpfungen desselben mit seinen Gruppen und seinen Videos werden. Ist bei einer Gruppe kein weiterer Dozent als Besitzer hinterlegt, wird diese Gruppe als unsichtbar markiert.
+                    Eine solche Gruppe kann von einem Administrator mit einem oder mehreren Dozenten versehen werden.
+                </p>
+                <h2>
+                    <a name="contact">Kontakt</a>
+                </h2>
+                <p>Hier haben Sie die Möglichkeit, Nachrichten, Verbesserungsvorschläge und Fehler an den Systemadministrator zu senden.</p>
+    </ui:composition>
+</body>
+</html>

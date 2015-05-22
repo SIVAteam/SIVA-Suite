@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+    <ui:composition template="../layout.xhtml">
+        <ui:define name="title">#{lang.contact_title}</ui:define>
+
+        <ui:define name="contextHelp">
+            <h:outputLink id="contexHelp" value="#{request.contextPath}/xhtml/common/help.jsf#contact" target="_blank">#{lang.get_help_link}</h:outputLink>
+        </ui:define>
+
+        <ui:define name="content">
+            <h1>#{lang.contact_title}</h1>
+
+            <h:message for="contactForm" class="confirmMessage" />
+            <h:messages globalOnly="true" class="errorMessage" />
+
+            <h:form id="contactForm">
+                <div class="row">
+                    <div class="col1">#{lang.user_field_academic_title}</div>
+                    <div class="col2">
+                        <h:selectOneMenu id="academicTitle" value="#{contactBean.academicTitle}" class="#{component.valid ? '' : 'error'}" required="false" requiredMessage="#{lang.select_required}">
+                            <f:selectItem itemValue="#{lang.user_field_academic_title_none}" />
+                            <f:selectItem itemValue="#{lang.user_field_academic_title_phd}" />
+                            <f:selectItem itemValue="#{lang.user_field_academic_title_prof}" />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col3"><h:message for="academicTitle" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col1">#{lang.user_field_first_name}</div>
+                    <div class="col2">
+                        <h:inputText id="firstName" value="#{contactBean.firstName}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" />
+                    </div>
+                    <div class="col3"><h:message for="firstName" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col1">#{lang.user_field_last_name}</div>
+                    <div class="col2">
+                        <h:inputText id="lastName" value="#{contactBean.lastName}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" />
+                    </div>
+                    <div class="col3"><h:message for="lastName" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col1">#{lang.user_field_email}</div>
+                    <div class="col2">
+                        <h:inputText id="email" value="#{contactBean.email}" class="#{component.valid ? '' : 'error'}" validator="MailValidator" required="true" requiredMessage="#{lang.field_required}">
+                            <f:attribute name="mailValidator_message" value="#{lang.mailValidator_message}" />
+                        </h:inputText>
+                    </div>
+                    <div class="col3"><h:message for="email" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col1">#{lang.contact_subject}</div>
+                    <div class="col2">
+                        <h:inputText id="subject" value="#{contactBean.subject}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" />
+                    </div>
+                    <div class="col3"><h:message for="subject" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col1">#{lang.contact_message}</div>
+                    <div class="col2 col2Textarea">
+                        <h:inputTextarea id="message" value="#{contactBean.message}" class="#{component.valid ? '' : 'error'}" required="true" requiredMessage="#{lang.field_required}" />
+                    </div>
+                    <div class="col3 col3Textarea"><h:message for="message" /></div>
+                </div>
+
+                <div class="row">
+                    <div class="col1 button_space"></div>
+                    <div class="col2">
+                        <h:commandButton action="#{contactAction.sendMessage}" value="#{lang.contact_send_button}" />
+                    </div>
+                </div>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

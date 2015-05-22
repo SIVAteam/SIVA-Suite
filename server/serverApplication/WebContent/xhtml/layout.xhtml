@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+    <title><ui:insert name="title" /></title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width" />
+    
+    <ui:fragment rendered="#{!sessionData.mobile}">
+    	<link rel="stylesheet" media="screen" href="#{brandingConfiguration.getStylePoperty('style')}" type="text/css" />
+    	<link rel="stylesheet" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" href="#{brandingConfiguration.getStylePoperty('mobile')}" type="text/css" />
+    	<style type="text/css">
+        	@media handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px) {
+            	<ui:insert name="mobileCss" />
+        	}
+    	</style>
+    </ui:fragment>
+    <ui:fragment rendered="#{sessionData.mobile}">
+    	<link rel="stylesheet" media="screen" href="#{brandingConfiguration.getStylePoperty('mobile')}" type="text/css" />
+    </ui:fragment>
+    <link rel="stylesheet" media="print" href="#{brandingConfiguration.getStylePoperty('print')}" type="text/css" />
+    <link rel="icon" href="#{brandingConfiguration.getStylePoperty('favicon')}" type="image/x-icon" />
+    <script src="#{brandingConfiguration.getStylePoperty('scripts')}" type="text/javascript" />
+    <ui:insert name="scripts" />   
+</h:head>
+<h:body>
+<f:view>
+    <div id="header">
+        <div class="main">
+            <ui:insert name="header">
+                <ui:include src="header.xhtml" />
+            </ui:insert>
+        </div>
+    </div>
+    <div id="content">
+        <div class="main">
+            <ui:insert name="content">
+                <ui:include src="common/content.xhtml" />
+            </ui:insert>
+        </div>
+        <div id="content_spacer"></div>
+    </div>
+    <div id="footer">
+        <div class="main">
+            <ui:insert name="footer">
+                <ui:include src="footer.xhtml" />
+            </ui:insert>
+        </div>
+    </div>
+</f:view>
+</h:body>
+</html>
