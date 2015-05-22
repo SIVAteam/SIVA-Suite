@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.iviPro.model.resources.Video;
+import org.iviPro.utils.PathHelper;
 
 public class VideoGrabSystem {
 	
@@ -23,11 +24,11 @@ public class VideoGrabSystem {
 	
 	private VideoGrabSystem() {
 		// Create cache
-		String userHome = System.getProperty("user.home"); //$NON-NLS-1$
 		String sep = File.separator;
-		File cacheDir = new File(userHome + sep + "SIVA-Suite" + sep + "Media" //$NON-NLS-1$ //$NON-NLS-2$
+		String sivaDir = PathHelper.getSivaDir();
+		File cacheDir = new File(sivaDir + sep + "Media" //$NON-NLS-1$ //$NON-NLS-2$
 				+ sep + "Videos" + sep + "Imagecache"); //$NON-NLS-1$ //$NON-NLS-2$
-		cache = new Cache(cacheDir);	
+		cache = new Cache(cacheDir);
 		jobsQueue =  new LinkedBlockingQueue<Runnable>();		
 		exe = new ThreadPoolExecutor(numberThreads, numberThreads, 0, TimeUnit.SECONDS, jobsQueue);	
 		exe.prestartCoreThread();

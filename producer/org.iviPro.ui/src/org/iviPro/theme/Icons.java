@@ -47,7 +47,7 @@ public enum Icons {
 	ACTION_MEDIA_DELETE("trashcan.png"), //$NON-NLS-1$
 	ACTION_TABLE_OF_CONTENTS("action-table-of-contents.png"), //$NON-NLS-1$
 	ACTION_PROJECTSETTINGS("action-settings.png"), //$NON-NLS-1$
-	ACTION_GRAPHVALIDATION("graph-validation.png"), //$NON-NLS-1$
+	ACTION_GRAPHVALIDATION("toolbar-graphvalidation.png"), //$NON-NLS-1$
 
 	// ################################################################
 	// # . . . ICONS FUER ACTIONS IM ANNOTATIONS-EDITOR . . . . . . . #

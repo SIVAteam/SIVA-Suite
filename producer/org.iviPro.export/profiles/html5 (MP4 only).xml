@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<profile title="html5 (MP4 only)" description="HTML5 export restricted to MP4 video format. Faster, but less compatible." exportXml="true" exportSmil="false" exportFlashPlayer="false" exportHtmlPlayer="true" exportAudioExtensions="false" exportVideoExtensions="false" descriptorDirectory="Files\XML" imageDirectory="Files\pix" richPageDirectory="Files\richpages" audioDirectory="Files\audios" videoDirectory="Files\videos" pdfDirectory="Files\pdf">
+<audioVariants>
+<audioVariant title="default" description="The default audio variant.">
+<audioProfile audioContainer="mp3" audioCodec="libmp3lame" audioBitRate="-1" sampleRate="-1" sampleSize="-1" channels="-1"/>
+<audioProfile audioContainer="ogg" audioCodec="libvorbis" audioBitRate="-1" sampleRate="-1" sampleSize="-1" channels="-1"/>
+</audioVariant>
+</audioVariants>
+<videoVariants>
+<videoVariant title="default" description="The default video variant.">
+<videoProfile videoContainer="mp4" videoCodec="libx264" videoCodecQuality="high" videoBitRateType="original" videoBitRate="512" frameRate="-1.0" audioCodec="libfdk_aac" audioBitRate="-1" sampleRate="-1" sampleSize="-1" channels="-1"/>
+</videoVariant>
+</videoVariants>
+</profile>

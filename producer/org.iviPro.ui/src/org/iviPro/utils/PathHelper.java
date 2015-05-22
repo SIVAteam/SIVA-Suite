@@ -344,5 +344,14 @@ public class PathHelper {
 	public static void setSivaDir(String sivaDir) {
 		System.setProperty(SYSPROP_SIVADIR, sivaDir);
 	}
+	
+	/**
+	 * Set the system property for the directory where application specific
+	 * data is stored.
+	 * @param sivaDir directory path of application workspace
+	 */
+	public static String getSivaDir() {
+		return System.getProperty(SYSPROP_SIVADIR);
+	}
 		
 }

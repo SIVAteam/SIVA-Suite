@@ -180,7 +180,7 @@ public class CreateSampleLoggerConfig {
 				+ "log4j.appender.HTMLfile.append                   = false\n" //$NON-NLS-1$
 				+ "log4j.appender.HTMLfile.File                     = ./logfile.html\n" //$NON-NLS-1$
 				+ "log4j.appender.HTMLfile.MaxFileSize              = 10MB\n" //$NON-NLS-1$
-				+ "log4j.appender.HTMLfile.layout                   = util.LogHTMLLayout\n" //$NON-NLS-1$
+				+ "log4j.appender.HTMLfile.layout                   = org.apache.log4j.HTMLLayout\n" //$NON-NLS-1$
 				+ "\n"; //$NON-NLS-1$
 		return footer;
 	}

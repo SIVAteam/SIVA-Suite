@@ -40,7 +40,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ProfileHandler extends DefaultHandler implements ProfileDefinition {
 
-	private static Logger logger = Logger.getLogger(ProfileSelectionPage.class);
+	private static Logger logger = Logger.getLogger(ProfileHandler.class);
 
 	/** Specifies if the handler already parsed the export profile file. */
 	private boolean parsed;
@@ -85,10 +85,14 @@ public class ProfileHandler extends DefaultHandler implements ProfileDefinition 
 			Attributes attributes) throws SAXException {
 		if (qName.equals(ELEMENT_PROFILE)) {
 			handleProfileElement(attributes);
+		} else if (qName.equals(ELEMENT_AUDIO_VARIANTS)) {
+			// Do nothing
 		} else if (qName.equals(ELEMENT_AUDIO_VARIANT)) {
 			handleAudioVariantElement(attributes);
 		} else if (qName.equals(ELEMENT_AUDIO_PROFILE)) {
 			handleAudioProfileElement(attributes);
+		} else if (qName.equals(ELEMENT_VIDEO_VARIANTS)) {
+			// Do nothing
 		} else if (qName.equals(ELEMENT_VIDEO_VARIANT)) {
 			handleVideoVariantElement(attributes);
 		} else if (qName.equals(ELEMENT_VIDEO_PROFILE)) {
