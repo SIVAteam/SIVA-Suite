@@ -8,7 +8,7 @@ The SIVA Producer is licensed under the terms of the [Eclipse Public License v1]
 
 
 ## How to build SIVA Producer
-The SIVA Producer is a Java application based on the Eclipse Rich Client Platform. As such, building it from source code requires the [Eclipse for RCP and RAP developers](http://www.eclipse.org/downloads/) platform and a compatible Java environment to be installed on the build system. Within Eclipse, the build process comprises three steps:
+The SIVA Producer is a 32-bit Java 1.6 application based on the Eclipse Rich Client Platform. As such, building it from source code requires a 32-bit [Eclipse for RCP and RAP developers](http://www.eclipse.org/downloads/) platform and a compatible Java environment to be installed on the build system. Within Eclipse, the build process comprises three steps:
 - Import the source code into the Eclipse workbench
 - Set the correct target platform to compile against
 - Export the SIVA Producer as an RCP product
