@@ -60,18 +60,22 @@ function SivaPlayer(DOMObject, arrayPosition){
 	
 	this.playingMediaAnnotations = [];
 	
+	this.mode = 'default';
+	
 	this.init = function(config, noUserOverwrites){
 		var thisPlayer = this;
 		this.preparePlayer();
 		this.startLoader();
 		this.compabilityCheck();
 		this.setConfiguration(config, noUserOverwrites);
-		this.setProportions();
 		if(!sivaPlayerStorage.hasChromeLocalStorage && !sivaPlayerStorage.hasLocalStorage){
 			this.throwError(new Error(this.getLabel('noStorage')), false);
 		}
 		if(this.configuration.accessRestriction && !this.configuration.accessRestriction.passed){
 			this.handleAccessRestriction();
+		}
+		else if(this.configuration.common.secretKey && this.configuration.common.secretKey != '' && !this.configuration.common.keygenEmail && !this.configuration.common.keygenCode){
+			this.handleKeygenRestriction();
 		}
 		else if(this.configuration.common.useSecretLogin && !this.configuration.common.userEmail && !this.configuration.common.userSecret){
 			this.handleSecretLogin();
@@ -79,7 +83,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		else{
 			sivaPlayerStorage.getAll(function(result){
 				if(result.disabledTitle && result.disabledTitle != '' && result.disabledText && result.disabledText != ''){
-					$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+					thisPlayer.stopLoader();
 					thisPlayer.createPopup('message', false);
 					$('.sivaPlayer_messagePopup .sivaPlayer_title', thisPlayer.player).text(result.disabledTitle);
 					$('.sivaPlayer_messagePopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).html(result.disabledText);
@@ -98,7 +102,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 					}
 				}
 				if(i > 30){
-					$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+					thisPlayer.stopLoader();
 					thisPlayer.createPopup('message', false);
 					$('.sivaPlayer_messagePopup .sivaPlayer_title', thisPlayer.player).text(thisPlayer.getLabel('syncRequiredTitle'));
 					$('.sivaPlayer_messagePopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).text(thisPlayer.getLabel('syncRequiredText'));
@@ -123,6 +127,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 	
 	this.preparePlayer = function(){
 		thisPlayer = this;
+		FastClick.attach(this.player);
 		var lastPosition = {'x': 0, 'y': 0};
 		$(this.player).addClass('sivaPlayer_arrayPosition' +  this.arrayPosition)
 		.mousemove(function(e){
@@ -198,21 +203,38 @@ function SivaPlayer(DOMObject, arrayPosition){
 				$('.sivaPlayer_loader .sivaPlayer_logo', this.player).hide(0);
 				$('.sivaPlayer_loader .sivaPlayer_text', this.player).text(this.getLabel('loading'));
 			}
-			loader.fadeIn(0);
+			loader.show(0);
 			this.animateLoading();
 		}
 	};
 	
-	this.animateLoading = function(){
+	this.stopLoader = function(){
+		$('.sivaPlayer_loader', this.player).fadeOut(800);
+	};
+	
+	this.animateLoading = function(left){
 		var thisPlayer = this;
 		if($('.sivaPlayer_loader:visible', this.player).length > 0){
 			var dots = $('.sivaPlayer_loading .sivaPlayer_loadingDots', this.player);
-			dots.css({'left': '0'})
-				.animate({'left': '35%'}, 800)
-				.animate({'left': '55%'}, 800)
-				.animate({'left': '100%'}, 800, function(){
-					thisPlayer.animateLoading();
-				});
+			if(left == undefined || left == 105){
+				dots.removeClass('sivaPlayer_transition')
+				.css({'left': '-15%'});
+				left = -15;
+			}
+			else if(left == -15){
+				dots.addClass('sivaPlayer_transition');
+				left = 35;
+			}
+			else if(left == 35){
+				left = 55;
+			}
+			else if(left == 55){
+				left = 105;
+			}
+			dots.css({'left': left + '%'});
+			setTimeout(function(){
+				thisPlayer.animateLoading(left);
+			}, ((left == -15) ? 50 : 800));
 		}
 	};
 	
@@ -308,10 +330,10 @@ function SivaPlayer(DOMObject, arrayPosition){
 		this.configuration.primaryColor = primaryColor;
 		this.configuration.secondaryColor = secondaryColor;
 		var playerClass = '.sivaPlayer_arrayPosition' + this.arrayPosition;
-		var css = [{'property': 'background', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_videoContainer .sivaPlayer_annotation audio', '.sivaPlayer_loading .sivaPlayer_loadingDot', '.sivaPlayer_popup', '.sivaPlayer_controls', '.sivaPlayer_volumeControl', '.sivaPlayer_annotationSidebar', '.sivaPlayer_nodeSelectionSidebar', '.sivaPlayer_searchSidebar', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active', '.sivaPlayer_markerButton span', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineMarker', '.sivaPlayer_mediaAnnotationControls .sivaPlayer_timeline .sivaPlayer_timelineProgress span span', '.sivaPlayer_annotationSidebarButton span']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_popup label input', '.sivaPlayer_popup label button', '.sivaPlayer_searchSidebar input', '.sivaPlayer_sceneList a', '.sivaPlayer_timeline .sivaPlayer_timelineProgress span span', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timlineUpdateSelectedTime', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations', '.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaTop', '.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_title', '.sivaPlayer_videoContainer .sivaPlayer_richtextAnnotation', '.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_current']},{'value': 'rgba(' + this.hexToRgb(secondaryColor) + ', 0.5)', 'selectors': ['.sivaPlayer_videoContainer .sivaPlayer_galleryAnnotation']},{'value': 'rgba(' + this.hexToRgb(secondaryColor) + ', 0.7)', 'selectors': ['.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_hover']}]},
-					 {'property': 'color', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_accessRestrictionPopup label input', '.sivaPlayer_accessRestrictionPopup label button', '.sivaPlayer_searchSidebar input', '.sivaPlayer_sceneList a', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timlineUpdateSelectedTime', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations', '.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_popup label input', '.sivaPlayer_popup label button', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title', '.sivaPlayer_videoContainer .sivaPlayer_annotation', '.sivaPlayer_videoContainer .sivaPlayer_annotation a', '.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_current', '.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_hover']}, {'value': secondaryColor, 'selectors': ['', '.sivaPlayer_searchSidebar .sivaPlayer_results a', '.sivaPlayer_popup', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active', '.sivaPlayer_tableOfContents a', '.sivaPlayer_tableOfContents span', '.sivaPlayer_markerButton span', '.sivaPlayer_annotation a']}]},
-					 {'property': 'fill', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_mediaAnnotationControls .sivaPlayer_button svg', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton svg', '.sivaPlayer_overlayButton svg polygon', '.sivaPlayer_overlayButton svg path', '.sivaPlayer_statsPopup svg .day']}, {'value': 'rgba(' + this.hexToRgb(secondaryColor) + ', 0.2)', 'selectors': ['.sivaPlayer_markerEllipse', '.sivaPlayer_markerRectangle', '.sivaPlayer_markerPolygon']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_button', '.sivaPlayer_button svg', '.sivaPlayer_tableOfContents svg', '.sivaPlayer_overlayButton svg circle', '.sivaPlayer_statsPopup svg text']}]},
-					 {'property': 'border-color', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineUpdate span', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations', '.sivaPlayer_mediaAnnotationControls .sivaPlayer_timeline .sivaPlayer_timelineProgress', '.sivaPlayer_annotationSidebarButton']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_sceneList a', '.sivaPlayer_timeline .sivaPlayer_timelineProgress', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_spacer', '.sivaPlayer_annotationSidebar .sivaPlayer_content div div', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineMarker', '.sivaPlayer_mediaAnnotationControls .sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineUpdate span', '.sivaPlayer_volumeControl .sivaPlayer_volume']}]},
+		var css = [{'property': 'background', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_videoContainer .sivaPlayer_annotation audio', '.sivaPlayer_loading .sivaPlayer_loadingDot', '.sivaPlayer_popup', '.sivaPlayer_controls', '.sivaPlayer_volumeControl', '.sivaPlayer_annotationSidebar', '.sivaPlayer_nodeSelectionSidebar', '.sivaPlayer_searchSidebar', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active', '.sivaPlayer_markerButton span', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineMarker', '.sivaPlayer_mediaAnnotationControls .sivaPlayer_timeline .sivaPlayer_timelineProgress span span', '.sivaPlayer_annotationSidebarButton span']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_popup label input', '.sivaPlayer_popup label button', '.sivaPlayer_searchSidebar input', '.sivaPlayer_sceneList a', '.sivaPlayer_timeline .sivaPlayer_timelineProgress span span', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timlineUpdateSelectedTime', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations', '.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_annotationSidebar .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title', '.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_title', '.sivaPlayer_videoContainer .sivaPlayer_richtextAnnotation', '.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_current', '.sivaPlayer_popup.sivaPlayer_zoomPopup', '.sivaPlayer_popup.sivaPlayer_pdfPopup', '.sivaPlayer_popup.sivaPlayer_richtextPopup', '.sivaPlayer_portrait .sivaPlayer_annotationSidebar']},{'value': 'rgba(' + this.hexToRgb(secondaryColor) + ', 0.5)', 'selectors': ['.sivaPlayer_videoContainer .sivaPlayer_galleryAnnotation']},{'value': 'rgba(' + this.hexToRgb(secondaryColor) + ', 0.7)', 'selectors': ['.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_hover']}]},
+					 {'property': 'color', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_accessRestrictionPopup label input', '.sivaPlayer_accessRestrictionPopup label button', '.sivaPlayer_searchSidebar input', '.sivaPlayer_sceneList a', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timlineUpdateSelectedTime', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations', '.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_annotationSidebar .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', '.sivaPlayer_popup label input', '.sivaPlayer_popup label button', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title', '.sivaPlayer_popup.sivaPlayer_zoomPopup .sivaPlayer_title', '.sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_title', '.sivaPlayer_popup.sivaPlayer_richtextPopup .sivaPlayer_title', '.sivaPlayer_videoContainer .sivaPlayer_annotation', '.sivaPlayer_videoContainer .sivaPlayer_annotation a', '.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_current', '.sivaPlayer_volumeControl .sivaPlayer_volume.sivaPlayer_hover', '.sivaPlayer_popup.sivaPlayer_zoomPopup', '.sivaPlayer_popup.sivaPlayer_pdfPopup', '.sivaPlayer_popup.sivaPlayer_richtextPopup', '.sivaPlayer_portrait .sivaPlayer_annotationSidebar']}, {'value': secondaryColor, 'selectors': ['', '.sivaPlayer_searchSidebar .sivaPlayer_results a', '.sivaPlayer_popup', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active', '.sivaPlayer_tableOfContents a', '.sivaPlayer_tableOfContents span', '.sivaPlayer_markerButton span', '.sivaPlayer_annotation a', '.sivaPlayer_popup .sivaPlayer_title']}]},
+					 {'property': 'fill', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_mediaAnnotationControls .sivaPlayer_button svg', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton svg', '.sivaPlayer_popup.sivaPlayer_zoomPopup .sivaPlayer_closeButton svg', '.sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_closeButton svg', '.sivaPlayer_popup.sivaPlayer_richtextPopup .sivaPlayer_closeButton svg', '.sivaPlayer_overlayButton svg polygon', '.sivaPlayer_overlayButton svg path', '.sivaPlayer_statsPopup svg .day', '.sivaPlayer_button.sivaPlayer_galleryPreviousButton', '.sivaPlayer_button.sivaPlayer_galleryNextButton']}, {'value': 'rgba(' + this.hexToRgb(secondaryColor) + ', 0.2)', 'selectors': ['.sivaPlayer_markerEllipse', '.sivaPlayer_markerRectangle', '.sivaPlayer_markerPolygon']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_button', '.sivaPlayer_button svg', '.sivaPlayer_tableOfContents svg', '.sivaPlayer_overlayButton svg circle', '.sivaPlayer_button.sivaPlayer_galleryPreviousButton circle', '.sivaPlayer_button.sivaPlayer_galleryNextButton circle', '.sivaPlayer_statsPopup svg text', '.sivaPlayer_popup .sivaPlayer_closeButton svg']}]},
+					 {'property': 'border-color', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineUpdate span', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations', '.sivaPlayer_mediaAnnotationControls .sivaPlayer_timeline .sivaPlayer_timelineProgress', '.sivaPlayer_annotationSidebarButton', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title', '.sivaPlayer_popup.sivaPlayer_zoomPopup .sivaPlayer_title', '.sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_title', '.sivaPlayer_popup.sivaPlayer_richtextPopup .sivaPlayer_title']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_sceneList a', '.sivaPlayer_timeline .sivaPlayer_timelineProgress', '.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_spacer', '.sivaPlayer_annotationSidebar > div.sivaPlayer_active .sivaPlayer_annotation', '.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineMarker', '.sivaPlayer_mediaAnnotationControls .sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineUpdate span', '.sivaPlayer_volumeControl .sivaPlayer_volume', '.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title', '.sivaPlayer_popup .sivaPlayer_title']}]},
 					 {'property': 'border-bottom-color', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations.sivaPlayer_active', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations.sivaPlayer_active']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations', '.sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations']}, {'value': '1px solid rgba(' + this.hexToRgb(secondaryColor) + ', 0.3)', 'selectors': ['.sivaPlayer_searchSidebar .sivaPlayer_results a']}]},
 					 {'property': 'stroke', 'values': [{'value': primaryColor, 'selectors': ['.sivaPlayer_markerEllipse', '.sivaPlayer_markerRectangle', '.sivaPlayer_markerPolygon']}, {'value': secondaryColor, 'selectors': ['.sivaPlayer_statsButton svg line', '.sivaPlayer_statsButton svg line', '.sivaPlayer_statsPopup svg .day', '.sivaPlayer_statsPopup svg .month']}]}
 					];		
@@ -320,7 +342,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 			for(var j = 0; j < css[i].values.length; j++){
 				var selectors = [];
 				for(var k = 0; k < css[i].values[j].selectors.length; k++){
-					selectors[k] = playerClass + '.sivaPlayer ' + css[i].values[j].selectors[k];
+					selectors[k] = playerClass + '.sivaPlayer' + ((css[i].values[j].selectors[k].indexOf('portrait') > -1 || css[i].values[j].selectors[k].indexOf('landscape') > -1) ? '' : ' ') + css[i].values[j].selectors[k];
 				}
 				styles += selectors.join(',') + '{' + css[i].property + ':' + css[i].values[j].value + '}';
 			}
@@ -334,6 +356,9 @@ function SivaPlayer(DOMObject, arrayPosition){
 	
 	this.onResize = function(){
 		this.fadeInFadeOutControls(3);
+		if($('.sivaPlayer_statsPopup', this.player).length > 0){
+			this.createStats();
+		}
 		this.setProportions();
 		if(!this.configuration.accessRestriction || this.configuration.accessRestriction.passed){
 			this.updateAnnotations();
@@ -341,12 +366,13 @@ function SivaPlayer(DOMObject, arrayPosition){
 	};
 	
 	this.setProportions = function(){
+		console.log('prop');
 		var playerOffset = $(this.player).offset();
-		if(this.configuration.style.width){
+		if(this.configuration.style && this.configuration.style.width){
 			$(this.player).css('width', this.configuration.style.width);
 		}
 		var playerWidth = $(this.player).width();
-		if(this.configuration.style.height){
+		if(this.configuration.style && this.configuration.style.height){
 			var height = this.configuration.style.height;
 			if(height == 'auto'){
 				height = parseInt(playerWidth / this.configuration.ratio);
@@ -354,12 +380,36 @@ function SivaPlayer(DOMObject, arrayPosition){
 			$(this.player).css('height', height);		
 		}
 		var playerHeight = $(this.player).height();
+		if(playerWidth <= 400){
+			$(this.player).removeClass('sivaPlayer_landscape').addClass('sivaPlayer_portrait');
+			this.mode = 'portrait';
+		}
+		else if(playerWidth <= 700){
+			$(this.player).removeClass('sivaPlayer_portrait').addClass('sivaPlayer_landscape');
+			this.mode = 'landscape';
+		}
+		else{
+			$(this.player).removeClass('sivaPlayer_portrait').removeClass('sivaPlayer_landscape');
+			this.mode = 'default';
+		}
 		var video = $('.sivaPlayer_mainVideo', this.player);
-		if(video.length > 0){
+		if(video.length > 0 && !$('.sivaPlayer_annotationSidebar', this.player).hasClass('sivaPlayer_update')){
 			$('.sivaPlayer_videoContainer', this.player).css(this.getVideoContainerProportions(video, playerWidth, playerHeight, this.isAnnotationSidebarVisible, false));
 		}
-		$('.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_authorAnnotations, .sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_communityAnnotations', this.player)
-		.css('height', (playerHeight - (2 * $('.sivaPlayer_topControls', this.player).height()) - $('.sivaPlayer_sidebarTabs', this.player).height() - 5 )+ 'px');
+		var sidebar = $('.sivaPlayer_annotationSidebar', this.player);
+		console.log(this.mode);
+		if(this.mode == 'portrait'){
+			
+		}
+		else if(this.mode == 'landscape'){
+			
+		}
+		else{
+			
+		}
+		setTimeout(function(){
+			$('.sivaPlayer_annotationSidebar .sivaPlayer_authorAnnotations, .sivaPlayer_annotationSidebar .sivaPlayer_communityAnnotations', thisPlayer.player).css('height', ($(sidebar).height() - $('.sivaPlayer_sidebarTabs', sidebar).height() - 5 ) + 'px');
+		}, 100);
 		var volumeButton = $('.sivaPlayer_controls .sivaPlayer_volumeButton', this.player);
 		if(volumeButton.length > 0){
 			var safari = navigator.userAgent.split('Safari/');
@@ -368,6 +418,9 @@ function SivaPlayer(DOMObject, arrayPosition){
 			}
 			$('.sivaPlayer_controls .sivaPlayer_volumeControl', this.player).css('right', (playerOffset.left + playerWidth - 50 / 2 - 40 / 2 - $(volumeButton[0]).offset().left) + 'px');
 		}
+		$.each($('.sivaPlayer_overlayButton', this.player), function(){
+			$(this).css({'margin-top': parseInt($(this).height() / -2) + 'px', 'margin-left': parseInt($(this).width() / -2) + 'px'});
+		});
 		$.each($('.sivaPlayer_popup .sivaPlayer_scrollable', this.player), function(){
 			var popup = $(this).closest('.sivaPlayer_popup');
 			var height = playerHeight;
@@ -375,20 +428,34 @@ function SivaPlayer(DOMObject, arrayPosition){
 				if($('.sivaPlayer_content', this).length == 0){
 					height -= $(this).height();
 				}
+				else{
+					height -= parseInt($('.sivaPlayer_content', this).css('padding-top'));
+					height -= parseInt($('.sivaPlayer_content', this).css('padding-bottom'));
+				}
 			});
 			$(this).height(height);
 		});
-		$('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).height(parseInt(playerHeight * 0.68));
-		$('.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails div', this.player).width(playerWidth + 'px');
-		$('.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails td img', this.player).height(parseInt(playerHeight * 0.14) + 'px');
-		$('.sivaPlayer_zoomPopup .sivaPlayer_content img, .sivaPlayer_zoomPopup .sivaPlayer_content video', this.player).css({
-			'max-height': parseInt(playerHeight * 0.68) + 'px',
-			'max-width': parseInt(playerWidth * 0.88) + 'px'
-		});
-		$('.sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls', this.player).css({
-			'width': $('.sivaPlayer_zoomPopup .sivaPlayer_content video', this.player).width() + 'px',
-			'margin-left': parseInt(($('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).width() - $('.sivaPlayer_zoomPopup .sivaPlayer_content video', this.player).width()) / 2) + 'px'
-		});
+		if($('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).length > 0){
+			var tmpWidth = playerWidth - parseInt($('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).css('padding-left')) - parseInt($('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).css('padding-right')); 
+			var tmpHeight = playerHeight;
+			if($('.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails', this.player).length> 0){
+				tmpHeight *= 0.85;
+			}
+			tmpHeight = tmpHeight - $('.sivaPlayer_zoomPopup .sivaPlayer_title', this.player).height() - parseInt($('.sivaPlayer_zoomPopup .sivaPlayer_title', this.player).css('padding-top')) - parseInt($('.sivaPlayer_zoomPopup .sivaPlayer_title', this.player).css('padding-bottom'));
+			$('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).css({'height': tmpHeight, 'width': tmpWidth});
+			$('.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails div', this.player).width(playerWidth + 'px');
+			$('.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails td img', this.player).height(parseInt(playerHeight * 0.14) + 'px');
+			$('.sivaPlayer_zoomPopup .sivaPlayer_content img', this.player).css({
+				'max-height': tmpHeight + 'px',
+				'max-width': tmpWidth + 'px'
+			});
+			var buttons = $('.sivaPlayer_zoomPopup .sivaPlayer_galleryPreviousButton, .sivaPlayer_zoomPopup .sivaPlayer_galleryNextButton', this.player);
+			$(buttons).css('margin-top', parseInt($(buttons).height() / -2) + 'px');
+		}
+		if($('.sivaPlayer_pdfPopup .sivaPlayer_content', this.player).length > 0){
+			console.log(playerHeight, $('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).height());
+			$('.sivaPlayer_pdfPopup .sivaPlayer_content', this.player).height(playerHeight - $('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).height() - parseInt($('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).css('padding-top')) - parseInt($('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).css('padding-bottom')));
+		}
 		if($('.sivaPlayer_annotationSidebar .sivaPlayer_timeline, .sivaPlayer_videoContainer .sivaPlayer_timeline', this.player).width() < 80){
 			$('.sivaPlayer_contronls .sivaPlayer_timeline', this.player).addClass('sivaPlayer_reducedTimeline');
 		}
@@ -398,21 +465,25 @@ function SivaPlayer(DOMObject, arrayPosition){
 		$.each($('.sivaPlayer_mediaAnnotationControls'), function(){
 			var tmp = $(this).parent().width();
 			if($(this).parents('.sivaPlayer_annotationSidebar').length > 0){
-				tmp = $('.sivaPlayer_annotationSidebar .sivaPlayer_content').width() - ($('.sivaPlayer_button', this).length * 26);
+				tmp = $('.sivaPlayer_annotationSidebar').width() - ($('.sivaPlayer_button', this).length * 26);
 			}
 			if(tmp < 105){
-				$('.sivaPlayer_timeline, .sivaPlayer_timelineDuration', this).hide();
+				$('.sivaPlayer_timeline, .sivaPlayer_timelineDuration', this).hide(0);
 			}
 			else if(tmp < 155){
-				$('.sivaPlayer_timeline', this).hide();
-				$('.sivaPlayer_timelineDuration', this).show();
+				$('.sivaPlayer_timeline', this).hide(0);
+				$('.sivaPlayer_timelineDuration', this).show(0);
 			}
 			else{
-				$('.sivaPlayer_timeline, .sivaPlayer_timelineDuration', this).show();
+				$('.sivaPlayer_timeline, .sivaPlayer_timelineDuration', this).show(0);
 			}
 		});
-		$('.sivaPlayer_annotation.sivaPlayer_fullscreen video', this.player).css('height', playerHeight);
-		$('.sivaPlayer_searchSidebar', this.player).css('width', parseInt(this.configuration.style.annotationSidebarWidth * $(this.player).width() + 40) + 'px');
+		$.each($('.sivaPlayer_annotation.sivaPlayer_fullscreen', this.player), function(){
+			$('video', this).css('height', $(thisPlayer.player).height() - $('.sivaPlayer_title', this).height() - parseInt($('.sivaPlayer_title', this).css('padding-top')) - parseInt($('.sivaPlayer_title', this).css('padding-bottom')) - $('.sivaPlayer_mediaAnnotationControlsHolder', this).height());
+		});
+		if(this.configuration.style){
+			$('.sivaPlayer_searchSidebar', this.player).css('width', parseInt(this.configuration.style.annotationSidebarWidth * $(this.player).width() + 40) + 'px');
+		}
 	};
 	
 	this.getVideoContainerProportions = function(videoElements, playerWidth, playerHeight, isAnnotationSidebarVisible, isAnnotationSidebarVisible2){
@@ -420,8 +491,14 @@ function SivaPlayer(DOMObject, arrayPosition){
 		var videoHeight = videoElements[0].videoHeight;
 		var containerWidth = playerWidth;
 		var containerHeight = playerHeight;
-		if(isAnnotationSidebarVisible && ($('.sivaPlayer_annotationSidebarButton .sivaPlayer_annotationSidebarOpenButton[style*="none"]', this.player).length > 0 || isAnnotationSidebarVisible2) && !this.configuration.common.annotationSidebarOverlay){
+		if(this.mode == 'default' && isAnnotationSidebarVisible && ($('.sivaPlayer_annotationSidebarButton.sivaPlayer_open', this.player).length > 0 || isAnnotationSidebarVisible2) && !this.configuration.common.annotationSidebarOverlay){
 			containerWidth -= thisPlayer.configuration.style.annotationSidebarWidth * playerWidth;
+		}
+		else if(this.mode == 'landscape'){
+			containerWidth *= 0.6;
+		}
+		else if(this.mode == 'portrait'){
+			containerHeight *= 0.6;
 		}
 		var factor = videoWidth / containerWidth;
 		videoWidth = containerWidth;
@@ -449,9 +526,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 				var content = '<label><span>' + thisPlayer.getLabel('usernameField') + ':</span> <input type="text" name="username" /></label><label><span>' + thisPlayer.getLabel('passwordField') + ':</span> <input type="password" name="password" /></label>';
 				thisPlayer.createPopup('accessRestriction', false);
 				$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_title', thisPlayer.player).text(title);
-				if(content != ''){
-					$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).append('<form>' + content + '<label><span></span> <button>' + thisPlayer.getLabel('getAccessButton') + '</button></label><label class="sivaPlayer_noAccount">' + thisPlayer.getLabel('forgottenText') + ' <a href="' + thisPlayer.configuration.common.logPath.split('/sivaPlayerVideos')[0] + '/xhtml/users/recoverPassword.jsf" target="_blank" title="' + thisPlayer.getLabel('forgottenTooltip') + '">' + thisPlayer.getLabel('forgottenLink') + '</a></label></form>');
-				}
+				$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).append('<form>' + content + '<label><span></span> <button>' + thisPlayer.getLabel('getAccessButton') + '</button></label><label class="sivaPlayer_noAccount">' + thisPlayer.getLabel('forgottenText') + ' <a href="' + thisPlayer.configuration.common.logPath.split('/sivaPlayerVideos')[0] + '/xhtml/users/recoverPassword.jsf" target="_blank" title="' + thisPlayer.getLabel('forgottenTooltip') + '">' + thisPlayer.getLabel('forgottenLink') + '</a></label></form>');
 				if(message){
 					$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).prepend('<span class="sivaPlayer_message">' + thisPlayer.getLabel(message) + ((message2) ? '(' + message2 + ')' : '') + '</span>');
 				}
@@ -479,7 +554,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 					});
 					e.preventDefault();
 				});
-				$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+				thisPlayer.stopLoader();
 			}
 			else{
 				login = JSON.parse(login);
@@ -567,8 +642,51 @@ function SivaPlayer(DOMObject, arrayPosition){
 				});
 				e.preventDefault();
 			});
-			$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+			thisPlayer.stopLoader();
 		}
+	};
+	
+	this.handleKeygenRestriction = function(message){
+		var thisPlayer = this;
+		sivaPlayerStorage.get('keygen', function(keygen){
+			if(!keygen){
+				var title = thisPlayer.getLabel('keygenRequiredTitle');
+				var content = '<label><span>' + thisPlayer.getLabel('emailField') + ':</span> <input type="text" name="email" /></label><label><span>' + thisPlayer.getLabel('codeField') + ':</span> <input type="text" name="code" /></label>';
+				thisPlayer.createPopup('accessRestriction', false);
+				$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_title', thisPlayer.player).text(title);
+				if(content != ''){
+					$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).append('<form>' + content + '<label><span></span> <button>' + thisPlayer.getLabel('getAccessButton') + '</button></label></form>');
+				}
+				if(message){
+					$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content .sivaPlayer_scrollable', thisPlayer.player).prepend('<span class="sivaPlayer_message">' + thisPlayer.getLabel(message) + '</span>');
+				}
+				$('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content button', thisPlayer.player).click(function(e){
+					thisPlayer.startLoader();
+					var data = {};
+					data.keygenEmail = $('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content form input[name="email"]', thisPlayer.player).val();
+					data.keygenCode = $('.sivaPlayer_accessRestrictionPopup .sivaPlayer_content form input[name="code"]', thisPlayer.player).val();
+					$('.sivaPlayer_accessRestrictionPopup', thisPlayer.player).remove();
+					if(data.keygenEmail == '' || data.keygenCode == ''){
+						thisPlayer.handleKeygenRestriction('emptyFieldsError');
+					}
+					else if(thisPlayer.isKeygenCodeValid(data.keygenEmail, data.keygenCode)){
+						sivaPlayerStorage.set('keygen', JSON.stringify(data));
+						thisPlayer.handleKeygenRestriction();
+					}
+					else{
+						thisPlayer.handleKeygenRestriction('keygenInvalidError');
+					}
+					e.preventDefault();
+				});
+				thisPlayer.stopLoader();
+			}
+			else{
+				keygen = JSON.parse(keygen);
+				thisPlayer.configuration.common.keygenEmail = keygen.keygenEmail;
+				thisPlayer.configuration.common.keygenCode = keygen.keygenCode;
+				thisPlayer.init(thisPlayer.configuration, true);
+			}
+		});
 	};
 	
 	this.isAccessRestrictionSessionExpired = function(intendedAction){
@@ -593,6 +711,23 @@ function SivaPlayer(DOMObject, arrayPosition){
 		return true;
 	};
 	
+	this.isKeygenCodeValid = function(email, code){
+		var secretKey = this.configuration.common.secretKey;
+		email = email.replace(/([^0-9a-zA-Z]+)/g, '').toLowerCase();
+		var tmpKey = [];
+		for(var i = 0; i < secretKey.length; i++){
+			tmpKey[(i % code.length)] = secretKey.charAt((email.charAt(i % email.length).charCodeAt(0) + i) % secretKey.length);
+		}
+		var tmpKeyString = '';
+		for(var i = 0; i < tmpKey.length; i++){
+			tmpKeyString += tmpKey[i];
+		}
+		if(code == tmpKeyString){
+			return true;
+		}
+		return false;
+	};
+	
 	this.setNextNode = function(node, autostart){
 		this.closePopups(0);
 		var startTime = 0;
@@ -610,7 +745,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		}
 		if(node && (node.split('-')[0] == 'select' || node == this.configuration.endScene || node == this.configuration.endScene.node)){
 			this.createNodeSelectionPopup(node);
-			$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+			thisPlayer.stopLoader();
 		}
 		else{
 			if(!node){
@@ -649,7 +784,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 			if(this.configuration.supportedVideoTypes.length == 0){;
 				this.throwError(new Error(this.getLabel('noSupportedVideoFormatError')), false);
 			}
-			$(this.player).append('<div class="sivaPlayer_videoBackground"><div class="sivaPlayer_overlayButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="300px" height="300px" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150"/><g class="sivaPlayer_playButton" title="' + this.getLabel('playTooltip') + '"><polygon points="108.5,82.767 108.5,225.856 232.5,154.31 "/></g><g class="sivaPlayer_replayButton" title="' + this.getLabel('replayTooltip') + '"><path d="M149.539,64.941c-15.144,0-29.366,3.874-41.87,10.596L81.087,53.065l-12.647,95.786l81.024-37.991 l-24.24-20.486c7.577-2.896,15.741-4.557,24.315-4.557c38.209,0,69.193,31.392,69.193,70.128c0,38.73-30.984,70.12-69.193,70.12 c-32.647,0-59.939-22.94-67.226-53.769l-21.645-4.021c5.953,44.404,43.414,78.658,88.87,78.658 c49.592,0,89.792-40.736,89.792-90.989C239.331,105.678,199.131,64.941,149.539,64.941z"/></g></svg></div><div class="sivaPlayer_videoContainer">' + videoElement + '</div></div>');
+			$(this.player).append('<div class="sivaPlayer_videoBackground"><div class="sivaPlayer_overlayButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150"/><g class="sivaPlayer_playButton" title="' + this.getLabel('playTooltip') + '"><polygon points="108.5,82.767 108.5,225.856 232.5,154.31 "/></g><g class="sivaPlayer_replayButton" title="' + this.getLabel('replayTooltip') + '"><path d="M149.539,64.941c-15.144,0-29.366,3.874-41.87,10.596L81.087,53.065l-12.647,95.786l81.024-37.991 l-24.24-20.486c7.577-2.896,15.741-4.557,24.315-4.557c38.209,0,69.193,31.392,69.193,70.128c0,38.73-30.984,70.12-69.193,70.12 c-32.647,0-59.939-22.94-67.226-53.769l-21.645-4.021c5.953,44.404,43.414,78.658,88.87,78.658 c49.592,0,89.792-40.736,89.792-90.989C239.331,105.678,199.131,64.941,149.539,64.941z"/></g></svg></div><div class="sivaPlayer_videoContainer">' + videoElement + '</div></div>');
 			
 			$('.sivaPlayer_videoBackground', thisPlayer.player).click(function(){
 				var videoElement = $('.sivaPlayer_mainVideo', thisPlayer.player);
@@ -664,8 +799,13 @@ function SivaPlayer(DOMObject, arrayPosition){
 						thisPlayer.logAction('clickVideo', 'pause', '');
 					}
 					else{
+						if(!thisPlayer.currentSceneEnded){
+							thisPlayer.logAction('clickVideo', 'play', '');
+						}
+						else{
+							thisPlayer.logAction('clickVideo', 'replay', '');
+						}
 						thisPlayer.playVideo();
-						thisPlayer.logAction('clickVideo', 'play', '');
 					}
 				}
 			})
@@ -707,7 +847,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 					thisPlayer.onLoadedData(scene, autostart, startTime);
 				});
 				$(thisPlayer.player).append(helper);
-				$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+				thisPlayer.stopLoader();
 			}
 		})
 		.bind('play', function(){
@@ -745,20 +885,18 @@ function SivaPlayer(DOMObject, arrayPosition){
 	};
 	
 	this.onLoadedData = function(scene, autostart, startTime){
-		var thisPlayer = this;
 		$('.sivaPlayer_mobileHelper', this.player).remove();
-		if(thisPlayer.active){
+		if(this.active){
 			if($('.sivaPlayer_topControls', this.player).length == 0){
-				thisPlayer.createTopControls(scene, true);
+				this.createTopControls(scene, true);
 			}
-			thisPlayer.setCurrentSceneTime(startTime);
-			thisPlayer.setProportions();
-			$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+			this.setCurrentSceneTime(startTime);
+			this.stopLoader();
 			var amountSitebarAnnotations = 0;
 			var amountSubtitles = 0;
 			var amountDisableableAnnotations = 0;
-			for(var i = 0; i < thisPlayer.configuration.globalAnnotations.length; i++){
-				var annotation = thisPlayer.configuration.annotations[(thisPlayer.configuration.globalAnnotations[i])];
+			for(var i = 0; i < this.configuration.globalAnnotations.length; i++){
+				var annotation = this.configuration.annotations[(this.configuration.globalAnnotations[i])];
 				if(annotation.type == 'subTitle'){
 					amountSubtitles++;
 				}
@@ -769,9 +907,9 @@ function SivaPlayer(DOMObject, arrayPosition){
 					amountDisableableAnnotations++;
 				}
 			}
-			for(var i = 0; i < thisPlayer.configuration.scenes[thisPlayer.currentScene].annotations.length; i++){
-				var trigger = thisPlayer.configuration.scenes[thisPlayer.currentScene].annotations[i];
-				var annotation = thisPlayer.configuration.annotations[trigger.annotationId];
+			for(var i = 0; i < this.configuration.scenes[this.currentScene].annotations.length; i++){
+				var trigger = this.configuration.scenes[this.currentScene].annotations[i];
+				var annotation = this.configuration.annotations[trigger.annotationId];
 				if(annotation.type == 'subTitle'){
 					amountSubtitles++;
 				}
@@ -785,17 +923,21 @@ function SivaPlayer(DOMObject, arrayPosition){
 					amountDisableableAnnotations++;
 				}
 			}
-			thisPlayer.createControls(amountSitebarAnnotations, amountSubtitles, amountDisableableAnnotations);
+			this.createControls(amountSitebarAnnotations, amountSubtitles, amountDisableableAnnotations);
 			if(amountSitebarAnnotations > 0){
-				thisPlayer.createAnnotationSidebar();
+				this.createAnnotationSidebar();
 			}
-			thisPlayer.setVolume(true, true);
-			thisPlayer.createAnnotations();
+			this.setVolume(true, true);
+			this.createAnnotations();
+			this.setProportions();
+			if(amountSitebarAnnotations > 0 && this.isAnnotationSidebarVisible){
+				this.slideInAnnotationSidebar();
+			}
 			if(autostart){
-				thisPlayer.playVideo();
+				this.playVideo();
 			}
 			else{
-				thisPlayer.pauseVideo();
+				this.pauseVideo();
 			}
 		}
 	};
@@ -933,7 +1075,12 @@ function SivaPlayer(DOMObject, arrayPosition){
 					thisPlayer.pauseVideo();
 				}
 				else{
-					thisPlayer.logAction('useButton', 'play', '');
+					if(!thisPlayer.currentSceneEnded){
+						thisPlayer.logAction('useButton', 'play', '');
+					}
+					else{
+						thisPlayer.logAction('useButton', 'replay', '');
+					}
 					thisPlayer.playVideo();
 				}
 			}
@@ -1063,7 +1210,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		});
 		controls.append(settings);
 		controls.append('<td class="sivaPlayer_spacer sivaPlayer_rightOuterSpacer"></td>');
-		$(this.player).append($('<table class="sivaPlayer_bottomControls sivaPlayer_controls"></table').append(controls));
+		$(this.player).append($('<table class="sivaPlayer_bottomControls sivaPlayer_controls sivaPlayer_transition"></table').append(controls));
 		this.setSubtitleButton();
 		this.setAnnotationButton();
 		this.updateTimeline(true);
@@ -1165,18 +1312,23 @@ function SivaPlayer(DOMObject, arrayPosition){
 		});
 		controls.append(searchButton);
 		if(this.configuration.common && this.configuration.common.log && (this.configuration.accessRestriction || this.configuration.common.logPath)){
+			controls.append('<td class="sivaPlayer_spacer"></td>');
 			var stats = $('<td class="sivaPlayer_button sivaPlayer_statsButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30"><path d="M0,1.73V29h30V1.73H0z M28.269,25.923H1.731V9.115h26.538V25.923z"/><g><line fill="none" stroke-miterlimit="10" x1="4.125" y1="12.625" x2="25.874" y2="12.625"/><line fill="none" stroke-miterlimit="10" x1="4.125" y1="17.375" x2="25.875" y2="17.375"/><line fill="none" stroke-miterlimit="10" x1="4.125" y1="22.125" x2="25.875" y2="22.125"/><line fill="none" stroke-miterlimit="10" x1="17.875" y1="9.875" x2="17.875" y2="25.124"/><line fill="none" stroke-miterlimit="10" x1="12.875" y1="9.875" x2="12.875" y2="25.125"/><line fill="none" stroke-miterlimit="10" x1="7.875" y1="9.875" x2="7.875" y2="25.125"/><line fill="none" stroke-miterlimit="10" x1="22.875" y1="9.875" x2="22.875" y2="25.124"/></g></svg></td>')
 			.click(function(){
 				thisPlayer.startLoader();
 				thisPlayer.tidyPlayer();
 				thisPlayer.logAction('useButton', 'stats', '');
 				thisPlayer.setPlayedBefore();
+				thisPlayer.logAction('openStats', '', '');
 				thisPlayer.createPopup('stats', true);
+				$('.sivaPlayer_statsPopup .sivaPlayer_closeButton div', this.player).click(function(){
+					thisPlayer.logAction('closeStats', '', '');
+				});
 				$('.sivaPlayer_statsPopup .sivaPlayer_title', thisPlayer.player).text(thisPlayer.getLabel('stats'));
 				$('.sivaPlayer_loader .sivaPlayer_logo', thisPlayer.player).show(0);
 				$('.sivaPlayer_loader .sivaPlayer_text', thisPlayer.player).text(thisPlayer.getLabel('syncing'));
 				sivaPlayerClearLog(function(message1, message2){
-					$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+					thisPlayer.stopLoader();
 					$('.sivaPlayer_statsPopup .sivaPlayer_message', thisPlayer.player).remove();
 					if((message1 && message1 != '') || (message2 && message2 != '')){
 						if(message1 == 'successfullySyncedMessage'){
@@ -1200,7 +1352,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 			controls.append(fullscreenButton);
 		}
 		controls.append('<td class="sivaPlayer_spacer"></td>');
-		$(this.player).append($('<table class="sivaPlayer_controls sivaPlayer_topControls"></table').append(controls));
+		$(this.player).append($('<table class="sivaPlayer_controls sivaPlayer_topControls sivaPlayer_transition"></table').append(controls));
 		if(this.history.length <= 1){
 			$('.sivaPlayer_prevButton', this.player).addClass('sivaPlayer_disabled');
 		}
@@ -1254,6 +1406,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		})
 		.click(function(){
 			var value = $(this).text().replace(/%/, '');
+			thisPlayer.logAction('selectVolume', '', value + '%');
 			thisPlayer.volume = value / 100;
 			thisPlayer.setVolume(true, true);
 		});
@@ -1409,14 +1562,14 @@ function SivaPlayer(DOMObject, arrayPosition){
 		.text(function(d){
 			return d + ' - ' + thisPlayer.formatTime(data[d] * 60);
 		});		
-		$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+		thisPlayer.stopLoader();
 	};
 	
 	this.createAnnotationSidebar = function(){
 		var thisPlayer = this;
 		var sidebar = $('<div class="sivaPlayer_annotationSidebar"></div>')
 		.css({'width': parseInt(this.configuration.style.annotationSidebarWidth * 100) + '%', 'right': '-' + parseInt(this.configuration.style.annotationSidebarWidth * 100) + '%'});
-		$(sidebar).append('<table class="sivaPlayer_annotationSidebarTable" cellspacing="0">' + ((this.configuration.common.collaboration) ? '<tr class="sivaPlayer_sidebarTabs"><td class="sivaPlayer_spacer"></td><td class="sivaPlayer_authorAnnotations">' + this.getLabel('authorAnnotationTab') + '</td><td class="sivaPlayer_communityAnnotations">' + this.getLabel('communityAnnotationTab') + '</td><td class="sivaPlayer_spacer"></td></tr>' : '') + '<tr><td class="sivaPlayer_spacer3"></td><td colspan="2" class="sivaPlayer_content"><div class="sivaPlayer_authorAnnotations"></div><div class="sivaPlayer_communityAnnotations"></td><td class="sivaPlayer_spacer2"></td></tr></table></div>');
+		$(sidebar).append(((this.configuration.common.collaboration) ? '<tr class="sivaPlayer_sidebarTabs"><td class="sivaPlayer_spacer"></td><td class="sivaPlayer_authorAnnotations">' + this.getLabel('authorAnnotationTab') + '</td><td class="sivaPlayer_communityAnnotations">' + this.getLabel('communityAnnotationTab') + '</td><td class="sivaPlayer_spacer"></td></tr>' : '') + '<div class="sivaPlayer_authorAnnotations"></div><div class="sivaPlayer_communityAnnotations"></div>');
 		if(this.visibleSidebarAnnotationType == 'sivaPlayer_authorAnnotations'){
 			$('.sivaPlayer_authorAnnotations', sidebar).addClass('sivaPlayer_active');
 			$('.sivaPlayer_communityAnnotations', sidebar).removeClass('sivaPlayer_active');
@@ -1471,45 +1624,47 @@ function SivaPlayer(DOMObject, arrayPosition){
 				e.stopPropagation();
 			}
 		});
-		this.setProportions();
-		if(this.isAnnotationSidebarVisible){
-			this.slideInAnnotationSidebar();
-		}
 	};
 	
 	this.slideInAnnotationSidebar = function(){
 		thisPlayer = this;
+		if($('.sivaPlayer_annotationSidebar').hasClass('sivaPlayer_update')){
+			return;
+		}
 		if(!this.configuration.common.annotationSidebarVisibility || this.configuration.common.annotationSidebarVisibility != 'never'){
 			$('.sivaPlayer_volumeControl', this.player).remove();
-			if(!this.configuration.common.annotationSidebarOverlay){
-				$('.sivaPlayer_videoContainer', this.player).animate(this.getVideoContainerProportions($('.sivaPlayer_mainVideo', this.player), $(this.player).width(), $(this.player).height(), true, true), 800);
-			}
-			$('.sivaPlayer_annotationSidebar', this.player).removeClass('sivaPlayer_transition').animate({'right': '0'}, 800, function(){
+			$('.sivaPlayer_annotationSidebar', this.player).addClass('sivaPlayer_update');
+			$('.sivaPlayer_videoContainer', this.player).css(this.getVideoContainerProportions($('.sivaPlayer_mainVideo', this.player), $(this.player).width(), $(this.player).height(), true, true));
+			$('.sivaPlayer_annotationSidebarButton', this.player).css({'right': parseInt(thisPlayer.configuration.style.annotationSidebarWidth * 100) + '%'});
+			$('.sivaPlayer_annotationSidebar', this.player).css({'right': '0'});
+			setTimeout(function(){
 				thisPlayer.isAnnotationSidebarVisible = true;
-				$('.sivaPlayer_annotationSidebarButton .sivaPlayer_annotationSidebarCloseButton', thisPlayer.player).show(0);
-				$('.sivaPlayer_annotationSidebarButton .sivaPlayer_annotationSidebarOpenButton', thisPlayer.player).hide(0);
-			});
-			$('.sivaPlayer_annotationSidebarButton', this.player).animate({'right': parseInt(thisPlayer.configuration.style.annotationSidebarWidth * 100) + '%'}, 800);
+				$('.sivaPlayer_annotationSidebarButton', thisPlayer.player).addClass('sivaPlayer_open');
+				$('.sivaPlayer_annotationSidebar', this.player).removeClass('sivaPlayer_update');
+			}, 800);			
 		}
 	};
 	
 	this.slideOutAnnotationSidebar = function(){
 		thisPlayer = this;
+		if($('.sivaPlayer_annotationSidebar').hasClass('sivaPlayer_update')){
+			return;
+		}
 		if(!this.configuration.common.annotationSidebarVisibility || this.configuration.common.annotationSidebarVisibility != 'always'){
 			this.annotationSidebarOpener = '';
 			$('.sivaPlayer_volumeControl', this.player).remove();
 			$.each($('.sivaPlayer_annotationSidebar video', this.player), function(){
 				this.pause();
 			});
-			if(!this.configuration.common.annotationSidebarOverlay){
-				$('.sivaPlayer_videoContainer', this.player).animate(this.getVideoContainerProportions($('.sivaPlayer_mainVideo', this.player), $(this.player).width(), $(this.player).height(), false, true), 800);
-			}
-			$('.sivaPlayer_annotationSidebar', this.player).removeClass('sivaPlayer_transition').animate({'right': '-' + parseInt(thisPlayer.configuration.style.annotationSidebarWidth * 100) + '%'}, 800, function(){
+			$('.sivaPlayer_annotationSidebar', this.player).addClass('sivaPlayer_update');
+			$('.sivaPlayer_videoContainer', this.player).css(this.getVideoContainerProportions($('.sivaPlayer_mainVideo', this.player), $(this.player).width(), $(this.player).height(), false, true));
+			$('.sivaPlayer_annotationSidebarButton', this.player).css({'right': 0});
+			$('.sivaPlayer_annotationSidebar', this.player).css({'right': '-' + parseInt(thisPlayer.configuration.style.annotationSidebarWidth * 100) + '%'});
+			setTimeout(function(){
 				thisPlayer.isAnnotationSidebarVisible = false;
-				$('.sivaPlayer_annotationSidebarButton .sivaPlayer_annotationSidebarCloseButton', thisPlayer.player).hide(0);
-				$('.sivaPlayer_annotationSidebarButton .sivaPlayer_annotationSidebarOpenButton', thisPlayer.player).show(0);
-			});
-			$('.sivaPlayer_annotationSidebarButton', this.player).animate({'right': 0}, 800);
+				$('.sivaPlayer_annotationSidebarButton', thisPlayer.player).removeClass('sivaPlayer_open');
+				$('.sivaPlayer_annotationSidebar', this.player).removeClass('sivaPlayer_update');
+			}, 800);
 		}
 	};
 	
@@ -1528,17 +1683,49 @@ function SivaPlayer(DOMObject, arrayPosition){
 			}
 		}
 		this.createMediaAnnotationControls();
-		$('.sivaPlayer_annotation img', this.player).hover(function(){
+		$('.sivaPlayer_richtextImage', this.player).attr('src', function(index, src){
+			$(this).attr('src', thisPlayer.configuration.videoPath + src);
+		});
+		$('.sivaPlayer_annotation.sivaPlayer_imageAnnotation img, .sivaPlayer_annotation.sivaPlayer_galleryAnnotation img', this.player).hover(function(){
 			$(this).addClass('sivaPlayer_hover');
 		}, function(){
 			$(this).removeClass('sivaPlayer_hover');
 		})
 		.click(function(){
 			thisPlayer.tidyPlayer();
-			var annotationId = $(this).closest('.sivaPlayer_annotation').attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_gallery/, '').replace(/sivaPlayer_active/, '').trim().replace(/sivaPlayer_/, '').split('_');
-			annotationId.pop();
-			thisPlayer.logAction('openImageAnnotation', annotationId.join('_'), $(this).attr('src').replace(new RegExp(thisPlayer.configuration.videoPath, 'g'), '').split('?')[0]);
+			var annotationId = thisPlayer.getAnnotationId($(this).closest('.sivaPlayer_annotation').attr('class'));
+			thisPlayer.logAction('openImageAnnotation', annotationId, $(this).attr('src').replace(new RegExp(thisPlayer.configuration.videoPath, 'g'), '').split('?')[0]);
 			thisPlayer.createImageZoom(this);
+		});
+		$('.sivaPlayer_annotation.sivaPlayer_imageAnnotation .sivaPlayer_title, .sivaPlayer_annotation.sivaPlayer_galleryAnnotation .sivaPlayer_title', this.player).click(function(){
+			thisPlayer.tidyPlayer();
+			var annotationId = thisPlayer.getAnnotationId($(this).closest('.sivaPlayer_annotation').attr('class'));
+			var image = $('img', $(this).closest('.sivaPlayer_annotation'))[0];
+			thisPlayer.logAction('openImageAnnotation', annotationId, $(image).attr('src').replace(new RegExp(thisPlayer.configuration.videoPath, 'g'), '').split('?')[0]);
+			thisPlayer.createImageZoom(image);
+		});
+		$('.sivaPlayer_pdfAnnotation', this.player).click(function(e){
+			thisPlayer.tidyPlayer();
+			var annotation = $(this).closest('.sivaPlayer_annotation');
+			var annotationId = thisPlayer.getAnnotationId($(annotation).attr('class'));
+			var link = $('a', annotation);
+			thisPlayer.logAction('openPdfAnnotation', annotationId, $(link).attr('href'));
+			thisPlayer.createPdfZoom(link);
+			e.preventDefault();
+		});
+		$('.sivaPlayer_richtextAnnotation', this.player).click(function(e){
+			thisPlayer.tidyPlayer();
+			var annotationId = thisPlayer.getAnnotationId($(this).attr('class'));
+			thisPlayer.logAction('openRichtextAnnotation', annotationId, $('.sivaPlayer_title', this).text());
+			thisPlayer.createRichtextZoom(annotationId);
+			e.preventDefault();
+		});
+		$('.sivaPlayer_annotation.sivaPlayer_videoAnnotation .sivaPlayer_title', this.player).click(function(){
+			thisPlayer.tidyPlayer();
+			var annotation = $(this).closest('.sivaPlayer_annotation');
+			var annotationId = thisPlayer.getAnnotationId($(annotation).attr('class'));
+			thisPlayer.logAction('manageMediaAnnotation', annotationId, 'openFullscreen');
+			thisPlayer.openMediaAnnotationFullscreen(annotation, annotationId);
 		});
 		$('.sivaPlayer_markerButton span, .sivaPlayer_markerEllipse ellipse, .sivaPlayer_markerRectangle rect, .sivaPlayer_markerPolygon polygon', this.player).hover(function(e){
 			$(this).parent().parent().addClass('sivaPlayer_active');
@@ -1549,9 +1736,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		})
 		.click(function(e){
 			thisPlayer.tidyPlayer();
-			var tmp = $(this).parent().parent().attr('class').replace(/sivaPlayer_annotation/, '').split('sivaPlayer_')[1].trim().split('_');
-			tmp.pop();
-			var annotationId = tmp.join('_');
+			var annotationId = thisPlayer.getAnnotationId($(this).parent().parent().attr('class'));
 			var annotation = thisPlayer.configuration.annotations[annotationId];
 			thisPlayer.logAction('clickMarkerAnnotation', annotationId, '');
 			var targetAnnotation = thisPlayer.configuration.annotations[(annotation.target)];
@@ -1580,7 +1765,6 @@ function SivaPlayer(DOMObject, arrayPosition){
 			}
 		});
 		this.updateAnnotations();
-		this.setProportions();
 	};
 	
 	this.createAnnotation = function(annotation, triggerId){
@@ -1588,10 +1772,15 @@ function SivaPlayer(DOMObject, arrayPosition){
 		var css = '';
 		if(annotation.type == 'image'){
 			content = '<img src="' + ((annotation.preview) ? this.getThumbnailURL(this.configuration.videoPath + annotation.content[this.currentLanguage].href) : this.configuration.videoPath + annotation.content[this.currentLanguage].href + ((this.configuration.accessRestriction && this.configuration.accessRestriction.accessToken) ? '?token=' + this.configuration.accessRestriction.accessToken : '')) + '" alt="' + this.getLabel('imageAnnotationAlt') + '" title="' + this.getLabel('imageAnnotationTooltip') + '" />';
+			css = 'sivaPlayer_imageAnnotation';
 		}
 		else if(annotation.type == 'richText'){
-			content = annotation.content[this.currentLanguage].content;
+			content = this.shortenText(annotation.content[this.currentLanguage].content, 150);
 			css = 'sivaPlayer_richtextAnnotation';
+		}
+		else if(annotation.type == 'pdf'){
+			content = '<a href="' + this.configuration.videoPath + annotation.content[this.currentLanguage].href + '" target="_blank">' + this.getLabel('pdfAnnotation_link') + '</a>';
+			css = 'sivaPlayer_pdfAnnotation';
 		}
 		else if(annotation.type == 'gallery'){
 			content = '<table><tr>';
@@ -1614,6 +1803,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 				content += '<source src="' + this.configuration.videoPath + annotation.files[i].url[this.currentLanguage].href + '.' + annotation.files[i].format + ((this.configuration.accessRestriction && this.configuration.accessRestriction.accessToken) ? '?token=' + this.configuration.accessRestriction.accessToken : '') + '" type="' + annotation.files[i].type + '" />';
 			}
 			content += '</video>';
+			css = 'sivaPlayer_videoAnnotation';
 		}
 		else if(annotation.type == 'audio'){
 			content = '<audio>';
@@ -1621,6 +1811,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 				content += '<source src="' + this.configuration.videoPath + annotation.files[i].url[this.currentLanguage].href + '.' + annotation.files[i].format + ((this.configuration.accessRestriction && this.configuration.accessRestriction.accessToken) ? '?token=' + this.configuration.accessRestriction.accessToken : '') + '" type="' + annotation.files[i].type + '" />';
 			}
 			content += '</audio>';
+			css = 'sivaPlayer_audioAnnotation';
 		}
 		else if(annotation.type == 'subTitle'){
 			content = '<table><tr><td>' + annotation.content[this.currentLanguage].content + '</td></tr></table>';
@@ -1652,7 +1843,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		}
 		
 		if(annotation.isSidebarAnnotation){
-			$('.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_authorAnnotations', this.player).prepend(content);
+			$('.sivaPlayer_annotationSidebar .sivaPlayer_authorAnnotations', this.player).prepend(content);
 		}
 		else{
 			$('.sivaPlayer_videoContainer', this.player).append(content);
@@ -1769,7 +1960,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 				if((!annotation.isSidebarAnnotation || $('.sivaPlayer_annotation.sivaPlayer_' + annotation.id + '_' + trigger.triggerId, this.player).parent().hasClass('sivaPlayer_active')) && $('.sivaPlayer_annotation.sivaPlayer_' + annotation.id + '_' + trigger.triggerId + ':hidden', this.player).length > 0){
 					$('.sivaPlayer_annotation.sivaPlayer_' + annotation.id + '_' + trigger.triggerId + ':hidden', this.player).fadeIn({'duration': 500, 'done': function(a, t){
 						if(a.isSidebarAnnotation){
-							$('.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_active', thisPlayer.player).scrollTop(0);
+							$('.sivaPlayer_annotationSidebar > .sivaPlayer_active', thisPlayer.player).scrollTop(0);
 						}
 						if(!a.isSidebarAnnotation || thisPlayer.isAnnotationSidebarVisible){
 							if(a.pauseVideo){
@@ -1785,7 +1976,6 @@ function SivaPlayer(DOMObject, arrayPosition){
 								$('.sivaPlayer_annotation.sivaPlayer_' + annotation.id + '_' + trigger.triggerId + ' audio', thisPlayer.player)[0].play();
 							}
 						}
-						thisPlayer.setProportions();
 					}(annotation, trigger)});
 				}
 			}
@@ -1794,7 +1984,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 					$('.sivaPlayer_annotation.sivaPlayer_' + annotation.id + '_' + trigger.triggerId + ':visible', this.player).fadeOut(500, function(a, t){
 						$('.sivaPlayer_annotation.sivaPlayer_' + annotation.id + '_' + trigger.triggerId, thisPlayer.player).removeClass('sivaPlayer_active');
 						if(a.isSidebarAnnotation){
-							$('.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_active', thisPlayer.player).scrollTop(0);
+							$('.sivaPlayer_annotationSidebar > .sivaPlayer_active', thisPlayer.player).scrollTop(0);
 						}
 						if(!a.isSidebarAnnotation || thisPlayer.isAnnotationSidebarVisible){
 							if(a.muteVideo){
@@ -1815,6 +2005,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 				}
 			}
 		}
+		thisPlayer.setProportions();
 		if(mute && this.previousVolume == -1){
 			this.previousVolume = this.volume;
 			this.volume = 0;
@@ -1833,17 +2024,16 @@ function SivaPlayer(DOMObject, arrayPosition){
 			if(!duration || isNaN(duration)){
 				duration = 0;
 			}
-			$(this).after('<table class="sivaPlayer_mediaAnnotationControls"><tr><td class="sivaPlayer_button sivaPlayer_playPauseButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 30 30" xml:space="preserve"><g class="sivaPlayer_playButton" title="' + thisPlayer.getLabel('playTooltip') + '"><polygon points="2,0 2,30 28,15"/></g><g class="sivaPlayer_pauseButton" title="' + thisPlayer.getLabel('pauseTooltip') + '"><rect x="2" width="10.4" height="30"/><rect x="17.6" width="10.4" height="30"/></g><g class="sivaPlayer_replayButton" title="' + thisPlayer.getLabel('replayTooltip') + '"><path d="M14.928,1.838c-2.375,0-4.605,0.599-6.566,1.64L4.192,0L2.209,14.822l12.707-5.878l-3.802-3.17 c1.188-0.448,2.469-0.706,3.813-0.706c5.992,0,10.852,4.857,10.852,10.852c0,5.994-4.859,10.851-10.852,10.851 c-5.12,0-9.401-3.55-10.542-8.32l-3.395-0.622C1.924,24.699,7.799,30,14.928,30c7.777,0,14.082-6.304,14.082-14.081 C29.01,8.142,22.705,1.838,14.928,1.838z"/></g></svg></td><td class="sivaPlayer_timelineCurrentTime">00:00</td><td class="sivaPlayer_timeline"><span class="sivaPlayer_timelineProgress"><span class="sivaPlayer_timelineProgressBar"><span></span></span></span></td><td class="sivaPlayer_timelineDuration">' + thisPlayer.formatTime(duration) + '</td><td class="sivaPlayer_button sivaPlayer_volumeButton"><svg title="' + thisPlayer.getLabel('volumeTooltip') + '" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 30 30" xml:space="preserve"><g class="sivaPlayer_muteButton"><path d="M26.533,2.611L0,26.595l1.427,1.712L27.961,4.322L26.533,2.611z M18.289,15.655c-0.045,6.851-0.784,12.307-1.695,12.307c-0.75,0-1.777-3.695-2.161-8.811l-4.978,4.494 c2.116,3.11,4.46,6.354,5.05,6.354h2.472c1.634,0,2.861-6.75,2.861-15.033l-0.006-0.705L18.289,15.655z M4.294,20.623h0.195 l10.383-9.378c-0.139-0.134-0.289-0.25-0.445-0.345c0.384-5.15,1.412-8.861,2.167-8.861c0.623,0,1.162,2.539,1.462,6.328 l1.389-1.256C18.972,2.839,18.105,0,17.044,0h-2.539c-0.8,0-4.395,5.64-6.694,9.378H4.294c-0.895,0-1.623,2.495-1.623,5.623 C2.672,18.128,3.4,20.623,4.294,20.623z"/></g><g class="sivaPlayer_unmuteButton"><path d="M26.881,4.771L25.27,5.718c1.268,2.919,1.939,6.145,1.939,9.357 s-0.672,6.438-1.939,9.357l1.611,0.947c1.377-3.221,2.1-6.778,2.1-10.305C28.98,11.543,28.258,7.99,26.881,4.771z M24.525,9.226 l-1.717,0.839c0.635,1.587,1.127,3.309,1.127,5.03s-0.492,3.469-1.127,5.056l1.639,0.569c0.762-1.875,1.268-3.692,1.268-5.708 C25.715,13.033,25.273,11.088,24.525,9.226z M20.527,13.424c0.494,1.07,0.486,2.454-0.021,3.796l1.496,0.565 c0.658-1.741,0.65-3.574-0.02-5.03L20.527,13.424z M16.999,0H14.45c-0.799,0-4.408,5.638-6.713,9.375H6.108h-1.51h-0.39 c-0.894,0-1.623,2.497-1.623,5.625c0,3.129,0.729,5.625,1.623,5.625h1.899v0.021h1.268C9.694,24.16,13.664,30,14.45,30h2.479 c1.639,0,2.871-6.75,2.871-15.032S18.633,0,16.999,0z M16.547,27.96c-0.756,0-1.786-3.716-2.173-8.858 c1.052-0.644,1.797-2.235,1.797-4.102c0-1.871-0.745-3.458-1.797-4.102c0.387-5.147,1.417-8.857,2.173-8.857 c0.943,0,1.705,5.801,1.705,12.959C18.252,22.152,17.49,27.96,16.547,27.96z"/></g></svg></td>' + (($(this).prop('tagName').toLowerCase() == 'video') ? '<td class="sivaPlayer_button sivaPlayer_fullScreenButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 30 30" xml:space="preserve"><g class="sivaPlayer_buttonNormalScreen" title="' + thisPlayer.getLabel('closeFullscreenTooltip') + '"><polygon points="16.863,13.127 18.451,2.821 21.17,5.542 26.721,-0.008 29.972,3.245 24.422,8.794 27.171,11.541 "/><polygon points="13.138,16.873 11.55,27.178 8.831,24.457 3.28,30.008 0.027,26.756 5.577,21.206 2.831,18.459"/><polygon points="13.136,13.103 2.83,11.514 5.549,8.793 0,3.243 3.252,-0.008 8.802,5.542 11.549,2.794"/><polygon points="16.863,16.898 27.171,18.486 24.45,21.206 30,26.756 26.747,30.008 21.197,24.457 18.451,27.204"/></g><g class="sivaPlayer_buttonFullScreen" title="' + thisPlayer.getLabel('fullscreenTooltip') + '"><polygon points="30,0.001 28.412,10.302 25.695,7.583 20.148,13.131 16.896,9.878 22.443,4.333 19.698,1.586"/><polygon points="0,29.999 1.588,19.699 4.306,22.418 9.852,16.871 13.104,20.121 7.557,25.668 10.302,28.415"/><polygon points="0,0 10.302,1.586 7.584,4.307 13.13,9.854 9.879,13.104 4.331,7.557 1.587,10.302"/><polygon points="30,30 19.698,28.414 22.417,25.693 16.871,20.147 20.121,16.898 25.669,22.444 28.414,19.699"/></g></svg></td>' : '') + '</tr></table>');
+			$(this).after('<span class="sivaPlayer_mediaAnnotationControlsHolder"><table class="sivaPlayer_mediaAnnotationControls"><tr><td class="sivaPlayer_button sivaPlayer_playPauseButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 30 30" xml:space="preserve"><g class="sivaPlayer_playButton" title="' + thisPlayer.getLabel('playTooltip') + '"><polygon points="2,0 2,30 28,15"/></g><g class="sivaPlayer_pauseButton" title="' + thisPlayer.getLabel('pauseTooltip') + '"><rect x="2" width="10.4" height="30"/><rect x="17.6" width="10.4" height="30"/></g><g class="sivaPlayer_replayButton" title="' + thisPlayer.getLabel('replayTooltip') + '"><path d="M14.928,1.838c-2.375,0-4.605,0.599-6.566,1.64L4.192,0L2.209,14.822l12.707-5.878l-3.802-3.17 c1.188-0.448,2.469-0.706,3.813-0.706c5.992,0,10.852,4.857,10.852,10.852c0,5.994-4.859,10.851-10.852,10.851 c-5.12,0-9.401-3.55-10.542-8.32l-3.395-0.622C1.924,24.699,7.799,30,14.928,30c7.777,0,14.082-6.304,14.082-14.081 C29.01,8.142,22.705,1.838,14.928,1.838z"/></g></svg></td><td class="sivaPlayer_timelineCurrentTime">00:00</td><td class="sivaPlayer_timeline"><span class="sivaPlayer_timelineProgress"><span class="sivaPlayer_timelineProgressBar"><span></span></span></span></td><td class="sivaPlayer_timelineDuration">' + thisPlayer.formatTime(duration) + '</td><td class="sivaPlayer_button sivaPlayer_volumeButton"><svg title="' + thisPlayer.getLabel('volumeTooltip') + '" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 30 30" xml:space="preserve"><g class="sivaPlayer_muteButton"><path d="M26.533,2.611L0,26.595l1.427,1.712L27.961,4.322L26.533,2.611z M18.289,15.655c-0.045,6.851-0.784,12.307-1.695,12.307c-0.75,0-1.777-3.695-2.161-8.811l-4.978,4.494 c2.116,3.11,4.46,6.354,5.05,6.354h2.472c1.634,0,2.861-6.75,2.861-15.033l-0.006-0.705L18.289,15.655z M4.294,20.623h0.195 l10.383-9.378c-0.139-0.134-0.289-0.25-0.445-0.345c0.384-5.15,1.412-8.861,2.167-8.861c0.623,0,1.162,2.539,1.462,6.328 l1.389-1.256C18.972,2.839,18.105,0,17.044,0h-2.539c-0.8,0-4.395,5.64-6.694,9.378H4.294c-0.895,0-1.623,2.495-1.623,5.623 C2.672,18.128,3.4,20.623,4.294,20.623z"/></g><g class="sivaPlayer_unmuteButton"><path d="M26.881,4.771L25.27,5.718c1.268,2.919,1.939,6.145,1.939,9.357 s-0.672,6.438-1.939,9.357l1.611,0.947c1.377-3.221,2.1-6.778,2.1-10.305C28.98,11.543,28.258,7.99,26.881,4.771z M24.525,9.226 l-1.717,0.839c0.635,1.587,1.127,3.309,1.127,5.03s-0.492,3.469-1.127,5.056l1.639,0.569c0.762-1.875,1.268-3.692,1.268-5.708 C25.715,13.033,25.273,11.088,24.525,9.226z M20.527,13.424c0.494,1.07,0.486,2.454-0.021,3.796l1.496,0.565 c0.658-1.741,0.65-3.574-0.02-5.03L20.527,13.424z M16.999,0H14.45c-0.799,0-4.408,5.638-6.713,9.375H6.108h-1.51h-0.39 c-0.894,0-1.623,2.497-1.623,5.625c0,3.129,0.729,5.625,1.623,5.625h1.899v0.021h1.268C9.694,24.16,13.664,30,14.45,30h2.479 c1.639,0,2.871-6.75,2.871-15.032S18.633,0,16.999,0z M16.547,27.96c-0.756,0-1.786-3.716-2.173-8.858 c1.052-0.644,1.797-2.235,1.797-4.102c0-1.871-0.745-3.458-1.797-4.102c0.387-5.147,1.417-8.857,2.173-8.857 c0.943,0,1.705,5.801,1.705,12.959C18.252,22.152,17.49,27.96,16.547,27.96z"/></g></svg></td>' + (($(this).prop('tagName').toLowerCase() == 'video') ? '<td class="sivaPlayer_button sivaPlayer_fullScreenButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 30 30" xml:space="preserve"><g class="sivaPlayer_buttonNormalScreen" title="' + thisPlayer.getLabel('closeFullscreenTooltip') + '"><polygon points="16.863,13.127 18.451,2.821 21.17,5.542 26.721,-0.008 29.972,3.245 24.422,8.794 27.171,11.541 "/><polygon points="13.138,16.873 11.55,27.178 8.831,24.457 3.28,30.008 0.027,26.756 5.577,21.206 2.831,18.459"/><polygon points="13.136,13.103 2.83,11.514 5.549,8.793 0,3.243 3.252,-0.008 8.802,5.542 11.549,2.794"/><polygon points="16.863,16.898 27.171,18.486 24.45,21.206 30,26.756 26.747,30.008 21.197,24.457 18.451,27.204"/></g><g class="sivaPlayer_buttonFullScreen" title="' + thisPlayer.getLabel('fullscreenTooltip') + '"><polygon points="30,0.001 28.412,10.302 25.695,7.583 20.148,13.131 16.896,9.878 22.443,4.333 19.698,1.586"/><polygon points="0,29.999 1.588,19.699 4.306,22.418 9.852,16.871 13.104,20.121 7.557,25.668 10.302,28.415"/><polygon points="0,0 10.302,1.586 7.584,4.307 13.13,9.854 9.879,13.104 4.331,7.557 1.587,10.302"/><polygon points="30,30 19.698,28.414 22.417,25.693 16.871,20.147 20.121,16.898 25.669,22.444 28.414,19.699"/></g></svg></td>' : '') + '</tr></table></span>');
 			$(this).after('<span class="sivaPlayer_mediaHolder"></span>');
 			var mediaHolder = $(this).siblings('.sivaPlayer_mediaHolder');
 			$(this).prependTo(mediaHolder);
 			if($(this).prop('tagName').toLowerCase() == 'video'){
 				$(mediaHolder).append('<span class="sivaPlayer_overlayButton"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="80px" height="80px" viewBox="0 0 300 300"><circle cx="150" cy="150" r="150"/><g class="sivaPlayer_playButton" title="' + thisPlayer.getLabel('playTooltip') + '"><polygon points="108.5,82.767 108.5,225.856 232.5,154.31 "/></g><g class="sivaPlayer_replayButton" title="' + thisPlayer.getLabel('replayTooltip') + '"><path d="M149.539,64.941c-15.144,0-29.366,3.874-41.87,10.596L81.087,53.065l-12.647,95.786l81.024-37.991 l-24.24-20.486c7.577-2.896,15.741-4.557,24.315-4.557c38.209,0,69.193,31.392,69.193,70.128c0,38.73-30.984,70.12-69.193,70.12 c-32.647,0-59.939-22.94-67.226-53.769l-21.645-4.021c5.953,44.404,43.414,78.658,88.87,78.658 c49.592,0,89.792-40.736,89.792-90.989C239.331,105.678,199.131,64.941,149.539,64.941z"/></g></svg></span>');
 				$(mediaHolder).click(function(){
-					var annotationId = $(this).parent().attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-					annotationId.pop();
+					var annotationId = thisPlayer.getAnnotationId($(this).parent().attr('class'));
 					var mediaElement = $('video', this)[0];
-					thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), ((mediaElement.paused) ? 'play' : 'pause'));
+					thisPlayer.logAction('manageMediaAnnotation', annotationId, ((mediaElement.paused) ? ((!mediaElement.ended) ? 'play' : 'replay') : 'pause'));
 					if(mediaElement.paused){
 						mediaElement.play();
 					}
@@ -1866,9 +2056,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 					this.currentTime = 0;
 					this.ended = false;
 				}
-				var annotationId = $(this).parent().parent().attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-				annotationId.pop();
-				annotationId = annotationId.join('_');
+				var annotationId = thisPlayer.getAnnotationId($(this).parent().parent().attr('class'));
 				if(thisPlayer.configuration.annotations[annotationId] && !(thisPlayer.configuration.annotations[annotationId].playSynced || thisPlayer.configuration.annotations[annotationId].playFree)){
 					$('.sivaPlayer_videoContainer .sivaPlayer_mainVideo', thisPlayer.player)[0].pause();
 				}
@@ -1887,15 +2075,14 @@ function SivaPlayer(DOMObject, arrayPosition){
 				thisPlayer.playingMediaAnnotations.pop();
 			})
 			.bind('volumechange', function(){
-				var annotationId = $(this).parent().parent().attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-				annotationId.pop();
+				var annotationId = thisPlayer.getAnnotationId($(this).parent().parent().attr('class'));
 				if(this.volume == 0){
-					thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'mute');
+					thisPlayer.logAction('manageMediaAnnotation', annotationId, 'mute');
 					$('.sivaPlayer_muteButton', $(this).parent().parent()).show(0);
 					$('.sivaPlayer_unmuteButton', $(this).parent().parent()).hide(0);
 				}
 				else{
-					thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'unmute');
+					thisPlayer.logAction('manageMediaAnnotation', annotationId, 'unmute');
 					$('.sivaPlayer_muteButton', $(this).parent().parent()).hide(0);
 					$('.sivaPlayer_unmuteButton', $(this).parent().parent()).show(0);
 				}
@@ -1903,18 +2090,16 @@ function SivaPlayer(DOMObject, arrayPosition){
 			.bind('ended', function(){
 				this.ended = true;
 				this.pause();
-				var annotationId = $(this).parent().parent().attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-				annotationId.pop();
-				thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'end');
+				var annotationId = thisPlayer.getAnnotationId($(this).parent().parent().attr('class'));
+				thisPlayer.logAction('manageMediaAnnotation', annotationId, 'end');
 				$('.sivaPlayer_replayButton, .sivaPlayer_overlayButton', $(this).parent().parent()).show(0);
 				$('.sivaPlayer_playButton, .sivaPlayer_pauseButton', $(this).parent().parent()).hide(0);
 			});		
 			var controls = $('.sivaPlayer_mediaAnnotationControls', $(this).parent().parent());
 			$('.sivaPlayer_playPauseButton', controls).click(function(){
 				var mediaElement = $(this).closest('.sivaPlayer_annotation').find('video, audio')[0];
-				var annotationId = $(this).closest('.sivaPlayer_annotation').attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-				annotationId.pop();
-				thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), ((mediaElement.paused) ? 'play' : 'pause'));
+				var annotationId = thisPlayer.getAnnotationId($(this).closest('.sivaPlayer_annotation').attr('class'));
+				thisPlayer.logAction('manageMediaAnnotation', annotationId, ((mediaElement.paused) ? ((!mediaElement.ended) ? 'play' : 'replay') : 'pause'));
 				if(mediaElement.paused){
 					mediaElement.play();
 				}
@@ -1954,10 +2139,13 @@ function SivaPlayer(DOMObject, arrayPosition){
 				var mediaElement = $(this).closest('.sivaPlayer_annotation').find('video, audio')[0];
 				var percentage = (e.pageX - $(this).offset().left) / $(this).width();
 				var duration = mediaElement.duration;
-				var annotationId = $(this).closest('.sivaPlayer_annotation').attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-				annotationId.pop();
-				thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'seek');
+				var annotationId = thisPlayer.getAnnotationId($(this).closest('.sivaPlayer_annotation').attr('class'));
+				thisPlayer.logAction('manageMediaAnnotation', annotationId, 'seek');
 				mediaElement.currentTime = duration * percentage;
+				if(mediaElement.paused){
+					$('.sivaPlayer_playButton, .sivaPlayer_overlayButton', $(this).closest('.sivaPlayer_annotation')).show(0);
+					$('.sivaPlayer_replayButton, .sivaPlayer_pauseButton', $(this).closest('.sivaPlayer_annotation')).hide(0);
+				}
 				thisPlayer.updateMediaAnnotationTimelines(true);
 			});
 			$('.sivaPlayer_volumeButton', controls).click(function(){
@@ -1966,39 +2154,14 @@ function SivaPlayer(DOMObject, arrayPosition){
 			});
 			$('.sivaPlayer_fullScreenButton', controls).click(function(){
 				var videoElement = $(this).closest('.sivaPlayer_annotation')[0];
-				var annotationId = $(videoElement).attr('class').replace(/sivaPlayer_annotation/, '').replace(/sivaPlayer_active/, '').replace(/sivaPlayer_transition/, '').replace(/sivaPlayer_fullscreen/, '').trim().replace(/sivaPlayer_/, '').split('_');
-				annotationId.pop();
+				var annotationId = thisPlayer.getAnnotationId($(videoElement).attr('class'));
 				if(!$(videoElement).hasClass('sivaPlayer_fullscreen')){
-					thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'openFullscreen');
-					$(videoElement).append('<div class="sivaPlayer_mediaTop"></div><span class="sivaPlayer_closeButton sivaPlayer_button"><svg title="' + thisPlayer.getLabel('closeTooltip') + '" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="52.455px" height="52.455px" viewBox="0 0 52.455 52.455" xml:space="preserve"><path d="M-0.163,1l2.114-1.003L52.618,50.33l-2.114,2.128L-0.163,1z"/><path d="M50.333,0l2.122,2.122L2.122,52.455L0,50.333L50.333,0z"/></svg></span>')
-					.addClass('sivaPlayer_transition')
-					.addClass('sivaPlayer_fullscreen');
-					$('video', videoElement).css('height', $(thisPlayer.player).height());
-					$('.sivaPlayer_mediaAnnotationControls .sivaPlayer_button svg', videoElement).attr('width', '30px').attr('height', '30px');
-					$('.sivaPlayer_overlayButton svg', videoElement).attr('width', '300px').attr('height', '300px');
-					$(this).closest('.sivaPlayer_videoContainer, .sivaPlayer_annotationSidebar').addClass('sivaPlayer_transition')
-					.addClass('sivaPlayer_fullscreen');
-					if($('.sivaPlayer_videoContainer', thisPlayer.player).hasClass('sivaPlayer_fullscreen')){
-						$('.sivaPlayer_videoBackground', thisPlayer.player).addClass('sivaPlayer_transition')
-						.addClass('sivaPlayer_fullscreen');
-					}
-					$('.sivaPlayer_closeButton', videoElement).click(function(){
-						thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'closeFullscreen');
-						thisPlayer.closeMediaAnnotationFullscreen(videoElement);
-					});
-					$('.sivaPlayer_buttonNormalScreen', videoElement).show();
-					$('.sivaPlayer_buttonFullScreen', videoElement).hide();
-					thisPlayer.setPlayedBefore($('video', videoElement)[0]);
-					setTimeout(function(){
-						thisPlayer.setProportions();
-					}, 200);
+					thisPlayer.logAction('manageMediaAnnotation', annotationId, 'openFullscreen');
+					thisPlayer.openMediaAnnotationFullscreen(videoElement);
 				}
 				else{
-					thisPlayer.logAction('manageMediaAnnotation', annotationId.join('_'), 'closeFullscreen');
+					thisPlayer.logAction('manageMediaAnnotation', annotationId, 'closeFullscreen');
 					thisPlayer.closeMediaAnnotationFullscreen(videoElement);
-					setTimeout(function(){
-						thisPlayer.setProportions();
-					}, 500);
 				}
 						
 			});
@@ -2006,19 +2169,49 @@ function SivaPlayer(DOMObject, arrayPosition){
 		});
 	};
 	
+	this.openMediaAnnotationFullscreen = function(videoElement){
+		thisPlayer = this;
+		$(videoElement).append('<span class="sivaPlayer_closeButton sivaPlayer_button"><svg title="' + thisPlayer.getLabel('closeTooltip') + '" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="52.455px" height="52.455px" viewBox="0 0 52.455 52.455" xml:space="preserve"><path d="M-0.163,1l2.114-1.003L52.618,50.33l-2.114,2.128L-0.163,1z"/><path d="M50.333,0l2.122,2.122L2.122,52.455L0,50.333L50.333,0z"/></svg></span>')
+		.addClass('sivaPlayer_transition')
+		.addClass('sivaPlayer_fullscreen')
+		.css('display', 'table');
+		$('.sivaPlayer_mediaAnnotationControls .sivaPlayer_button svg', videoElement).attr('width', '30px').attr('height', '30px');
+		$('.sivaPlayer_overlayButton svg', videoElement).attr('width', '300px').attr('height', '300px');
+		$(videoElement).closest('.sivaPlayer_videoContainer, .sivaPlayer_annotationSidebar').addClass('sivaPlayer_fullscreen');
+		if($('.sivaPlayer_videoContainer', thisPlayer.player).hasClass('sivaPlayer_fullscreen')){
+			$('.sivaPlayer_videoBackground', thisPlayer.player).addClass('sivaPlayer_transition')
+			.addClass('sivaPlayer_fullscreen');
+		}
+		$('.sivaPlayer_closeButton', videoElement).click(function(){
+			thisPlayer.logAction('manageMediaAnnotation', thisPlayer.getAnnotationId($(videoElement).attr('class')), 'closeFullscreen');
+			thisPlayer.closeMediaAnnotationFullscreen(videoElement);
+		});
+		$('.sivaPlayer_buttonNormalScreen', videoElement).show();
+		$('.sivaPlayer_buttonFullScreen', videoElement).hide();
+		thisPlayer.setPlayedBefore($('video', videoElement)[0]);
+		setTimeout(function(){
+			thisPlayer.setProportions();
+		}, 500);
+	};
+	
 	this.closeMediaAnnotationFullscreen = function(videoElement){
-		$(videoElement).removeClass('sivaPlayer_fullscreen');
+		thisPlayer = this;
+		$(videoElement).removeClass('sivaPlayer_fullscreen')
+		.css('display', 'block');
 		$('video', videoElement).css('height', 'auto');
 		$('.sivaPlayer_videoBackground, .sivaPlayer_videoContainer, .sivaPlayer_annotationSidebar', this.player).removeClass('sivaPlayer_fullscreen');
 		$('.sivaPlayer_mediaAnnotationControls .sivaPlayer_button svg', videoElement).attr('width', '20px').attr('height', '20px');
 		$('.sivaPlayer_overlayButton svg', videoElement).attr('width', '80px').attr('height', '80px');
 		$('.sivaPlayer_mediaTop, .sivaPlayer_closeButton', videoElement).remove();
-		$('.sivaPlayer_buttonNormalScreen', videoElement).hide();
-		$('.sivaPlayer_buttonFullScreen', videoElement).show();
+		$('.sivaPlayer_buttonNormalScreen', videoElement).hide(0);
+		$('.sivaPlayer_buttonFullScreen', videoElement).show(0);
 		if($('video', videoElement)[0].paused){
 			this.restorePlayedBefore();
 		}
 		this.clearPlayedBefore();
+		setTimeout(function(){
+			thisPlayer.setProportions();
+		}, 500);
 	};
 	
 	this.updateMediaAnnotationTimelines = function(alwaysUpdate){
@@ -2046,6 +2239,30 @@ function SivaPlayer(DOMObject, arrayPosition){
 		}
 	};
 	
+	this.createPdfZoom = function(pdfElement){
+		var thisPlayer = this;
+		thisPlayer.setPlayedBefore();
+		thisPlayer.createPopup('pdf', true);
+		$('.sivaPlayer_pdfPopup .sivaPlayer_closeButton', this.player).click(function(){
+			thisPlayer.logAction('closePdfAnnotation', '', '');
+		});
+		$('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).text($('.sivaPlayer_title', $(pdfElement).closest('.sivaPlayer_annotation')).text());		
+		$('.sivaPlayer_pdfPopup .sivaPlayer_content', this.player).empty().append(this.getLabel('pdfAnnotation_error') + '<iframe src="' + $(pdfElement).attr('href') + '"></iframe>');
+	};
+	
+	this.createRichtextZoom = function(annotationId){
+		var thisPlayer = this;
+		thisPlayer.setPlayedBefore();
+		thisPlayer.createPopup('richtext', true);
+		$('.sivaPlayer_richtextPopup .sivaPlayer_closeButton', this.player).click(function(){
+			thisPlayer.logAction('closeRichtextAnnotation', '', '');
+		});
+		var annotation = this.configuration.annotations[annotationId];
+		console.log(this.configuration.annotations, annotationId);
+		$('.sivaPlayer_richtextPopup .sivaPlayer_title', this.player).text(annotation.title[this.currentLanguage].content);		
+		$('.sivaPlayer_richtextPopup .sivaPlayer_scrollable', this.player).empty().append(annotation.content[this.currentLanguage].content);
+	};
+	
 	this.createImageZoom = function(imageElement){
 		var thisPlayer = this;
 		thisPlayer.setPlayedBefore();
@@ -2053,7 +2270,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		$('.sivaPlayer_zoomPopup .sivaPlayer_closeButton div', this.player).click(function(){
 			thisPlayer.logAction('closeImageAnnotation', '', '');
 		});
-		$('.sivaPlayer_zoomPopup .sivaPlayer_title', this.player).text('');
+		$('.sivaPlayer_zoomPopup .sivaPlayer_title', this.player).text($('.sivaPlayer_title', $(imageElement).closest('.sivaPlayer_annotation')).text());		
 		$('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).empty().append('<img src="' + this.getOriginalImageURL($(imageElement).attr('src')) + '" alt="' + this.getLabel('zoomImageTooltip') + '" />');
 		if($(imageElement).hasClass('sivaPlayer_galleryImage')){
 			var thumbnails = '';
@@ -2069,15 +2286,15 @@ function SivaPlayer(DOMObject, arrayPosition){
 			.click(function(){
 				thisPlayer.logAction('changeOpenedImage', 'imageClick', $(this).attr('src'));
 				thisPlayer.setZoomImage(this);
-			});		
+			});
 			
-			var prevButton = $('<svg title="' + this.getLabel('previousImageTooltip') + '" class="sivaPlayer_galleryPreviousButton sivaPlayer_button" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="50px" viewBox="0 0 30 50" xml:space="preserve"><polygon points="26.396,0 1.333,25 26.396,50 28.667,47.5 6.167,25 28.667,2.5 "/></svg>')
+			var prevButton = $('<svg title="' + this.getLabel('previousImageTooltip') + '" class="sivaPlayer_galleryPreviousButton sivaPlayer_button" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="300px" height="300px" viewBox="0 0 300 300" xml:space="preserve"><circle cx="150.483" cy="150" r="150"/><polygon points="205.209,26.998 84.854,147.053 205.209,267.107 216.116,255.103 108.067,147.053 216.116,39.003 "/></svg>')
 			.click(function(){
 				thisPlayer.setPreviousZoomImage();
 			});
 			
 			$('.sivaPlayer_zoomPopup .sivaPlayer_content', this.player).prepend(prevButton);
-			var nextButton = $('<svg title="' + this.getLabel('nextImageTooltip') + '" version="1.1" class="sivaPlayer_galleryNextButton sivaPlayer_button" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="50px" viewBox="0 0 30 50" xml:space="preserve"><polygon points="3.605,0 28.667,25 3.605,50 1.333,47.5 23.833,25 1.333,2.5 "/></svg>')
+			var nextButton = $('<svg title="' + this.getLabel('nextImageTooltip') + '" version="1.1" class="sivaPlayer_galleryNextButton sivaPlayer_button" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="300px" height="300px" viewBox="0 0 300 300" xml:space="preserve"><circle cx="150.482" cy="150" r="150"/><polygon points="95.759,267.109 216.114,147.055 95.759,27 84.852,39.005 192.9,147.055 84.852,255.104 "/></svg>')
 			.click(function(){
 				thisPlayer.setNextZoomImage();
 			});
@@ -2089,7 +2306,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 					thisPlayer.setNextZoomImage();
 				}
 			});
-			$('.sivaPlayer_zoomPopup .sivaPlayer_closeButton div', this.player).click(function(){
+			$('.sivaPlayer_zoomPopup .sivaPlayer_closeButton', this.player).click(function(){
 				$(document).unbind('keydown')
 				.keydown(function(e) {
 				    if(e.keyCode == 32) {
@@ -2192,11 +2409,42 @@ function SivaPlayer(DOMObject, arrayPosition){
 		return r + ',' + g + ',' + b;
 	};
 	
+	this.shortenText = function(text, maxLength){
+		var newText = [];
+		var newLength = 0;
+		text = $('<div></div>').append(text).text().split(' ');
+		var i = 0;
+		for(; i < text.length && newLength <= maxLength; i++){
+			var tmp = text[i];
+			if(tmp.length > 0){
+				newText.push(tmp);
+				newLength += tmp.length + 1;
+			}
+		}
+		newText = newText.join(' ');
+		if(i < text.length - 1){
+			newText += '...';
+		}
+		return newText + ' <span class="sivaPlayer_readMoreLink">' + this.getLabel('readMoreLink') + '</span>';
+	};
+	
+	this.getAnnotationId = function(classes){
+		console.log(classes);
+		var replace = ['annotation', 'imageAnnotation', 'galleryAnnotation', 'videoAnnotation', 'audioAnnotation', 'richtextAnnotation', 'pdfAnnotation', 'active', 'transition', 'fullscreen', ''];
+		for(var i = 0; i < replace.length; i++){
+			classes = classes.replace(new RegExp('sivaPlayer_' + replace[i], ''), '');
+			console.log(classes, 'sivaPlayer_' + replace[i]);
+		}
+		classes = classes.trim().split('_');
+		classes.pop();
+		return classes.join('_');
+	};
+	
 	this.fadeInFadeOutControls = function(delay){
 		var thisPlayer = this;
 		$('.sivaPlayer_mainVideo, .sivaPlayer_videoBackground', this.player).css('cursor', 'pointer');
 		if($('.sivaPlayer_bottomControls', this.player).length > 0){
-			$.when($('.sivaPlayer_controls', this.player).stop(true, true).fadeIn(700)).done(function(){
+			$.when($('.sivaPlayer_controls', this.player).addClass('sivaPlayer_active')).done(function(){
 				var previousDisplayTime = thisPlayer.controlsDisplayTime;
 				thisPlayer.controlsDisplayTime = delay;
 				if(previousDisplayTime <= 0){
@@ -2220,7 +2468,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 		}
 		else{
 			this.controlsDisplayTime = 0;
-			$('.sivaPlayer_controls', this.player).stop(true, true).fadeOut(700);
+			$('.sivaPlayer_controls', this.player).removeClass('sivaPlayer_active');
 			$('.sivaPlayer_volumeUpdate', this).remove();
 			var videoElement = $('.sivaPlayer_mainVideo', thisPlayer.player);
 			if(videoElement.length > 0 && !videoElement[0].paused){
@@ -2270,7 +2518,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 			if(!videoElement[0].paused){
 				setTimeout(function(){
 					thisPlayer.updateTimeline(false);
-				}, 200);
+				}, 300);
 			}
 		}
 	};
@@ -2288,7 +2536,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 	this.createNodeSelectionPopup = function(node){
 		var thisPlayer = this;
 		this.pauseVideo();
-		$('sivaPlayer_nodeSelectionPopup, .sivaPlayer_nodeSelectionSidebar', this.player).remove();
+		$('.sivaPlayer_nodeSelectionPopup, .sivaPlayer_nodeSelectionSidebar', this.player).remove();
 		var isVideoElementAvailable = ($('.sivaPlayer_mainVideo', this.player).length > 0);
 		var timeoutData = {};
 		var nodes = '<div class="sivaPlayer_sceneList">';
@@ -2329,7 +2577,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 			$(this.player).append('<div class="sivaPlayer_nodeSelectionSidebar"><div class="sivaPlayer_holder"><div class="sivaPlayer_title">' + title + '</div></div></div>');
 			$('.sivaPlayer_nodeSelectionSidebar .sivaPlayer_holder', this.player).append(nodes);
 			$('.sivaPlayer_nodeSelectionSidebar', this.player).css('width', parseInt(this.configuration.style.nodeSelectionSidebarWidth * 100) + '%')
-			.fadeIn(800);
+			.show(0);
 		}
 		else{
 			this.createTopControls(node, false);
@@ -2519,7 +2767,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 			});
 		}
 		else if(inputSufficient){
-			$('.sivaPlayer_searchSidebar .sivaPlayer_results', this.player).append(this.getLabel('searchNoMatches'));
+			$('.sivaPlayer_searchSidebar .sivaPlayer_results', this.player).append('<span class="sivaPlayer_empty">' + this.getLabel('searchNoMatches') + '</span>');
 		}
 	};
 	
@@ -2566,7 +2814,7 @@ function SivaPlayer(DOMObject, arrayPosition){
 				$('.sivaPlayer_loader .sivaPlayer_logo', thisPlayer.player).show(0);
 				$('.sivaPlayer_loader .sivaPlayer_text', thisPlayer.player).text(thisPlayer.getLabel('syncing'));
 				sivaPlayerClearLog(function(message1, message2){
-					$('.sivaPlayer_loader', thisPlayer.player).fadeOut(800);
+					thisPlayer.stopLoader();
 					$('.sivaPlayer_settingsPopup .sivaPlayer_message', thisPlayer.player).remove();
 					if((message1 && message1 != '') || (message2 && message2 != '')){
 						thisPlayer.setSessionAmount();
@@ -2727,13 +2975,13 @@ function SivaPlayer(DOMObject, arrayPosition){
 	
 	this.createPopup = function(id, hasCloseButton){
 		var thisPlayer = this;
-		var popup = $('<table class="sivaPlayer_popup sivaPlayer_' + id + 'Popup' + ((hasCloseButton) ? ' sivaPlayer_closePopup' : '') + '"><tr class="sivaPlayer_spacer sivaPlayer_closeButton"><td colspan="3"><div class="sivaPlayer_spacer"><span class="sivaPlayer_button"><svg title="' + this.getLabel('closeTooltip') + '" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="52.455px" height="52.455px" viewBox="0 0 52.455 52.455" xml:space="preserve"><path d="M-0.163,1l2.114-1.003L52.618,50.33l-2.114,2.128L-0.163,1z"/><path d="M50.333,0l2.122,2.122L2.122,52.455L0,50.333L50.333,0z"/></svg></span></div></td></tr><tr><td class="sivaPlayer_spacer"></td><td class="sivaPlayer_title"></td><td class="sivaPlayer_spacer"></td></tr><tr><td class="sivaPlayer_spacer"></td><td class="sivaPlayer_content"><div class="sivaPlayer_scrollable"></div></td><td class="sivaPlayer_spacer"></td></tr></table>');
-		$('.sivaPlayer_closeButton .sivaPlayer_button svg', popup)
+		var popup = $('<div class="sivaPlayer_popup sivaPlayer_' + id + 'Popup' + ((hasCloseButton) ? ' sivaPlayer_closePopup' : '') + '"><table><tr><td class="sivaPlayer_title"></td></tr><tr><td class="sivaPlayer_content"><div class="sivaPlayer_scrollable"></div></td></tr></table><span class="sivaPlayer_button sivaPlayer_closeButton"><svg title="' + this.getLabel('closeTooltip') + '" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="52.455px" height="52.455px" viewBox="0 0 52.455 52.455" xml:space="preserve"><path d="M-0.163,1l2.114-1.003L52.618,50.33l-2.114,2.128L-0.163,1z"/><path d="M50.333,0l2.122,2.122L2.122,52.455L0,50.333L50.333,0z"/></svg></span></div>');
+		$('.sivaPlayer_closeButton.sivaPlayer_button svg', popup)
 			.click(function(){
 				thisPlayer.closePopups(600);
 			});
 		if(!hasCloseButton){
-			$('.sivaPlayer_closeButton .sivaPlayer_button', popup).remove();
+			$('.sivaPlayer_closeButton.sivaPlayer_button', popup).remove();
 		}
 		$(this.player).prepend(popup);
 		this.setProportions();
@@ -2774,10 +3022,17 @@ function SivaPlayer(DOMObject, arrayPosition){
 	};
 	
 	this.getLabel = function(key){
-		if(!this.currentLanguage)
-			return key;
+		if(!this.currentLanguage){
+			for(var lang in sivaPlayerLanguage){
+				this.currentLanguage = lang;
+				break;
+			}
+			if(!this.currentLanguage){
+				this.throwError(new Error('No language file defined.'), false);
+			}
+		}
 		var language = this.currentLanguage.split('-')[0].toLowerCase();
-		if(!sivaPlayerLanguage[language][key]){
+		if(!sivaPlayerLanguage[language] || !sivaPlayerLanguage[language][key]){
 			return key;
 		}
 		else{
@@ -2974,7 +3229,7 @@ function SivaPlayerFatalException(player, error, customException){
 	this.showMessage = function(){
 		$(player)
 			.empty()
-			.append('<table class="sivaPlayer_fatalError ' + ((!customException) ? 'sivaPlayer_browserError' : '') + '"><tr class="sivaPlayer_spacer"><td colspan="3"></td></tr><tr><td class="sivaPlayer_spacer"></td><td class="sivaPlayer_title">An error occurred</td><td class="sivaPlayer_spacer"></td></tr><tr><td class="sivaPlayer_spacer"></td><td class="sivaPlayer_content">' + this.error.message + ((this.error.fileName) ? '<br />in <i>' + this.error.fileName + ':' + this.error.lineNumber + ':' + this.error.columnNumber + '</i>' : '') + '</td><td class="sivaPlayer_spacer"></td></tr></table>');
+			.append('<div class="sivaPlayer_popup sivaPlayer_fatalError' + ((!customException) ? ' sivaPlayer_browserError' : '') + '"><table><tr><td class="sivaPlayer_title">An error occurred</td></tr><tr><td class="sivaPlayer_content"><div class="sivaPlayer_scrollable">' + this.error.message + ((this.error.fileName) ? '<br />in <i>' + this.error.fileName + ':' + this.error.lineNumber + ':' + this.error.columnNumber + '</i>' : '') + '</div></td></tr></table></div>');
 	};
 }
 

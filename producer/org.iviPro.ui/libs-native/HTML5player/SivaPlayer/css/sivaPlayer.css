@@ -62,6 +62,13 @@ z-index:200;
 z-index:90;
 }
 
+.sivaPlayer_popup table{
+width:100%;
+height:100%;
+border-collapse:collapse;
+border:none;
+}
+
 .sivaPlayer_mobileHelper{
 position:absolute;
 top:0;
@@ -126,13 +133,20 @@ background:#1173AA;
 margin-right:30px;
 }
 
-.sivaPlayer_fatalError{
-background:#952329;
-color:#ffffff;
+.sivaPlayer_loading .sivaPlayer_loadingDots.sivaPlayer_transition, .sivaPlayer_videoContainer, .sivaPlayer_annotationSidebarButton, .sivaPlayer_annotationSidebar{
+-webkit-transition:all 0.8s ease;
+-moz-transition:all 0.8s ease;
+-o-transition:all 0.8s ease;
+transition:all 0.8s ease;
 }
 
-.sivaPlayer_fatalError.sivaPlayer_browserError{
-background:red;
+.sivaPlayer_popup.sivaPlayer_fatalError, .sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_content{
+background:#952329 !important;
+color:#ffffff !important;
+}
+
+.sivaPlayer_popup.sivaPlayer_fatalError.sivaPlayer_browserError{
+background:red !important;
 }
 
 .sivaPlayer_popup {
@@ -140,31 +154,20 @@ background:#1173AA;
 color:#ffffff;
 }
 
+.sivaPlayer_popup.sivaPlayer_zoomPopup, .sivaPlayer_popup.sivaPlayer_pdfPopup, .sivaPlayer_popup.sivaPlayer_richtextPopup{
+color:#1173AA;
+background:#ffffff;	
+}
+
 .sivaPlayer_fatalError td, .sivaPlayer_popup td{
 vertical-align:top;
-font-size:15px;
-}
-
-.sivaPlayer_fatalError tr.sivaPlayer_spacer, .sivaPlayer_popup tr.sivaPlayer_spacer{
-height:20%;
-min-height:40px;
-}
-
-.sivaPlayer_fatalError td.sivaPlayer_spacer, .sivaPlayer_popup td.sivaPlayer_spacer{
-width:10%;
-}
-
-.sivaPlayer_fatalError .sivaPlayer_title, .sivaPlayer_popup .sivaPlayer_title, .sivaPlayer_popup .sivaPlayer_title2{
-font-size:32px;
-font-weight:300;
-vertical-align:top;
-height:45px;
 }
 
 .sivaPlayer_popup .sivaPlayer_title2{
 font-size:26px;
 margin-top:15px;
 height:auto;
+font-weight:300;
 }
 
 .sivaPlayer_content .sivaPlayer_scrollable, .sivaPlayer_popup .sivaPlayer_content .sivaPlayer_scrollable{
@@ -260,27 +263,10 @@ cursor:default;
 cursor:pointer;
 }
 
-.sivaPlayer_closeButton td{
-vertical-align:top;
-text-align:right;
-}
-
-.sivaPlayer_closeButton .sivaPlayer_button{
-float:none;
-padding:0;
-margin:5px;
-}
-
 .sivaPlayer_closeButton svg{
 float:none;
 max-width:50px;
 height:50px;
-}
-
-.sivaPlayer_closeButton .sivaPlayer_spacer{
-float:left;
-width:100%;
-min-height:40px;
 }
 
 .sivaPlayer_sceneList{
@@ -381,6 +367,13 @@ background:#ffffff;
 .sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineUpdate span{
 opacity:0.7;
 border-right:1px solid #1173AA;
+}
+
+.sivaPlayer_timeline .sivaPlayer_timelineProgress .sivaPlayer_timelineProgressBar span{
+-webkit-transition:all 0.5s ease;
+-moz-transition:all 0.5s ease;
+-o-transition:all 0.5s ease;
+transition:all 0.5s ease;
 }
 
 .sivaPlayer_timeline .sivaPlayer_timelineDuration{
@@ -512,12 +505,6 @@ font-size:32px;
 font-weight:300;
 padding:7px 0 10px;
 }
-.sivaPlayer_annotationSidebar table{
-float:left;
-width:100%;
-height:100%;
-table-layout:fixed;
-}
 .sivaPlayer_sidebarTabs .sivaPlayer_authorAnnotations, .sivaPlayer_sidebarTabs .sivaPlayer_communityAnnotations{
 border:1px solid #1173AA;
 border-bottom:1px solid #ffffff;
@@ -552,10 +539,10 @@ width:11px;
 .sivaPlayer_annotationSidebarTable .sivaPlayer_spacer3{
 width:3px;
 }
-.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_authorAnnotations, .sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_communityAnnotations{
+.sivaPlayer_annotationSidebar .sivaPlayer_authorAnnotations, .sivaPlayer_annotationSidebar .sivaPlayer_communityAnnotations{
 display:none;
 }
-.sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_authorAnnotations.sivaPlayer_active, .sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_communityAnnotations.sivaPlayer_active{
+.sivaPlayer_annotationSidebar > div.sivaPlayer_active{
 display:block;
 width:100%;
 height:100%;
@@ -564,7 +551,7 @@ overflow-y:scroll;
 overflow-x:hidden;
 word-wrap:break-word;
 }
-.sivaPlayer_annotationSidebar .sivaPlayer_content div div{
+.sivaPlayer_annotationSidebar > div.sivaPlayer_active .sivaPlayer_annotation{
 float:left;
 width:100%;
 margin-top:10px;
@@ -572,13 +559,20 @@ padding-bottom:10px;
 border-bottom:1px dotted #ffffff;
 display:none;
 }
-.sivaPlayer_annotationSidebar .sivaPlayer_content div:last-child{
+.sivaPlayer_annotationSidebar  .sivaPlayer_annotation:last-child{
 border:none;
 padding:0;
 }
-.sivaPlayer_videoContainer .sivaPlayer_annotation img,.sivaPlayer_videoContainer .sivaPlayer_annotation table, .sivaPlayer_videoContainer .sivaPlayer_annotation video, .sivaPlayer_videoContainer .sivaPlayer_annotation audio, .sivaPlayer_annotationSidebar .sivaPlayer_content img,.sivaPlayer_annotationSidebar .sivaPlayer_content table,.sivaPlayer_annotationSidebar .sivaPlayer_content video,.sivaPlayer_annotationSidebar .sivaPlayer_content audio, .sivaPlayer_annotation .sivaPlayer_mediaHolder{
+.sivaPlayer_videoContainer .sivaPlayer_annotation img,.sivaPlayer_videoContainer .sivaPlayer_annotation table, .sivaPlayer_videoContainer .sivaPlayer_annotation video, .sivaPlayer_videoContainer .sivaPlayer_annotation audio, .sivaPlayer_annotationSidebar img,.sivaPlayer_annotationSidebar table,.sivaPlayer_annotationSidebar video,.sivaPlayer_annotationSidebar audio, .sivaPlayer_annotation .sivaPlayer_mediaHolder{
 border:none;
 background:none;
+width:100%;
+height:auto;
+}
+.sivaPlayer_annotationSidebar table {
+float:left;
+height:auto;
+table-layout:fixed;
 width:100%;
 }
 .sivaPlayer_annotation .sivaPlayer_mediaHolder{
@@ -588,19 +582,19 @@ float:left;
 .sivaPlayer_videoContainer .sivaPlayer_annotation video, .sivaPlayer_videoContainer .sivaPlayer_annotation audio{
 height:100%;
 }
-.sivaPlayer_videoContainer .sivaPlayer_annotation video, .sivaPlayer_annotationSidebar .sivaPlayer_content video{
+.sivaPlayer_videoContainer .sivaPlayer_annotation video, .sivaPlayer_annotationSidebar video{
 background:#000000;
 }
 .sivaPlayer_videoContainer .sivaPlayer_annotation audio{
 background:#1173AA;
 }
-.sivaPlayer_videoContainer .sivaPlayer_annotation table td, .sivaPlayer_annotationSidebar .sivaPlayer_content table td{
+.sivaPlayer_videoContainer .sivaPlayer_annotation table td, .sivaPlayer_annotationSidebar table td{
 background:rgba(255,255,255,0.7);
 vertical-align:middle;
 text-align:center;
 padding:0;
 }
-.sivaPlayer_videoContainer .sivaPlayer_annotation table td.sivaPlayer_empty, .sivaPlayer_annotationSidebar .sivaPlayer_content table td.sivaPlayer_empty{
+.sivaPlayer_videoContainer .sivaPlayer_annotation table td.sivaPlayer_empty, .sivaPlayer_annotationSidebar table td.sivaPlayer_empty{
 background:none;
 }
 .sivaPlayer_videoContainer .sivaPlayer_annotation table{
@@ -621,10 +615,20 @@ box-sizing:border-box;
 -webkit-box-sizing:border-box;
 background:#fff;
 margin:0;
-cursor:text;
+}
+.sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_content{
+position:relative;
+}
+.sivaPlayer_pdfPopup iframe{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+border:0;
 }
 .sivaPlayer_annotation img.sivaPlayer_hover, .sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails img.sivaPlayer_hover, .sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails img.sivaPlayer_current{
-opacity:0.8;
+opacity:0.65;
 cursor:pointer;
 }
 .sivaPlayer_videoContainer .sivaPlayer_richtextAnnotation, .sivaPlayer_videoContainer .sivaPlayer_galleryAnnotation{
@@ -639,13 +643,8 @@ background:rgba(255,255,255,0.5);
 background:#fff;
 padding:0 4px 3px;
 }
-.sivaPlayer_richtextAnnotation{
--moz-user-select:text;
--khtml-user-select:text;
--webkit-user-select:text;
--ms-user-select:text;
-user-select:text;
-cursor:auto;
+.sivaPlayer_richtextAnnotation, .sivaPlayer_pdfAnnotation, .sivaPlayer_annotation .sivaPlayer_title{
+cursor:pointer;
 }
 .sivaPlayer_richtextAnnotation p{
 float:left;
@@ -658,10 +657,10 @@ margin:7px 0 !important;
 .sivaPlayer_videoContainer .sivaPlayer_richtextAnnotation .sivaPlayer_title{
 padding:1px 0;
 }
-.sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_spacer, .sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails{
+.sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails{
 height:15%;
 }
-.sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_spacer, .sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails td{
+.sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails td{
 text-align:center;
 vertical-align:middle;
 white-space:nowrap;
@@ -675,12 +674,6 @@ overflow-x:auto;
 .sivaPlayer_popup.sivaPlayer_zoomPopup tr.sivaPlayer_galleryThumbnails img{
 margin:0 2px;
 height:90%;
-}
-.sivaPlayer_popup.sivaPlayer_zoomPopup td.sivaPlayer_spacer{
-width:6%;
-}
-.sivaPlayer_popup.sivaPlayer_zoomPopup td.sivaPlayer_title{
-height:0;
 }
 .sivaPlayer_popup.sivaPlayer_zoomPopup td.sivaPlayer_content{
 text-align:center;
@@ -771,16 +764,16 @@ cursor:pointer;
 .sivaPlayer_active .sivaPlayer_markerEllipse, .sivaPlayer_active .sivaPlayer_markerRectangle, .sivaPlayer_active .sivaPlayer_markerPolygon{
 opacity:0.7;
 }
-.sivaPlayer_galleryPreviousButton, .sivaPlayer_galleryNextButton{
+.sivaPlayer_button.sivaPlayer_galleryPreviousButton, .sivaPlayer_button.sivaPlayer_galleryNextButton{
 left:10%;
-margin-top:-25px;
 position:absolute;
 top:50%;
-width:30px;
-height:50px;
+width:15%;
+height:15%;
 z-index:205;
+fill:#1173AA;
 }
-.sivaPlayer_galleryNextButton{
+.sivaPlayer_galleryNextButton.sivaPlayer_button{
 left:auto;
 right:10%;
 }
@@ -803,6 +796,10 @@ width:100%;
 height:30px;
 }
 .sivaPlayer_searchSidebar .sivaPlayer_results{
+float:left;
+width:100%;
+}
+.sivaPlayer_searchSidebar .sivaPlayer_empty{
 float:left;
 width:100%;
 padding-top:20px;
@@ -894,26 +891,27 @@ color:#ffffff;
 text-decoration:none;
 opacity:0.6;
 }
-.sivaPlayer_annotation a{
+.sivaPlayer_annotation a, .sivaPlayer_readMoreLink, .sivaPlayer_richtextPopup a{
 color:#ffffff;
 text-decoration:underline;
 opacity:0.8;
+cursor:pointer;
 }
-.sivaPlayer_annotation a:hover{
+.sivaPlayer_annotation a:hover, .sivaPlayer_readMoreLink:hover, .sivaPlayer_richtextPopup a:hover{
 text-decoration:none;
 opacity:1;
 }
 .sivaPlayer_videoContainer .sivaPlayer_annotation a{
 color:#1173AA;
 }
-.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls, .sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_mediaAnnotationControls, .sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls{
+.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls, .sivaPlayer_annotationSidebar .sivaPlayer_mediaAnnotationControls, .sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls{
 background:#ffffff;
 border-collapse:collapse;
 color:#1173AA;
 font-size:13px;
 height:20px;
 }
-.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls td, .sivaPlayer_annotationSidebar .sivaPlayer_content .sivaPlayer_mediaAnnotationControls td, .sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls td{
+.sivaPlayer_videoContainer .sivaPlayer_annotation .sivaPlayer_mediaAnnotationControls td, .sivaPlayer_annotationSidebar .sivaPlayer_mediaAnnotationControls td, .sivaPlayer_zoomPopup .sivaPlayer_content .sivaPlayer_mediaAnnotationControls td{
 background:none;
 padding:3px;
 }
@@ -988,11 +986,15 @@ width:100%;
 -o-transition:all 0.5s ease;
 transition:all 0.5s ease;
 }
-.sivaPlayer_videoContainer.sivaPlayer_fullscreen, .sivaPlayer_annotationSidebar.sivaPlayer_fullscreen{
+.sivaPlayer .sivaPlayer_videoContainer.sivaPlayer_fullscreen, .sivaPlayer .sivaPlayer_annotationSidebar.sivaPlayer_fullscreen{
 width:100% !important;
 height:100% !important;
 margin:0 !important;
 z-index:800;
+top:auto;
+bottom:0;
+left:auto;
+right:0;
 }
 .sivaPlayer_videoBackground.sivaPlayer_fullscreen{
 z-index:800;
@@ -1008,12 +1010,7 @@ z-index:800 !important;
 padding:0 !important;
 border:0 !important;
 }
-.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaAnnotationControls{
-position:absolute;
-bottom:0;
-left:0;
-}
-.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton{
+.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton, .sivaPlayer_popup .sivaPlayer_closeButton{
 position:absolute;
 top:10px;
 right:0;
@@ -1021,35 +1018,47 @@ width:50px;
 height:50px;
 padding:0;
 z-index:803;
-background:#ffffff;
 padding-left:20px;
 padding-right:10px;
+fill:#fff;
 }
-.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton svg{
-fill:#1173AA;
-}
-.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaTop{
-position:absolute;
-top:0px;
-left:0px;
-width:100%;
+.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_popup .sivaPlayer_title{
+color:#fff;
+font-size:38px;
 height:70px;
-background:#ffffff;
-display:block;
-padding:0;
-margin:0;
-z-index:801;
+min-height:70px;
+font-weight:300;
+text-align:left;
+padding:10px 80px 10px 10px;
+border-bottom:1px solid #fff;
+box-sizing:border-box;
+-moz-box-sizing:border-box;
+-webkit-box-sizing:border-box;
+vertical-align:middle;
+}
+.sivaPlayer_popup.sivaPlayer_nodeSelectionPopup .sivaPlayer_title{
+padding-top:60px;
+}
+.sivaPlayer_popup.sivaPlayer_closePopup .sivaPlayer_title{
+padding-right:70px;
 }
 .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title{
-position:absolute;
-top:10px;
-left:10px;
+background:#fff;	
+margin:0;
+border:none;
+}
+.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaHolder, .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaAnnotationControlsHolder{
+display:table-row;
+}
+.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaAnnotationControlsHolder{
+height:36px;
+}
+.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_popup.sivaPlayer_zoomPopup .sivaPlayer_title, .sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_title, .sivaPlayer_popup.sivaPlayer_richtextPopup .sivaPlayer_title{
 color:#1173AA;
-font-size:38px;
-overflow:hidden;
-height:50px;
-white-space:nowrap;
-z-index:802;
+border-color:1px solid #1173AA;
+}
+.sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton svg, .sivaPlayer_popup.sivaPlayer_zoomPopup .sivaPlayer_closeButton svg, .sivaPlayer_popup.sivaPlayer_pdfPopup .sivaPlayer_closeButton svg, .sivaPlayer_popup.sivaPlayer_richtextPopup .sivaPlayer_closeButton svg{
+fill:#1173AA;
 }
 .sivaPlayer_copyright{
 margin-top:20px;
@@ -1059,14 +1068,16 @@ margin-bottom:20px;
 position:absolute;
 top:50%;
 left:50%;
-margin-top:-150px;
-margin-left:-150px;
-width:300px;
-height:300px;
+width:30%;
+height:40%;
 z-index:2;
 cursor:pointer;
 }
-.sivaPlayer_overlayButton svg circle{
+.sivaPlayer_overlayButton svg{
+width:100%;
+height:100%;
+}
+.sivaPlayer_overlayButton svg circle, .sivaPlayer_button.sivaPlayer_galleryPreviousButton circle, .sivaPlayer_button.sivaPlayer_galleryNextButton circle{
 fill:#ffffff;
 opacity:0.7;	
 }
@@ -1075,12 +1086,6 @@ fill:#1173AA;
 }
 .sivaPlayer_hover>.sivaPlayer_overlayButton{
 opacity:0.9;
-}
-.sivaPlayer_annotation .sivaPlayer_overlayButton{
-margin-left:-40px;
-margin-top:-40px;
-width:80px;
-height:80px;
 }
 .sivaPlayer_fullscreen .sivaPlayer_overlayButton{
 margin-top:-150px;
@@ -1122,4 +1127,105 @@ height:30px;
 .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_mediaAnnotationControls .sivaPlayer_button svg{
 height:30px;
 max-width:30px;	
+}
+.sivaPlayer_popup .sivaPlayer_content{
+padding:10px 30px;
+}
+.sivaPlayer_readMoreLink{
+opacity:0.8;
+text-decoration:underline;
+}
+.sivaPlayer_readMoreLink:hover{
+text-decoration:none;
+opacity:1;
+}
+.sivaPlayer.sivaPlayer_portrait, .sivaPlayer.sivaPlayer_landscape{
+font-size:14px;
+}
+.sivaPlayer_portrait .sivaPlayer_annotationSidebarButton, .sivaPlayer_landscape .sivaPlayer_annotationSidebarButton{
+display:none;
+}
+.sivaPlayer_annotationSidebarButton .sivaPlayer_annotationSidebarCloseButton{
+display:none;
+}
+.sivaPlayer_annotationSidebarButton.sivaPlayer_open .sivaPlayer_annotationSidebarOpenButton{
+display:none;
+}
+.sivaPlayer_annotationSidebarButton.sivaPlayer_open .sivaPlayer_annotationSidebarCloseButton{
+display:inline;
+}
+.sivaPlayer_landscape .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_landscape .sivaPlayer_popup .sivaPlayer_title, .sivaPlayer_landscape .sivaPlayer_nodeSelectionSidebar .sivaPlayer_title, .sivaPlayer_landscape .sivaPlayer_searchSidebar .sivaPlayer_title{
+font-size:25px;
+}
+.sivaPlayer_portrait .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_portrait .sivaPlayer_popup .sivaPlayer_title, .sivaPlayer_portrait .sivaPlayer_nodeSelectionSidebar .sivaPlayer_title, .sivaPlayer_portrait .sivaPlayer_searchSidebar .sivaPlayer_title{
+font-size:20px;
+}
+.sivaPlayer_portrait .sivaPlayer_annotation .sivaPlayer_title, .sivaPlayer_portrait .sivaPlayer_popup .sivaPlayer_title2{
+font-size:18px;
+}
+.sivaPlayer_landscape .sivaPlayer_annotation .sivaPlayer_title, .sivaPlayer_landscape .sivaPlayer_popup .sivaPlayer_title2, .sivaPlayer_portrait .sivaPlayer_tableOfContents .sivaPlayer_level1, .sivaPlayer_landscape .sivaPlayer_tableOfContents .sivaPlayer_level1{
+font-size:20px;
+}
+.sivaPlayer_portrait .sivaPlayer_tableOfContents .sivaPlayer_level2, .sivaPlayer_landscape .sivaPlayer_tableOfContents .sivaPlayer_level2{
+font-size:17px;
+}
+.sivaPlayer_portrait .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton, .sivaPlayer_portrait .sivaPlayer_popup .sivaPlayer_closeButton, .sivaPlayer_portrait .sivaPlayer_closeButton svg, .sivaPlayer_landscape .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_closeButton, .sivaPlayer_landscape .sivaPlayer_popup .sivaPlayer_closeButton, .sivaPlayer_landscape .sivaPlayer_closeButton svg{
+height:30px;
+width:30px;
+}
+.sivaPlayer_portrait .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_portrait .sivaPlayer_popup .sivaPlayer_title, .sivaPlayer_landscape .sivaPlayer_annotation.sivaPlayer_fullscreen .sivaPlayer_title, .sivaPlayer_landscape .sivaPlayer_popup .sivaPlayer_title{
+min-height:45px;
+height:45px;
+}
+.sivaPlayer_portrait .sivaPlayer_popup .sivaPlayer_content{
+padding:10px;
+}
+.sivaPlayer_controls{
+opacity:0;
+}
+.sivaPlayer_controls.sivaPlayer_active{
+opacity:1;
+}
+.sivaPlayer_landscape .sivaPlayer_annotationSidebar{
+width:40% !important;
+height:100% !important;
+right:0 !important;
+}
+.sivaPlayer_landscape .sivaPlayer_videoBackground{
+width:60%;
+}
+.sivaPlayer_portrait .sivaPlayer_annotationSidebar{
+top:60%;
+width:100% !important;
+height:40% !important;
+right:0 !important;
+background:#fff;
+color:#1173AA;
+}
+.sivaPlayer_portrait .sivaPlayer_videoBackground{
+height:60%;
+}
+.sivaPlayer_portrait .sivaPlayer_controls.sivaPlayer_bottomControls{
+bottom:auto;
+top:60%;
+margin-top:-40px;
+}
+.sivaPlayer_landscape .sivaPlayer_annotationSidebar, .sivaPlayer_portrait .sivaPlayer_annotationSidebar{
+padding-left:10px;
+box-sizing:border-box;
+-moz-box-sizing:border-box;
+-webkit-box-sizing:border-box;
+}
+.sivaPlayer_portrait .sivaPlayer_annotationSidebar{
+padding:10px 5px 10px 10px;
+}
+.sivaPlayer_portrait .sivaPlayer_searchSidebar, .sivaPlayer_portrait .sivaPlayer_nodeSelectionSidebar{
+width:100% !important;
+height:60% !important;
+}
+.sivaPlayer_landscape .sivaPlayer_searchSidebar{
+width:40% !important;
+}
+.sivaPlayer_landscape .sivaPlayer_nodeSelectionSidebar{
+width:40% !important;
 }

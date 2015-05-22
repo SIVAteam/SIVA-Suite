@@ -11,6 +11,7 @@ if(!sivaPlayerInitated){
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/jquery.hashchange.min.js" type="text/javascript"></script>');
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/modernizr.min.js" type="text/javascript"></script>');
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/d3.v3.min.js" type="text/javascript"></script>');
+	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/fastclick.js" type="text/javascript"></script>');
 	sivaPlayerInitParameters = sivaPlayerInitParameters.split('?');
 	if(sivaPlayerInitParameters.length > 1){
 		sivaPlayerInitParameters = sivaPlayerInitParameters[1].split('&');
