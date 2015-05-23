@@ -3,10 +3,12 @@ The SIVA Suite is an open source framework for the creation, playback and admini
 
 Feel free to take a look at a [demo](http://siva.uni-passau.de/mirkul/projekte/BB_Trainer) video showcasing the SIVA Player as well as some of the features of hypervideos created with the SIVA Producer.
 
-## Installation & licensing
-The SIVA Producer is released as a single setup file. The installation follows the standard procedure for Windows applications offering an installation wizard. SIVA Player is included in the SIVA Producer and exported alonside each of the created hypervideos. Therefore, no installation process is required and the player can be accessed directly from the export directory of a hypervideo by opening its *index.html*. For the SIVA Server, installation instructions can be found in the readme files of its subcomponents ([server application](./server/serverApplication/README.txt), [player stats](./server/playerStats/README.txt)).
+## Installation, licensing & documentation
+The SIVA Producer is released as a single setup file. The installation follows the standard procedure for Windows applications offering an installation wizard. SIVA Player is included in the SIVA Producer and exported alongside each of the created hypervideos. Therefore, no installation process is required and the player can be accessed directly from the export directory of a hypervideo by opening its *index.html*. For the SIVA Server, installation instructions can be found in the readme files of its subcomponents ([server application](./server/serverApplication/README.txt), [player stats](./server/playerStats/README.txt)).
 
 The SIVA Producer is licensed under the terms of the [Eclipse Public License v1](https://www.eclipse.org/legal/epl-v10.html). More details on its license can be found [here](./producer/about.html). The SIVA Player as well as the SIVA Server are licensed under the [GNU General Public License v3](http://www.gnu.org/copyleft/gpl.html).
+
+The SIVA Producer and the SIVA Server offer help functions which provide basic documentation. The SIVA Player uses known control concepts and offers a highly intuitive interface. Therefore, at the moment, no separate documenation is available.
 
 
 ## How to build SIVA Producer
