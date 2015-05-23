@@ -1,31 +1,20 @@
 package org.iviPro.editors.scenegraph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.TreeSet;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.iviPro.editors.scenegraph.Messages;
 import org.iviPro.application.Application;
-import org.iviPro.model.graph.AbstractNodeSelection;
-import org.iviPro.model.graph.AbstractNodeSelectionControl;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IGraphNode;
+import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeEnd;
 import org.iviPro.model.graph.NodeQuiz;
 import org.iviPro.model.graph.NodeQuizControl;
-import org.iviPro.model.graph.NodeRandomSelection;
-import org.iviPro.model.graph.NodeResume;
 import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.graph.NodeStart;
-import org.iviPro.model.quiz.DbQueries;
 
 public class SceneGraphValidator {
 
@@ -52,7 +41,8 @@ public class SceneGraphValidator {
 					return false;
 				} else {
 					if (actualNode.getChildren().size() == 0 &&
-							!(actualNode instanceof NodeEnd)) {
+							!(actualNode instanceof NodeEnd
+									|| actualNode instanceof INodeAnnotationLeaf)) {
 						errorMessage = "The end node is not reachable from node:\n\n " 
 								+ actualNode.getTitle() + " (id:" + actualNode.getNodeID() +")";
 						return false;
