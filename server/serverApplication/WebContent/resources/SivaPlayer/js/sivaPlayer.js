@@ -366,7 +366,6 @@ function SivaPlayer(DOMObject, arrayPosition){
 	};
 	
 	this.setProportions = function(){
-		console.log('prop');
 		var playerOffset = $(this.player).offset();
 		if(this.configuration.style && this.configuration.style.width){
 			$(this.player).css('width', this.configuration.style.width);
@@ -397,7 +396,6 @@ function SivaPlayer(DOMObject, arrayPosition){
 			$('.sivaPlayer_videoContainer', this.player).css(this.getVideoContainerProportions(video, playerWidth, playerHeight, this.isAnnotationSidebarVisible, false));
 		}
 		var sidebar = $('.sivaPlayer_annotationSidebar', this.player);
-		console.log(this.mode);
 		if(this.mode == 'portrait'){
 			
 		}
@@ -453,7 +451,6 @@ function SivaPlayer(DOMObject, arrayPosition){
 			$(buttons).css('margin-top', parseInt($(buttons).height() / -2) + 'px');
 		}
 		if($('.sivaPlayer_pdfPopup .sivaPlayer_content', this.player).length > 0){
-			console.log(playerHeight, $('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).height());
 			$('.sivaPlayer_pdfPopup .sivaPlayer_content', this.player).height(playerHeight - $('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).height() - parseInt($('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).css('padding-top')) - parseInt($('.sivaPlayer_pdfPopup .sivaPlayer_title', this.player).css('padding-bottom')));
 		}
 		if($('.sivaPlayer_annotationSidebar .sivaPlayer_timeline, .sivaPlayer_videoContainer .sivaPlayer_timeline', this.player).width() < 80){
@@ -2258,8 +2255,9 @@ function SivaPlayer(DOMObject, arrayPosition){
 			thisPlayer.logAction('closeRichtextAnnotation', '', '');
 		});
 		var annotation = this.configuration.annotations[annotationId];
-		console.log(this.configuration.annotations, annotationId);
-		$('.sivaPlayer_richtextPopup .sivaPlayer_title', this.player).text(annotation.title[this.currentLanguage].content);		
+		if(annotation.title[this.currentLanguage]){
+			$('.sivaPlayer_richtextPopup .sivaPlayer_title', this.player).text(annotation.title[this.currentLanguage].content);
+		}
 		$('.sivaPlayer_richtextPopup .sivaPlayer_scrollable', this.player).empty().append(annotation.content[this.currentLanguage].content);
 	};
 	
@@ -2429,11 +2427,9 @@ function SivaPlayer(DOMObject, arrayPosition){
 	};
 	
 	this.getAnnotationId = function(classes){
-		console.log(classes);
 		var replace = ['annotation', 'imageAnnotation', 'galleryAnnotation', 'videoAnnotation', 'audioAnnotation', 'richtextAnnotation', 'pdfAnnotation', 'active', 'transition', 'fullscreen', ''];
 		for(var i = 0; i < replace.length; i++){
 			classes = classes.replace(new RegExp('sivaPlayer_' + replace[i], ''), '');
-			console.log(classes, 'sivaPlayer_' + replace[i]);
 		}
 		classes = classes.trim().split('_');
 		classes.pop();
