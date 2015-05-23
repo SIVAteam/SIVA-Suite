@@ -1,6 +1,8 @@
 # SIVA Suite
 The SIVA Suite is an open source framework for the creation, playback and administration of hypervideos. It is made up of three components. An authoring tool (SIVA Producer), an HTML5 based hypervideo player (SIVA Player) and a server component for user and content management (SIVA Server).
 
+Feel free to take a look at a [demo](http://siva.uni-passau.de/mirkul/projekte/BB_Trainer) video showcasing the SIVA Player as well as some of the features of hypervideos created with the SIVA Producer.
+
 ## Installation & licensing
 The SIVA Producer is released as a single setup file. The installation follows the standard procedure for Windows applications offering an installation wizard. SIVA Player is included in the SIVA Producer and exported alonside each of the created hypervideos. Therefore, no installation process is required and the player can be accessed directly from the export directory of a hypervideo by opening its *index.html*. For the SIVA Server, installation instructions can be found in the readme files of its subcomponents ([server application](./server/serverApplication/README.txt), [player stats](./server/playerStats/README.txt)).
 
