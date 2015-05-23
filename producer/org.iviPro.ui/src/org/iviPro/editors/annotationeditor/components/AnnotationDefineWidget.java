@@ -618,7 +618,8 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 		// the start time of the annotation exists
 		if (tmpScreenArea != null && tmpScreenArea.equals(ScreenArea.OVERLAY)) {
 			if (tmpOpItems.isEmpty() 
-					|| tmpOpItems.get(0).getTime() != tmpStart.getNano()) {
+					|| tmpOpItems.get(0).getTime() != tmpStart.addTimeS(
+							nodeScene.getScene().getStart()).getNano()) {
 				MessageBox messageBox = new MessageBox(Display.getCurrent()
 						.getActiveShell(), SWT.ICON_ERROR);
 				messageBox.setMessage(Messages
@@ -634,7 +635,8 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 		// does not create a default position for the shape yet (list is empty).
 		if (isMarkAnnotation) { 
 			if (markShapes.isEmpty() 
-					|| markShapes.get(0).getTime() != tmpStart.getNano()) {
+					|| markShapes.get(0).getTime() != tmpStart.addTimeS(
+							nodeScene.getScene().getStart()).getNano()) {
 				MessageBox messageBox = new MessageBox(Display.getCurrent()
 						.getActiveShell(), SWT.ICON_ERROR);
 				messageBox.setMessage(Messages

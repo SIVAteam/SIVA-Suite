@@ -1,100 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Inhalt" topic="help/html/toc.html">
-   <topic href="help/html/gettingstarted/overview.html" label="Erste Schritte">
+<toc label="Contents" topic="help/html/toc.html">
+   <topic href="help/html/gettingstarted/overview.html" label="First Steps">
       <anchor id="gettingstarted"/>
-      <topic href="help/html/gettingstarted/gui.html" label="Oberfläche">
+      <topic href="help/html/gettingstarted/gui.html" label="GUI">
       </topic>
-      <topic href="help/html/gettingstarted/menue.html" label="Menüstruktur">
+      <topic href="help/html/gettingstarted/menue.html" label="Menu Structure">
       </topic>
-      <topic href="help/html/gettingstarted/editorsandviews/viewsandeditors.html" label="Editoren und Views">
-         <topic href="help/html/gettingstarted/editorsandviews/editors.html" label="Editoren">
+      <topic href="help/html/gettingstarted/editorsandviews/viewsandeditors.html" label="Editors and Views">
+         <topic href="help/html/gettingstarted/editorsandviews/editors.html" label="Editors">
          </topic>
          <topic href="help/html/gettingstarted/editorsandviews/views.html" label="Views">
          </topic>
-         <topic href="help/html/gettingstarted/editorsandviews/viewcloseopen.html" label="Schließen und Wiederherstellen">
+         <topic href="help/html/gettingstarted/editorsandviews/viewcloseopen.html" label="Close and Reopen">
          </topic>
       </topic>
-      <topic href="help/html/gettingstarted/simpleiavp/simpleproject.html" label="Ein einfaches interaktives Video-Projekt">
-         <topic href="help/html/gettingstarted/simpleiavp/createproject.html" label="Anlegen eines interaktiven Video-Projekts">
+      <topic href="help/html/gettingstarted/simpleiavp/simpleproject.html" label="A Simple Interactive Video Project">
+         <topic href="help/html/gettingstarted/simpleiavp/createproject.html" label="Create an Interactive Video Project">
          </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/loadvideo.html" label="Laden eines Videos">
+         <topic href="help/html/gettingstarted/simpleiavp/loadvideo.html" label="Load a Video">
          </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/cutvideo.html" label="Schneiden des Videos">
+         <topic href="help/html/gettingstarted/simpleiavp/cutvideo.html" label="Cutting a Video">
          </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/scenetographi.html" label="Einfügen einer Szene in den Szenengraph">
+         <topic href="help/html/gettingstarted/simpleiavp/scenetographi.html" label="Adding a Scene to the Scene Graph">
          </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/addannotation.html" label="Hinzufügen einer Annotation">
+         <topic href="help/html/gettingstarted/simpleiavp/addannotation.html" label="Adding an Annotation">
          </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/saveandexport.html" label="Speichern und Export">
-         </topic>
-      </topic>
-   </topic>
-   <topic href="help/html/tasks/overview.html" label="Tasks">
-      <anchor id="tasks"/>
-      <topic href="help/html/tasks/iavp/iavp.html" label="interaktives Video-Projekt">
-         <topic href="help/html/tasks/iavp/iavpcreate.html" label="Anlegen eines interaktiven Video-Projektes">
-         </topic>
-         <topic href="help/html/tasks/iavp/iavpload.html" label="Laden eines interaktiven Video-Projektes">
-         </topic>
-         <topic href="help/html/tasks/iavp/iavpclose.html" label="Schließen eines interaktiven Video-Projekts">
-         </topic>
-         <topic href="help/html/tasks/iavp/iavpexport.html" label="Export des interaktiven Video-Projekts">
-         </topic>
-         <topic href="help/html/tasks/iavp/iavpsave.html" label="Speichern eines interaktiven Video-Projekts">
-         </topic>
-         <topic href="help/html/tasks/iavp/iavpsettings.html" label="Einstellungen der Projektsettings">
-         </topic>
-         <topic href="help/html/tasks/iavp/iavptoc.html" label="Inhaltsverzeichnis bearbeiten">
-         </topic>
-         <topic href="help/html/tasks/iavp/globalannotation.html" label="Globale Annotationen">
-         </topic>
-      </topic>
-      <topic href="help/html/tasks/ressources/ressources.html" label="Ressourcen">
-         <topic href="help/html/tasks/ressources/ressourcesrepository.html" label="Darstellung im Repository">
-         </topic>
-         <topic href="help/html/tasks/ressources/ressourcesload.html" label="Laden von Ressourcen">
-         </topic>
-         <topic href="help/html/tasks/ressources/ressourcesdelete.html" label="Löschen von Ressourcen">
-         </topic>
-      </topic>
-      <topic href="help/html/tasks/scenegraph/scenegraph.html" label="Szenengraph">
-         <topic href="help/html/tasks/scenegraph/scenegraphopen.html" label="Öffnen des Szenengraph-Editors">
-         </topic>
-         <topic href="help/html/tasks/scenegraph/scenegraphbuild.html" label="Erstellen eines Szenengraphen">
-         </topic>
-      </topic>
-      <topic href="help/html/tasks/videocut/videocut.html" label="Videoschnitt">
-         <topic href="help/html/tasks/videocut/videocutopen.html" label="Öffnen des Videoschnitteditors">
-         </topic>
-         <topic href="help/html/tasks/videocut/videocutmanual/videocutmanual.html" label="Manueller Videoschnitt">
-            <topic href="help/html/tasks/videocut/videocutmanual/videocutmanualcreate.html" label="Erstellen einer Szene">
-            </topic>
-            <topic href="help/html/tasks/videocut/videocutmanual/videocutmanualdelete.html" label="Löschen von Szenen">
-            </topic>
-         </topic>
-         <topic href="help/html/tasks/videocut/videocutautomated.html" label="Automatischer Videoschnitt">
-         </topic>
-      </topic>
-      <topic href="help/html/tasks/annotations/annotations.html" label="Annotationen">
-         <topic href="help/html/tasks/annotations/annotationsopen.html" label="Öffnen des Annotationseditors">
-         </topic>
-         <topic href="help/html/tasks/annotations/annotationssettings.html" label="Einstellungen und Anzeigebereiche">
-         </topic>
-         <topic href="help/html/tasks/annotations/createannotations/createannotations.html" label="Erstellen von Annotationen">
-            <topic href="help/html/tasks/annotations/createannotations/createannotationsrichtext.html" label="Erstellen von Richtext-Annotationen">
-            </topic>
-            <topic href="help/html/tasks/annotations/createannotations/createannotationsimage.html" label="Erstellen von Bild-Annoationen">
-            </topic>
-            <topic href="help/html/tasks/annotations/createannotations/createannotationsvideo.html" label="Erstellen von Video-Annotationen">
-            </topic>
-            <topic href="help/html/tasks/annotations/createannotations/createannotationstext.html" label="Erstellen von Text-Annotationen">
-            </topic>
-            <topic href="help/html/tasks/annotations/createannotations/createannotationsaudio.html" label="Erstellen von Audio-Annotationen">
-            </topic>
-         </topic>
-         <topic href="help/html/tasks/annotations/overlay.html" label="Overlay-Annotationen">
+         <topic href="help/html/gettingstarted/simpleiavp/saveandexport.html" label="Save and Export">
          </topic>
       </topic>
    </topic>

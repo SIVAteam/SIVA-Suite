@@ -86,25 +86,28 @@ final class SceneGraphEditorPaletteFactory {
 				Icons.GRAPH_TOOL_COND_SELECTION_ALTERNATIVE.getImageDescriptor());
 		componentsDrawer.add(component);
 
-		// NodeQuiz
-		component = new CombinedTemplateCreationEntry(
-				Messages.SceneGraphEditorPaletteFactory_Entry_Quiz_Title,
-				Messages.SceneGraphEditorPaletteFactory_Entry_Quiz_Description,
-				NodeQuiz.class,
-				new ModelObjectFactory(NodeQuiz.class),
-				Icons.GRAPH_TOOL_QUIZ.getImageDescriptor(),
-				Icons.GRAPH_TOOL_QUIZ.getImageDescriptor());
-		componentsDrawer.add(component);
+		
+// Quiz utilities are disabled for now until the Quiz works and export is fixed
+		
+//		// NodeQuiz
+//		component = new CombinedTemplateCreationEntry(
+//				Messages.SceneGraphEditorPaletteFactory_Entry_Quiz_Title,
+//				Messages.SceneGraphEditorPaletteFactory_Entry_Quiz_Description,
+//				NodeQuiz.class,
+//				new ModelObjectFactory(NodeQuiz.class),
+//				Icons.GRAPH_TOOL_QUIZ.getImageDescriptor(),
+//				Icons.GRAPH_TOOL_QUIZ.getImageDescriptor());
+//		componentsDrawer.add(component);
 
-		// NodeQuizControl
-		component = new CombinedTemplateCreationEntry(
-				Messages.SceneGraphEditorPaletteFactory_Entry_QuizAlternative_Title,
-				Messages.SceneGraphEditorPaletteFactory_Entry_QuizAlternative_Description,
-				NodeQuizControl.class,
-				new ModelObjectFactory(NodeQuizControl.class),
-				Icons.GRAPH_TOOL_QUIZ_ALTERNATIVE.getImageDescriptor(),
-				Icons.GRAPH_TOOL_QUIZ_ALTERNATIVE.getImageDescriptor());
-		componentsDrawer.add(component);
+//		// NodeQuizControl
+//		component = new CombinedTemplateCreationEntry(
+//				Messages.SceneGraphEditorPaletteFactory_Entry_QuizAlternative_Title,
+//				Messages.SceneGraphEditorPaletteFactory_Entry_QuizAlternative_Description,
+//				NodeQuizControl.class,
+//				new ModelObjectFactory(NodeQuizControl.class),
+//				Icons.GRAPH_TOOL_QUIZ_ALTERNATIVE.getImageDescriptor(),
+//				Icons.GRAPH_TOOL_QUIZ_ALTERNATIVE.getImageDescriptor());
+//		componentsDrawer.add(component);
 				
 		// NodeRandomSelection
 		component = new CombinedTemplateCreationEntry(

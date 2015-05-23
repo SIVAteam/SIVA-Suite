@@ -36,5 +36,16 @@ public class NodeStart extends INodeAnnotationAction {
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
 		return false;
-	}	
+	}
+
+	@Override
+	public boolean validateNode() {
+		// Only a single scene node may be connected to the start
+		if (getChildren().size() != 1 ||
+				!(getChildren().get(0) instanceof NodeScene)) {
+			validationError = "A single scene node needs to be set as child of the start node.";
+			return false;
+		}
+		return true;
+	}
 }

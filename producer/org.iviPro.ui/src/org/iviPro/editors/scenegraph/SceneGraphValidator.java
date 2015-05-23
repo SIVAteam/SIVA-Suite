@@ -51,6 +51,12 @@ public class SceneGraphValidator {
 					errorMessage = actualNode.getValidationError();
 					return false;
 				} else {
+					if (actualNode.getChildren().size() == 0 &&
+							!(actualNode instanceof NodeEnd)) {
+						errorMessage = "The end node is not reachable from node:\n\n " 
+								+ actualNode.getTitle() + " (id:" + actualNode.getNodeID() +")";
+						return false;
+					}
 					workQueue.addAll(actualNode.getChildren());
 					nodes.remove(actualNode);
 				}

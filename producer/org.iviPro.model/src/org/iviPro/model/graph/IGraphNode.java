@@ -52,7 +52,7 @@ public abstract class IGraphNode extends IAbstractBean implements Comparable<IGr
 	 * In case a validation of the node fails, this field contains a
 	 * message explaining the validation problem.
 	 */
-	private String validationError = "";
+	protected String validationError = "";
 
 	/**
 	 * @uml.property name="parent"
