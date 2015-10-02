@@ -28,7 +28,7 @@ import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
 import org.iviPro.listeners.GraphNodeEventConsumer;
 import org.iviPro.listeners.GraphNodeListener;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.graph.INodeAnnotation;
@@ -71,10 +71,10 @@ public class AnnotationOverview extends Composite implements
 	private GraphNodeListener graphNodeListener;
 	
 	// der Movie Player
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	public AnnotationOverview(Composite parent, int style, NodeScene nodeS,
-			int width, I_MediaPlayer mp) {
+			int width, MediaPlayer mp) {
 		super(parent, style);
 		this.widthContentScrollComp = width;
 		this.nodeScene = nodeS;
@@ -116,7 +116,6 @@ public class AnnotationOverview extends Composite implements
 		Graph graph = Application.getCurrentProject().getSceneGraph();
 		graphNodeListener = new GraphNodeListener(this);
 		graphNodeListener.startListening(nodeScene, graph);
-
 		addListener(SWT.Dispose, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
@@ -267,7 +266,10 @@ public class AnnotationOverview extends Composite implements
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				updateView();
+				// Check if the node scene is still part of the graph
+				if (nodeScene.getGraph() != null ) {
+					updateView();
+				}
 			}
 		});
 

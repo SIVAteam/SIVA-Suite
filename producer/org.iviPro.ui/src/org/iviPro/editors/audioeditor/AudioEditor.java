@@ -1,7 +1,6 @@
 package org.iviPro.editors.audioeditor;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
@@ -15,6 +14,8 @@ import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -37,10 +38,11 @@ import org.iviPro.editors.common.BComparatorComposite;
 import org.iviPro.editors.common.BeanComparator;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.player.MediaPlayerWidget;
 import org.iviPro.mediaaccess.player.PlayerFactory;
 import org.iviPro.model.BeanList;
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
 import org.iviPro.theme.Colors;
@@ -50,7 +52,7 @@ import org.iviPro.utils.SivaTime;
 /**
  * @author juhoffma
  */
-public class AudioEditor extends IAbstractEditor implements PropertyChangeListener {
+public class AudioEditor extends IAbstractEditor {
 
 	private static Logger logger = Logger.getLogger(AudioEditor.class);
 	public static final String ID = AudioEditor.class.getName();
@@ -76,7 +78,7 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 	/**
 	 * der Movie Player des aktuellen Video-Files
 	 */
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	public AudioEditor() {
 	}
@@ -106,29 +108,13 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 	@Override
 	public void init(final IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
+		
 		audio = ((AudioEditorInput) input).getAudio();
 		audio.addPropertyChangeListener(this);
 		setPartName(PREFIX_DEFINE_AUDIOPART
 				+ audio.getTitle(Application.getCurrentLanguage()));		
 		mp = PlayerFactory.getPlayer(audio);
-		
-		// falls das Audio Objekt des Editors gelöscht wird,
-		// schließe den Editor
-		Application.getDefault().getCurrentProject().getMediaObjects()
-			.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(BeanList.PROP_ITEM_REMOVED)) {
-					if (evt.getNewValue() instanceof Audio) {
-						if (((Audio) evt.getNewValue()).getTitle().equals(audio.getTitle())) {
-							site.getPage().closeEditor(AudioEditor.this, true);
-						}
-					}
-				}
-			}			
-		});
 	}
 
 	// laufe alle Tabs durch und schaue ob zugehörige AudioPartDefineWidget Dirty
@@ -160,10 +146,10 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 		mp.stop();
 		logger.debug("Closing player"); //$NON-NLS-1$
 		mp.finish();
-		logger.debug("Dispoing super-type"); //$NON-NLS-1$
-		super.dispose();
 		logger.info("Define Audio Editor closed."); //$NON-NLS-1$
 		audio.removePropertyChangeListener(this);
+		logger.debug("Dispoing super-type"); //$NON-NLS-1$
+		super.dispose();
 	}
 
 	@Override
@@ -371,8 +357,14 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 		newPart.setEnd(mp.getDuration().getNano());
 		newPart.addPropertyChangeListener(this);
 
-		AudioPartDefineWidget sdw = new AudioPartDefineWidget(tabFolder, SWT.CENTER, tabItem, newPart, mp, this);
+		final AudioPartDefineWidget sdw = new AudioPartDefineWidget(tabFolder, SWT.CENTER, tabItem, newPart, mp, this);
 		tabItem.setControl(sdw);
+		tabItem.addDisposeListener(new DisposeListener() {				
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				sdw.dispose();					
+			}
+		});
 	}
 
 	/**
@@ -411,8 +403,14 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 
 				// Das Widget zum Editieren/Erstellen eines Audio-Part				
 				part.addPropertyChangeListener(this);
-				AudioPartDefineWidget sdw = new AudioPartDefineWidget(tabFolder, SWT.CENTER, tabItem, part, mp, this);
+				final AudioPartDefineWidget sdw = new AudioPartDefineWidget(tabFolder, SWT.CENTER, tabItem, part, mp, this);
 				tabItem.setControl(sdw);
+				tabItem.addDisposeListener(new DisposeListener() {				
+					@Override
+					public void widgetDisposed(DisposeEvent e) {
+						sdw.dispose();					
+					}
+				});
 			}
 		} else {
 			// vergleiche die Tabnamen mit dem Namen des Audio-Part
@@ -479,7 +477,9 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent evt) {		
+		super.propertyChange(evt);
+		
 		AudioPart changedPart = null;
 		if (evt.getNewValue() instanceof AudioPart) {
 			changedPart = (AudioPart) evt.getNewValue();
@@ -521,5 +521,10 @@ public class AudioEditor extends IAbstractEditor implements PropertyChangeListen
 				}
 			}
 		}
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return audio;
 	}
 }

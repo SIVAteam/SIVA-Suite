@@ -101,4 +101,9 @@ public class PictureGallery extends IAbstractBean {
 		}
 		return true;
 	}
+	
+	@Override
+	public String getBeanTag() {
+		return "Picture gallery";
+	}
 }

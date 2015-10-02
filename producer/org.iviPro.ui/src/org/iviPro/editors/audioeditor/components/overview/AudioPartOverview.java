@@ -42,7 +42,7 @@ import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
 import org.iviPro.editors.sceneeditor.components.Messages;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
 import org.iviPro.theme.Colors;
@@ -55,7 +55,7 @@ import org.iviPro.views.mediarepository.MediaRepository;
 public class AudioPartOverview extends SivaComposite implements ISelectionProvider, SivaEventConsumerI {
 
 	// der Movieplayer
-	private I_MediaPlayer mp = null;
+	private MediaPlayer mp = null;
 	
 	// the audio file the part is based on
 	private Audio audio;
@@ -88,7 +88,7 @@ public class AudioPartOverview extends SivaComposite implements ISelectionProvid
 	private BeanComparator bComparator = BeanComparator.getDefault();
 
 	public AudioPartOverview(Composite parent, int style, IWorkbenchSite site,
-			I_MediaPlayer mp, final int width) {
+			MediaPlayer mp, final int width) {
 		super(parent, style);
 		this.mp = mp;
 		this.audio = (Audio) mp.getMediaObject();

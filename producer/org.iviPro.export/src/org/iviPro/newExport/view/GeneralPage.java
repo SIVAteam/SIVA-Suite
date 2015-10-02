@@ -92,28 +92,9 @@ public class GeneralPage extends WizardPage {
 		createExtensionsControls(container);
 		createDirectoriesControls(container);
 
-		addTitleChangeListener();
 		bindValues();
 
 		setControl(container);
-	}
-
-	protected void addTitleChangeListener() {
-		titleText.addVerifyListener(new VerifyListener() {
-
-			@Override
-			public void verifyText(VerifyEvent event) {
-				event.doit = true;
-				String newTitle = ((Text) event.widget).getText();
-
-				if (titlesInUse.contains(newTitle)) {
-					event.doit = false;
-				}
-				if (newTitle.length() > 128) {
-					event.doit = false;
-				}
-			}
-		});
 	}
 
 	private void createMetaControls(Composite parent) {

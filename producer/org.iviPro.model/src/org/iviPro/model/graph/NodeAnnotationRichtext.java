@@ -4,7 +4,6 @@
 package org.iviPro.model.graph;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -98,5 +97,10 @@ public class NodeAnnotationRichtext extends INodeAnnotationLeaf {
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
 			return object != null && object == richtext;
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Richtext annotation";
 	}
 }

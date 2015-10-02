@@ -25,14 +25,14 @@ public class PlayerFactory {
 	 * end point of the media part shown in the player
 	 * @return media player instance for a part of the <code>mediaObject</code>
 	 */
-	public static I_MediaPlayer getPlayer(IMediaObject mediaObject, long startTime, long endTime) {
+	public static MediaPlayer getPlayer(IMediaObject mediaObject, long startTime, long endTime) {
 		switch (typeToUse) {
 			case VLC: return new VLCBasedMediaPlayer(mediaObject, startTime, endTime);
 		}
 		return null;		
 	}
 	
-	public static I_MediaPlayer getPlayer(IMediaObject mediaObject) {
+	public static MediaPlayer getPlayer(IMediaObject mediaObject) {
 		switch (typeToUse) {
 			case VLC: return new VLCBasedMediaPlayer(mediaObject);
 		}

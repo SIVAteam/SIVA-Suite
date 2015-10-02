@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.iviPro.editors.common.SivaComposite;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.utils.SivaTime;
 
 public class FrameCutWidget extends SivaComposite {
@@ -30,11 +30,11 @@ public class FrameCutWidget extends SivaComposite {
 	private boolean startChanged;
 	private final int START_TIME_CHANGED = 0;
 	private final int END_TIME_CHANGED = 1;
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 	private int maxFrame;
 
 	public FrameCutWidget(Composite parent, int style, SivaTime startTime,
-			SivaTime endTime, I_MediaPlayer mp) {
+			SivaTime endTime, MediaPlayer mp) {
 		super(parent, style);
 
 		this.startTime = new SivaTime(startTime.getNano());

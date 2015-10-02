@@ -23,14 +23,14 @@ public interface SettingsComposite {
 	public boolean checkSettings();
 	
 	/**
-	 * Returns the <code>ProjectSettings</code> stored within this composite
-	 * incorporating the values actually set in its widgets.
+	 * Writes the currently shown settings of this composite to the given settings
+	 * object.
 	 */
-	public ProjectSettings getSettings();
+	public void writeSettingsTo(ProjectSettings settings);
 	
 	/**
 	 * Updates the project's settings according to the values actually set in 
-	 * the widgets of this composite.
+	 * the widgets of this composite. This update should usually support Undo/Redo.
 	 */
 	public void updateProjectSettings();
 }

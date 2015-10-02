@@ -19,6 +19,7 @@ import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.iviPro.newExport.descriptor.xml.resources.IXMLResourceExporter;
 import org.iviPro.newExport.descriptor.xml.resources.ResourceExporterFactory;
 import org.w3c.dom.Document;
@@ -53,16 +54,21 @@ public class XMLExporterNodeScene extends IXMLExporter {
 	 * org.iviPro.export.xml.IdManager, org.iviPro.model.Project)
 	 */
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 
 		// IDs der verschiedenen Elemente im XML-Dokument generieren
 		String sceneID = idManager.getID(nodeScene);
-		String videoID = idManager.getID(nodeScene.getScene().getVideo());
+		String videoID = idManager.getID(nodeScene.getScene());
 
 		// Export scene resource
-		IXMLResourceExporter exporter = ResourceExporterFactory.createExporter(nodeScene.getScene());
+		IXMLResourceExporter exporter = ResourceExporterFactory
+				.createExporter(nodeScene.getScene());
+		exporter.exportResource(doc, idManager, alreadyExported);
+		
+		exporter = ResourceExporterFactory
+				.createExporter(nodeScene.getScene().getThumbnail());
 		exporter.exportResource(doc, idManager, alreadyExported);
 		
 		// Erstelle Eintrag in <sceneList>
@@ -117,8 +123,11 @@ public class XMLExporterNodeScene extends IXMLExporter {
 		scene.setIdAttribute(ATTR_SCENE_ID, true);
 		scene.setAttribute(ATTR_REF_RES_ID, videoID);
 		scene.setAttribute(ATTR_SCENE_NAME, nodeScene.getTitle());
-
-		String labelID = createTitleLabels(nodeScene, doc, idManager);
+		scene.setAttribute(ATTR_REF_RES_THUMBNAIL, 
+				idManager.getID(nodeScene.getScene().getThumbnail()));
+		
+		String labelID = createLabel(nodeScene, doc, idManager, 
+				nodeScene.getTitles(), LabelType.TITLE);
 		scene.setAttribute(ATTR_REFresIDname, labelID);
 		
 
@@ -179,8 +188,9 @@ public class XMLExporterNodeScene extends IXMLExporter {
 			Element forwardButton = doc.createElement(TAG_FOWARDBUTTON);	
 			forwardButton.setAttribute(ATTR_FORWARD_ID, 
 					idManager.getID(resume));
-			forwardButton.setAttribute(ATTR_REF_RES_ID,
-					createTitleLabels(resume, doc, idManager));
+			String titleLabelId = createLabel(resume, doc, idManager, 
+					resume.getTitles(), LabelType.TITLE);
+			forwardButton.setAttribute(ATTR_REF_RES_ID, titleLabelId);
 			loadVideoAction.appendChild(forwardButton);
 		}
 		Element actions = getActions(doc);		

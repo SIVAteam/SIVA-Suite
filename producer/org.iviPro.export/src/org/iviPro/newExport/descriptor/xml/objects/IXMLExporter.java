@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
@@ -16,16 +17,19 @@ import org.iviPro.model.graph.ScreenArea;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.iviPro.newExport.util.SivaTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public abstract class IXMLExporter implements SivaDefinition {
+	
+	private static Logger logger = Logger.getLogger(IXMLExporter.class);
+	
+	private IAbstractBean exportObj = null;
 
-	private Object exportObj = null;
-
-	IXMLExporter(Object exportObj) {
+	IXMLExporter(IAbstractBean exportObj) {
 		this.exportObj = exportObj;
 	}
 
@@ -74,6 +78,8 @@ public abstract class IXMLExporter implements SivaDefinition {
 			// exportiert.
 			if (!alreadyExported.contains(exportObj)) {
 				alreadyExported.add(exportObj);
+				logger.debug("Starting XML export of " 
+						+ exportObj.getClass().getSimpleName()); //$NON-NLS-1$
 				exportObjectImpl(exportObj, doc, idManager, project,
 						alreadyExported);
 			}
@@ -101,7 +107,7 @@ public abstract class IXMLExporter implements SivaDefinition {
 	 * @throws ExportException
 	 *             If an error occurs while exporting this object.
 	 */
-	protected abstract void exportObjectImpl(Object exportObj,
+	protected abstract void exportObjectImpl(IAbstractBean exportObj,
 			Document doc, IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException;
 
@@ -232,73 +238,38 @@ public abstract class IXMLExporter implements SivaDefinition {
 		}
 		return storyBoard;
 	}
-
+	
 	/**
-	 * Erstellt die <label> Elemente fuer die Description eines bestimmten
-	 * Model-Objekts im angegebenen XML-Dokument und gibt die ID des generierten
-	 * <label> Elements zurueck. Falls das Element keine Descriptions besitzt,
-	 * wird null zurueck gegeben und das Dokument nicht veraendert.
-	 * 
-	 * @param obj
-	 * @param doc
-	 * @param idManager
-	 * @return
-	 * @throws ExportException
+	 * Generates label XML node containing the localized contents
+	 * contained in the <code>stringContents</code> parameter. A string
+	 * identifying the created label is returned. 
+	 * @param obj object referring to the label
+	 * @param doc document in which the label is created
+	 * @param idManager idManager used to create XML ids
+	 * @param stringContents localized content of the label
+	 * @param type type of the label
+	 * @return identifier of the label 
+	 * @throws ExportException if an error occurs during creation of the label
 	 */
-	protected String createDescriptionLabels(IAbstractBean obj, Document doc,
-			IdManager idManager) throws ExportException {
+	protected String createLabel(IAbstractBean obj, Document doc,
+			IdManager idManager, Collection<LocalizedString> stringContents,
+			LabelType type) throws ExportException {
 		// <label resID="label-button1">
 		// . . . <content langCode="de-de">Button 01</content>
 		// </label>
 		Element resources = getRessources(doc);
 		Element label = doc.createElement(TAG_LABEL);
-		String labelID = idManager.getDescriptionLabelID(obj);
+		String labelID = idManager.getLabelId(type, obj);
 		label.setAttribute(ATTR_RES_ID, labelID);
-		Collection<LocalizedString> descriptions = obj.getDescriptions();
-		if (descriptions.isEmpty()) {
+		
+		if (stringContents.isEmpty()) {
 			return null;
 		}
-		for (LocalizedString descr : descriptions) {
+		for (LocalizedString string : stringContents) {
 			Element content = doc.createElement(TAG_CONTENT);
-			String langCode = descr.getSivaLangcode();
+			String langCode = string.getSivaLangcode();
 			content.setAttribute(ATTR_LANGCODE, langCode);
-			content.setTextContent(descr.getValue());
-			label.appendChild(content);
-		}
-		resources.appendChild(label);
-		return labelID;
-	}
-
-	/**
-	 * Erstellt die <label> Elemente fuer die Title eines bestimmten
-	 * Model-Objekts im angegebenen XML-Dokument und gibt die ID des generierten
-	 * <label> Elements zurueck. Falls das Element keine Titles besitzt, wird
-	 * null zurueck gegeben und das Dokument nicht veraendert.
-	 * 
-	 * @param obj
-	 * @param doc
-	 * @param idManager
-	 * @return
-	 * @throws ExportException
-	 */
-	protected String createTitleLabels(IAbstractBean obj, Document doc,
-			IdManager idManager) throws ExportException {
-		// <label resID="label-button1">
-		// . . . <content langCode="de-de">Button 01</content>
-		// </label>
-		Element resources = getRessources(doc);
-		Element label = doc.createElement(TAG_LABEL);
-		String labelID = idManager.getTitleLabelID(obj);
-		label.setAttribute(ATTR_RES_ID, labelID);
-		Collection<LocalizedString> titles = obj.getTitles();
-		if (titles.isEmpty()) {
-			return null;
-		}
-		for (LocalizedString title : titles) {
-			Element content = doc.createElement(TAG_CONTENT);
-			String langCode = title.getSivaLangcode();
-			content.setAttribute(ATTR_LANGCODE, langCode);
-			content.setTextContent(title.getValue());
+			content.setTextContent(string.getValue());
 			label.appendChild(content);
 		}
 		resources.appendChild(label);
@@ -336,13 +307,8 @@ public abstract class IXMLExporter implements SivaDefinition {
 		if (screenArea.equals(ScreenArea.OVERLAY)) {
 			Element overlay;
 			overlay = doc.createElement(TAG_PATH);
-			Scene scene = null;
-			try {
-				scene = ((INodeAnnotation) annotation).getParentScene()
+			Scene scene = ((INodeAnnotation) annotation).getParentScene()
 						.getScene();
-			} catch (Exception e) {
-
-			}
 
 			List<OverlayPathItem> overlayPath = null;
 			if (annotation instanceof INodeAnnotation) {

@@ -2,6 +2,7 @@ package org.iviPro.application;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
@@ -69,7 +70,6 @@ public class Application implements IApplication {
 	 * Erstellt eine neue SIVA Applikation
 	 */
 	public Application() {
-		PropertyConfigurator.configure(PathHelper.getPathToLoggerIni());
 		instance = this;
 		currentProject = null;
 		applicationListeners = new ArrayList<ApplicationListener>();
@@ -267,7 +267,24 @@ public class Application implements IApplication {
 	 * @seeorg.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
 	 * IApplicationContext)
 	 */
-	public Object start(IApplicationContext context) throws Exception {
+	public Object start(IApplicationContext context) throws Exception {		
+		// Set the application directory and the instance location
+		// where the Eclipse .metadata is stored.
+		File appDataDirFile = PathHelper
+				.getAppDataDirectory(Application.PLUGIN_NAME);
+		appDataDirFile.mkdirs();
+		String applicationDataDir = appDataDirFile.getAbsolutePath();
+		PathHelper.setSivaDir(applicationDataDir);		
+		Location instanceLoc = Platform.getInstanceLocation();
+		instanceLoc.release();
+		instanceLoc.set(new URL("file", null,  //$NON-NLS-1$
+				applicationDataDir), false); //$NON-NLS-1$		
+		// Set log4j configuration (requires application directory to be set first)
+		PropertyConfigurator.configure(PathHelper.getPathToLoggerIni());
+		
+		logger.info("Using data directory: "  //$NON-NLS-1$
+				+ applicationDataDir); //$NON-NLS-1$
+		
 		// Parse application arguments
 		String theme = null;
 		PathHelper.setLibDir("."); //$NON-NLS-1$
@@ -327,20 +344,6 @@ public class Application implements IApplication {
 				return IApplication.EXIT_OK;
 			}
 		}
-				
-		// Set the workspace directory where the Eclipse .metadata should
-		// be stored.
-		File appDataDirFile = PathHelper
-				.getAppDataDirectory(Application.PLUGIN_NAME);
-		appDataDirFile.mkdirs();
-		String applicationDataDir = appDataDirFile.getAbsolutePath();
-		Location instanceLoc = Platform.getInstanceLocation();
-		instanceLoc.release();
-		instanceLoc.set(new URL("file", null,  //$NON-NLS-1$
-				applicationDataDir), false); //$NON-NLS-1$
-		PathHelper.setSivaDir(applicationDataDir);		
-		logger.info("Using data directory: "  //$NON-NLS-1$
-				+ applicationDataDir); //$NON-NLS-1$
 		
 		Themes themeObj = Themes.getThemes(theme);
 		Colors.setColorProvider(themeObj.getColorProvider());
@@ -381,8 +384,8 @@ public class Application implements IApplication {
 				return IApplication.EXIT_OK;
 		} finally {
 			display.dispose();
+			cleanImageCache();
 		}
-
 	}
 
 	/*
@@ -401,5 +404,21 @@ public class Application implements IApplication {
 					workbench.close();
 			}
 		});
+		cleanImageCache();
+	}
+	
+	/**
+	 * Deletes all files in the image cache directory.
+	 */
+	private void cleanImageCache() {
+		File cacheDir = PathHelper.getPathToImageCache();
+		if (cacheDir.exists()) {
+			File[] images = cacheDir.listFiles();
+			if (images != null) {
+				for (File image : images) {
+					image.delete();
+				}
+			}
+		}
 	}
 }

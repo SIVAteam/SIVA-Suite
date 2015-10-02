@@ -3,15 +3,12 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 
 /**
  * @author dellwo
@@ -43,9 +40,14 @@ public class NodeStart extends INodeAnnotationAction {
 		// Only a single scene node may be connected to the start
 		if (getChildren().size() != 1 ||
 				!(getChildren().get(0) instanceof NodeScene)) {
-			validationError = "A single scene node needs to be set as child of the start node.";
+			setValidationError("A single scene node needs to be set as child of the start node.");
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Start";
 	}
 }

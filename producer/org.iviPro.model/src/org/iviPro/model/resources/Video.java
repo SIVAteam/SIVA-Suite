@@ -15,7 +15,7 @@ import org.iviPro.model.Project;
 /**
  * @author dellwo
  */
-public class Video extends IPixelBasedObject implements ITimeBasedObject, IResource {
+public class Video extends IPixelBasedObject implements ITimeBasedObject, IResource, IVideoResource {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -23,7 +23,8 @@ public class Video extends IPixelBasedObject implements ITimeBasedObject, IResou
 	 * Der Name des "frameRate-Properties, so wie es in PropertyChangeEvents
 	 * verwendet wird.
 	 */
-	public static final String PROP_FRAMERATE = "framerate";
+	public static final String PROP_FRAMERATE = "framerate"; //$NON-NLS-1$
+	public static final String PROP_THUMB = "thumb"; //$NON-NLS-1$
 
 	/**
 	 * @uml.property name="scenes" readOnly="true"
@@ -39,10 +40,16 @@ public class Video extends IPixelBasedObject implements ITimeBasedObject, IResou
 	 * Framerate des Videos
 	 */
 	private double frameRate = 0;
+	
+	/**
+	 * Thumbnail used to describe this scene.
+	 */
+	private VideoThumbnail thumbnail;
 
 	public Video(File file, Project project) {
 		super(file, null, project);
 		scenes = new BeanList<Scene>(project);
+		thumbnail = new VideoThumbnail(this, 0, project);
 	}
 
 	/*
@@ -96,14 +103,35 @@ public class Video extends IPixelBasedObject implements ITimeBasedObject, IResou
 		return null;
 	}
 	
+	public double getFrameRate() {
+		return this.frameRate;
+	}
+	
+	/**
+	 * Returns the thumbnail used to describe the scene.
+	 * @return thumbnail of the scene
+	 */
+	@Override
+	public VideoThumbnail getThumbnail() {
+		return thumbnail;
+	}
+	
 	public void setFrameRate(double frameRate) {
 		double oldValue = this.frameRate;
 		this.frameRate = frameRate;
 		firePropertyChange(PROP_FRAMERATE, oldValue, frameRate);
 	}
 	
-	public double getFrameRate() {
-		return this.frameRate;
+	/**
+	 * Set the absolute time in nanoseconds of the video frame which should be
+	 * referenced by the thumbnail of this scene.
+	 * @param time absolute time of the thumbnail frame
+	 */
+	@Override
+	public void changeThumbnailTime(long time) {
+		long oldValue = this.getThumbnail().getTime();
+		this.getThumbnail().setTime(time);
+		firePropertyChange(PROP_THUMB, oldValue, time);
 	}
 
 	@Override

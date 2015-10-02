@@ -1,14 +1,20 @@
 package org.iviPro.editors.richtextviewer;
 
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.mylyn.htmltext.HtmlComposer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTError;
+import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -20,15 +26,17 @@ import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.resources.RichText;
 import org.iviPro.theme.Icons;
 
-public class RichtextViewer extends IAbstractEditor implements
-		PropertyChangeListener {
+public class RichtextViewer extends IAbstractEditor {
 
 	private static Logger logger = Logger.getLogger(RichtextViewer.class);
 	public static final String ID = RichtextViewer.class.getName();
 
+	private Composite bridgeComposite;
+	private Frame frame;
+	private JPanel contentPane;
+	private JEditorPane editor;
+
 	private RichText richtext;
-	
-	private HtmlComposer viewer;
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -46,8 +54,7 @@ public class RichtextViewer extends IAbstractEditor implements
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
 		richtext = ((RichtextViewerInput) input).getRichtext();
 		richtext.addPropertyChangeListener(IAbstractBean.PROP_TITLE, this);
 		setPartName(richtext.getTitle());		
@@ -65,23 +72,41 @@ public class RichtextViewer extends IAbstractEditor implements
 
 	@Override
 	public void createPartControlImpl(Composite parent) {
+		bridgeComposite = new Composite(parent, SWT.EMBEDDED);
+		// bridge zu awt
+		frame = SWT_AWT.new_Frame(bridgeComposite);
 
-		try {
-			viewer = new HtmlComposer(parent, SWT.NONE);
-			viewer.setHtml(richtext.getContent());
-	        viewer.setEnabled(false);
-		} catch (SWTError e) {
-			String errorMsg = Messages.RichtextViewer_Error_MsgBoxText_NoBrowserAvailable;
-			logger.error(errorMsg);
-			MessageDialog.openError(parent.getShell(), Messages.RichtextViewer_Error_MsgBoxTitle, errorMsg);
-			return;
-		}
+		// Create AWT components
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				contentPane = new JPanel();
+				contentPane.setLayout(new GridBagLayout());
+				JRootPane rp = new JRootPane();
+				rp.getContentPane().add(contentPane);
+				frame.add(rp);
+
+				editor = new JEditorPane();
+				editor.setEditable(false);
+				editor.setContentType("text/html");
+				editor.setDocument(richtext.getDocument());
+
+				JScrollPane scrollPane = new JScrollPane(editor);
+				GridBagConstraints c = new GridBagConstraints();
+				c.fill = GridBagConstraints.BOTH;
+				c.weightx = 1.0;
+				c.weighty = 1.0;
+				c.gridy = 1;
+				contentPane.add(scrollPane, c);
+				frame.validate();
+			}
+		});
 	}
 
 	@Override
 	public void setFocus() {
-		if (viewer != null) {
-			viewer.setFocus();
+		if (bridgeComposite != null) {
+			bridgeComposite.setFocus();
 		}
 	}
 
@@ -91,7 +116,9 @@ public class RichtextViewer extends IAbstractEditor implements
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -99,5 +126,10 @@ public class RichtextViewer extends IAbstractEditor implements
 				setPartName(richtext.getTitle());
 			}
 		});
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return richtext;
 	}
 }

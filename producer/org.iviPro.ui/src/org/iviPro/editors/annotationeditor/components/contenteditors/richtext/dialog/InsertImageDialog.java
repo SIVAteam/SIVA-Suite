@@ -56,16 +56,7 @@ public class InsertImageDialog extends JDialog {
 	private JPanel imageContainer;
 	private Picture selected;
 	private JButton btnInsert;
-	private JTextField txtWidth;
-	private JTextField txtHeight;
-	private JCheckBox boxRatio;
 	private InitializeThumbnails initThumbnails;
-
-	// ratio of the currently selected image, ratio = width/height
-	private double ratio = 1d;
-	private boolean keepRatio = true;
-	private boolean widthChanged = false;
-	private boolean heightChanged = false;
 
 	/**
 	 * Thread zum laden der Thumbnails.
@@ -110,12 +101,6 @@ public class InsertImageDialog extends JDialog {
 						@Override
 						public void focusGained(FocusEvent arg0) {
 							selected = thumbnail.getPicture();
-							txtWidth.setText(String.valueOf(selected
-									.getDimension().width));
-							txtHeight.setText(String.valueOf(selected
-									.getDimension().height));
-							ratio = (double) selected.getDimension().width
-									/ (double) selected.getDimension().height;
 						}
 					});
 					c.gridy = c.gridy + 1;
@@ -159,7 +144,6 @@ public class InsertImageDialog extends JDialog {
 		// komponenten erzeugen
 		createThumbnailPane();
 		createControlPane();
-		createOptionsPane();
 	}
 
 	/**
@@ -183,8 +167,7 @@ public class InsertImageDialog extends JDialog {
 	 */
 	private void createControlPane() {
 		JPanel controls = new JPanel();
-		controls.setBorder(BorderFactory
-				.createTitledBorder(Messages.ImageDialog_Group_Controls));
+		controls.setBorder(BorderFactory.createTitledBorder(""));
 		// control position
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -218,138 +201,12 @@ public class InsertImageDialog extends JDialog {
 	}
 
 	/**
-	 * Erzeugt die Komponenten zum uebernehmen von Optionen.
-	 */
-	private void createOptionsPane() {
-		JPanel options = new JPanel();
-		options.setBorder(BorderFactory
-				.createTitledBorder(Messages.ImageDialog_Group_Options));
-		options.setLayout(new GridLayout(0, 2));
-		// control position
-		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1.0;
-		c.gridy = 1;
-		c.gridx = 0;
-		this.add(options, c);
-
-		// erstellt ein eingabefeld fuer die laenge des bildes
-		JLabel lblWidth = new JLabel(Messages.ImageDialog_Label_Width);
-		txtWidth = new JTextField();
-		txtWidth.setDocument(new NumbericDocument());
-		txtWidth.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent documentEvent) {
-				widthChanged = true;
-			}
-
-			public void insertUpdate(DocumentEvent documentEvent) {
-				widthChanged = true;
-			}
-
-			public void removeUpdate(DocumentEvent documentEvent) {
-				widthChanged = true;
-			}
-		});
-		txtWidth.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				if (widthChanged) {
-					modHeight();
-				}
-			}
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				widthChanged = false;
-			}
-
-			private void modHeight() {
-				if (txtWidth.getText().length() > 0 && keepRatio) {
-					txtHeight.setText(Integer.toString((int) (Integer
-							.parseInt(txtWidth.getText()) / ratio)));
-				}
-			}
-		});
-
-		if (selected != null)
-			txtWidth.setText(String.valueOf(selected.getDimension().width));
-		options.add(lblWidth);
-		options.add(txtWidth);
-
-		// erstellt ein eingabefeld fuer die hoehe des bildes
-		JLabel lblHeight = new JLabel(Messages.ImageDialog_Label_Height);
-		txtHeight = new JTextField();
-		txtHeight.setDocument(new NumbericDocument());
-		txtHeight.getDocument().addDocumentListener(new DocumentListener() {
-			public void changedUpdate(DocumentEvent documentEvent) {
-				heightChanged = true;
-			}
-
-			public void insertUpdate(DocumentEvent documentEvent) {
-				heightChanged = true;
-			}
-
-			public void removeUpdate(DocumentEvent documentEvent) {
-				heightChanged = true;
-			}
-		});
-		txtHeight.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				if (heightChanged) {
-					modHeight();
-				}
-			}
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				heightChanged = false;
-			}
-
-			private void modHeight() {
-				if (txtHeight.getText().length() > 0 && keepRatio) {
-					txtWidth.setText(Integer.toString((int) (Integer
-							.parseInt(txtHeight.getText()) * ratio)));
-				}
-			}
-		});
-		if (selected != null)
-			txtHeight.setText(String.valueOf(selected.getDimension().height));
-		options.add(lblHeight);
-		options.add(txtHeight);
-
-		JLabel lblRatio = new JLabel(Messages.ImageDialog_Label_Ratio);
-		boxRatio = new JCheckBox();
-		boxRatio.setSelected(keepRatio);
-		boxRatio.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				keepRatio = boxRatio.isSelected();
-			}
-		});
-
-		options.add(lblRatio);
-		options.add(boxRatio);
-	}
-
-	/**
 	 * Gibt den vom Benutzer ausgewaehlten Thumbnail zurueck.
 	 * 
 	 * @return Ausgewaehltes Bild als Picture.
 	 */
 	public Picture getSelectedImage() {
 		return selected;
-	}
-
-	/**
-	 * Gibt die vom Benutzer spezifizierte Groesze fuer das Bild an.
-	 * 
-	 * @return Bildgroesze.
-	 */
-	public Dimension getOptionSize() {
-		return new Dimension(Integer.valueOf(txtWidth.getText()),
-				Integer.valueOf(txtHeight.getText()));
 	}
 
 	/**
@@ -365,9 +222,6 @@ public class InsertImageDialog extends JDialog {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible) {
-			// reset textfields
-			txtWidth.setText(null);
-			txtHeight.setText(null);
 			// liste aller bilder aus repository erstellen
 			initThumbnails = new InitializeThumbnails();
 			initThumbnails.start();

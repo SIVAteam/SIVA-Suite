@@ -50,7 +50,8 @@ public class PlayerSettingsPage extends PreferencePage {
 	@Override
 	protected void performApply() {
 		if (settingsComp.checkSettings()) {
-			settingsComp.repaintPreview();
+			//Preview not finished yet
+			//settingsComp.repaintPreview();
 		}		
 		super.performApply();
 	}

@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.iviPro.actions.undoable.MediaDeleteAction;
 import org.iviPro.application.Application;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.model.resources.AudioPart;
 import org.iviPro.theme.Colors;
 import org.iviPro.utils.SivaTime;
@@ -39,7 +39,7 @@ public class SingleAudioBar extends Composite implements PaintListener {
 
 	// die Höhe eines Audio-Part Balken
 	private int height = 17;
-	private I_MediaPlayer mp = null;
+	private MediaPlayer mp = null;
 
 	// die Start- und Endzeit eines Audio-Part
 	private SivaTime startTime = new SivaTime(0);
@@ -66,7 +66,7 @@ public class SingleAudioBar extends Composite implements PaintListener {
 	 * Springe zur Stelle im AudioFile, Doppelklick -> spiele den Audio-Part ab.
 	 */
 	public SingleAudioBar(Composite parent, int style, final AudioPartOverview overview, 
-			final AudioPart audioPart, final I_MediaPlayer mp, int width) {
+			final AudioPart audioPart, final MediaPlayer mp, int width) {
 		super(parent, style);
 		
 		this.mp = mp;

@@ -14,6 +14,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.iviPro.editors.IAbstractEditor;
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.operations.OperationHistory;
 import org.iviPro.theme.Colors;
 import org.iviPro.theme.Icons;
@@ -76,8 +77,8 @@ public class TocEditor extends IAbstractEditor {
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
+		
 		setPartName(Messages.TocEditor_EditorTitle);
 	}
 
@@ -94,6 +95,11 @@ public class TocEditor extends IAbstractEditor {
 	@Override
 	public void setFocus() {
 		panel.refresh();
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return null;
 	}
 
 }

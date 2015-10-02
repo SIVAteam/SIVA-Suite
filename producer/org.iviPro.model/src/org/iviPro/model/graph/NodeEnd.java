@@ -3,13 +3,9 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.draw2d.geometry.Point;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 
 /**
  * @author dellwo
@@ -32,5 +28,10 @@ public class NodeEnd extends INodeAnnotationAction {
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
 		return false;
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "End";
 	}
 }

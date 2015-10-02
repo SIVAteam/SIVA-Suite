@@ -28,7 +28,7 @@ public class XMLExporterNodeRandomSelection extends IXMLExporter {
 	}
 
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 		

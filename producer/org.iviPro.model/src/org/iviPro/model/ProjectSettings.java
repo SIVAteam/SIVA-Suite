@@ -1,5 +1,7 @@
 package org.iviPro.model;
 
+import java.beans.PropertyChangeListener;
+
 
 public class ProjectSettings extends IAbstractBean {
 	
@@ -26,26 +28,28 @@ public class ProjectSettings extends IAbstractBean {
 	private static final long serialVersionUID = 1L;
 	
 	// Default values
-	//Producer settings
+	// Producer settings
 	public static final String DEFAULT_DEFAULTMEDIAFOLDER = "";
 	public static final boolean DEFAULT_FULLSEMANTICZOOMLEVELS = true;
-	//Player settings
+	// Resolution
 	public static final int DEFAULT_RESOLUTIONWIDTH = 1280;
 	public static final int DEFAULT_RESOLUTIONHEIGHT = 720;
-	
+	// Sidebars
 	public static final AnnobarVisibility DEFAULT_ANNOBARVISIBILITY = 
 			AnnobarVisibility.FOLDED; 
 	public static final boolean DEFAULT_ANNOTATIONOVERLAY = true;
 	public static final float DEFAULT_ANNOTATIONBARWIDTH = 0.2f;
 	public static final float DEFAULT_NAVIGATIONBARWIDTH = 0.2f;
+	// Colors
 	public static final String DEFAULT_PRIMARYCOLOR = "#363636";
 	public static final String DEFAULT_SECONDARYCOLOR = "#FFFFFF";
-	public static final boolean DEFAULT_USERDIARY = true;
+	// Video settings
 	public static final String DEFAULT_VIDEONAME = "";
 	public static final boolean DEFAULT_AUTOPLAY = true;
-	public static final boolean DEFAULT_LOGGING = true;
-	//Collaboration
+	// Player functions
+	public static final boolean DEFAULT_USERDIARY = false;
 	public static final boolean DEFAULT_COLLABORATION = false;
+	public static final boolean DEFAULT_LOGGING = false;
 	public static final String DEFAULT_SERVERURL = "";
 	
 
@@ -107,11 +111,11 @@ public class ProjectSettings extends IAbstractBean {
 	
 	private String videoTitle;
 	private boolean autoStart;
-	private boolean logging;
-	
-	// Collaboration settings
+		
+	// Collaboration and logging settings
 	private boolean collaboration;
-	private String serverUrl;	
+	private boolean logging;
+	private String loggingServerUrl;	
 	
 	/**
 	 * Constructs default <code>ProjectSettings</code>. Settings do not have a title.
@@ -127,32 +131,34 @@ public class ProjectSettings extends IAbstractBean {
 	 */
 	public ProjectSettings(ProjectSettings settingsToCopy) {
 		super((String)null, settingsToCopy.project);
-	
+		
 		// Producer settings
 		defaultMediaFolder = settingsToCopy.defaultMediaFolder;
 		fullSemanticZoomLevels = settingsToCopy.fullSemanticZoomLevels;
 
-		// Player settings
+		// Resolution
 		resolutionWidth = settingsToCopy.resolutionWidth;
 		resolutionHeight = settingsToCopy.resolutionHeight;
 		
+		// Sidebars
 		annobarVisibility = settingsToCopy.annobarVisibility;
 		annobarOverlay = settingsToCopy.annobarOverlay;
 		annotationBarWidth = settingsToCopy.annotationBarWidth;
 		navigationBarWidth = settingsToCopy.navigationBarWidth;
 		
+		// Colors
 		primaryColor = settingsToCopy.primaryColor;
 		secondaryColor = settingsToCopy.secondaryColor;
-
-		userDiary = settingsToCopy.userDiary;
-
+		
+		// Video settings
 		videoTitle = settingsToCopy.videoTitle;
 		autoStart = settingsToCopy.autoStart;
-		logging = settingsToCopy.logging;
 
-		// Collaboration
+		// Player functions
+		userDiary = settingsToCopy.userDiary;
 		collaboration = settingsToCopy.collaboration;
-		serverUrl = settingsToCopy.serverUrl;
+		logging = settingsToCopy.logging;
+		loggingServerUrl = settingsToCopy.loggingServerUrl;
 	}
 	
 	/**
@@ -176,27 +182,29 @@ public class ProjectSettings extends IAbstractBean {
 		defaultMediaFolder = DEFAULT_DEFAULTMEDIAFOLDER;
 		fullSemanticZoomLevels = DEFAULT_FULLSEMANTICZOOMLEVELS;
 				
-		// Player settings
+		// Resolution
 		resolutionWidth = DEFAULT_RESOLUTIONWIDTH;
 		resolutionHeight = DEFAULT_RESOLUTIONHEIGHT;
 		
+		// Sidebars
 		annobarVisibility = DEFAULT_ANNOBARVISIBILITY;
 		annobarOverlay = DEFAULT_ANNOTATIONOVERLAY;
 		annotationBarWidth = DEFAULT_ANNOTATIONBARWIDTH;
 		navigationBarWidth = DEFAULT_NAVIGATIONBARWIDTH;
 		
+		// Colors
 		primaryColor = DEFAULT_PRIMARYCOLOR;
 		secondaryColor = DEFAULT_SECONDARYCOLOR;
 		
-		userDiary = DEFAULT_USERDIARY;
-		
+		// Video settings	
 		videoTitle = DEFAULT_VIDEONAME;
 		autoStart = DEFAULT_AUTOPLAY;
-		logging = DEFAULT_LOGGING;
 		
-		// Collaboration
+		// Player functions
+		userDiary = DEFAULT_USERDIARY;
 		collaboration = DEFAULT_COLLABORATION;
-		serverUrl = DEFAULT_SERVERURL;
+		logging = DEFAULT_LOGGING;
+		loggingServerUrl = DEFAULT_SERVERURL;
 	}
 	
 	// Producer settings
@@ -209,7 +217,7 @@ public class ProjectSettings extends IAbstractBean {
 		return fullSemanticZoomLevels;
 	}
 
-	// Player settings
+	// Resolution
 	public int getResolutionWidth() {
 		return resolutionWidth;
 	}
@@ -228,6 +236,7 @@ public class ProjectSettings extends IAbstractBean {
 		firePropertyChange(PROP_DIMENSION, 1, -1);
 	}
 	
+	// Sidebars	
 	public AnnobarVisibility getAnnobarVisibility() {
 		return annobarVisibility;
 	}
@@ -262,6 +271,7 @@ public class ProjectSettings extends IAbstractBean {
 		firePropertyChange(PROP_DIMENSION, 1, -1);
 	}
 	
+	// Colors
 	public String getPrimaryColor() {
 		return primaryColor;
 	}
@@ -280,15 +290,7 @@ public class ProjectSettings extends IAbstractBean {
 		//firePropertyChange(PROP_PRIMARYCOLOR, 1, -1);
 	}
 	
-	public boolean isUserDiaryEnabled(){
-		return userDiary;
-	}
-	
-	public void setUserDiary(boolean userDiary) {
-		this.userDiary = userDiary;
-//		firePropertyChange(PROP_AUTOPLAY, 1, -1);
-	}
-	
+	// Video settings
 	public String getVideoTitle() {
 		return videoTitle;
 	}
@@ -307,6 +309,24 @@ public class ProjectSettings extends IAbstractBean {
 //		firePropertyChange(PROP_AUTOPLAY, 1, -1);
 	}
 	
+	// Player functions
+	public boolean isUserDiaryEnabled(){
+		return userDiary;
+	}
+	
+	public void setUserDiary(boolean userDiary) {
+		this.userDiary = userDiary;
+//		firePropertyChange(PROP_AUTOPLAY, 1, -1);
+	}
+	
+	public boolean isCollaborationEnabled() {
+		return collaboration;
+	}
+	
+	public void setCollaboration(boolean collaboration) {
+		this.collaboration = collaboration;
+	}
+	
 	public boolean isLoggingEnabled() {
 		return logging;
 	}
@@ -315,19 +335,11 @@ public class ProjectSettings extends IAbstractBean {
 		this.logging = logging;
 	}
 	
-	// Collaboration
-	public boolean isCollaborationEnabled() {
-		return collaboration;
-	}
-	
-	public void setCollaboration(boolean collaboration) {
-		this.collaboration = collaboration;
-	}
-	public String getServerUrl() {
-		return serverUrl;
+	public String getLoggingServerUrl() {
+		return loggingServerUrl;
 	}
 
-	public void setServerUrl(String url) {
-		serverUrl = url;
+	public void setLoggingServerUrl(String url) {
+		loggingServerUrl = url;
 	}
 }

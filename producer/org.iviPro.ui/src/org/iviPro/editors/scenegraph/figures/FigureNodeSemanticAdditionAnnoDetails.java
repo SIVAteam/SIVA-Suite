@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeAnnotationAudio;
 import org.iviPro.model.graph.NodeAnnotationPdf;
 import org.iviPro.model.graph.NodeAnnotationPicture;
@@ -66,9 +67,7 @@ public class FigureNodeSemanticAdditionAnnoDetails extends IFigureNode {
 		//Unterscheidung zw. den einzelnen Annotationstyepn und ihrer Darstellung
 		for(INodeAnnotation item: annotations) {
 
-			if(item instanceof NodeAnnotationPicture || item instanceof NodeAnnotationVideo 
-					|| item instanceof NodeAnnotationAudio || item instanceof NodeAnnotationRichtext 
-					|| item instanceof NodeAnnotationSubtitle) {
+			if(item instanceof INodeAnnotationLeaf) {
 				//Erhöhe y-Wert wenn neuer Eintrag
 				if(count > 0) {
 					pos.y += 21;

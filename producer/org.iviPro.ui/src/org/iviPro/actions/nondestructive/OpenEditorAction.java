@@ -11,10 +11,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.iviPro.editors.audioeditor.AudioEditor;
 import org.iviPro.editors.audioeditor.AudioEditorInput;
-import org.iviPro.editors.imageeditor.ImageEditor;
-import org.iviPro.editors.imageeditor.ImageWidgetInput;
-import org.iviPro.editors.sceneeditor.DefineScenesEditor;
 import org.iviPro.editors.sceneeditor.DefineScenesEditorInput;
+import org.iviPro.editors.sceneeditor.SceneEditor;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
@@ -90,13 +88,13 @@ public class OpenEditorAction extends Action implements
 			try {
 				// Szenen-Editor oeffnen.
 				IWorkbenchPage page = window.getActivePage();
-				page.openEditor(input, DefineScenesEditor.ID, true);	
+				page.openEditor(input, SceneEditor.ID, true);	
 	
 				// falls das Video noch keine Szene besitzt öffne automatisch einen SceneDefineWidget zum Erstellen
 				// einer neuen Scene
 				if (((Video) selection).getScenes().size() == 0) {
-					if (page.getActiveEditor() instanceof DefineScenesEditor) {
-						((DefineScenesEditor) page.getActiveEditor()).createNewScene();
+					if (page.getActiveEditor() instanceof SceneEditor) {
+						((SceneEditor) page.getActiveEditor()).createNewScene();
 					}
 				}
 			} catch (PartInitException e) {
@@ -127,21 +125,7 @@ public class OpenEditorAction extends Action implements
 			} catch (PartInitException e) {
 				e.printStackTrace();
 			}
-		}
-		
-		// bei einem Bild der Bild-Editor
-		if (selection instanceof Picture) {
-			Picture selectedPicture = (Picture) selection;
-			if (selectedPicture != null) {
-				ImageWidgetInput input = new ImageWidgetInput(selectedPicture);
-				try {
-					IWorkbenchPage page = window.getActivePage();
-					page.openEditor(input, ImageEditor.ID, true);
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-			}
-		}		
+		}	
 	}
 
 	@Override
@@ -181,7 +165,7 @@ public class OpenEditorAction extends Action implements
 			} else
 			if (mo instanceof Picture) {
 				selection = (Picture) mo;
-				setEnabled(true);
+				setEnabled(false);
 				setText(Messages.DefinePicture_DefinePicture);
 				setToolTipText(Messages.DefinePicture_DefinePictureToolTip);	
 			} else {

@@ -24,11 +24,7 @@ public class VideoGrabSystem {
 	
 	private VideoGrabSystem() {
 		// Create cache
-		String sep = File.separator;
-		String sivaDir = PathHelper.getSivaDir();
-		File cacheDir = new File(sivaDir + sep + "Media" //$NON-NLS-1$ //$NON-NLS-2$
-				+ sep + "Videos" + sep + "Imagecache"); //$NON-NLS-1$ //$NON-NLS-2$
-		cache = new Cache(cacheDir);
+		cache = new Cache(PathHelper.getPathToImageCache());
 		jobsQueue =  new LinkedBlockingQueue<Runnable>();		
 		exe = new ThreadPoolExecutor(numberThreads, numberThreads, 0, TimeUnit.SECONDS, jobsQueue);	
 		exe.prestartCoreThread();

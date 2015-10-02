@@ -39,19 +39,19 @@ public class IpAddressText extends Composite {
 		// Color needs not to be disposed
 		Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
 		// Defining controls
-		parts[0] = new SizedText(this, style, 3);
+		parts[0] = new SizedText(this, style, 3, true);
 		dots[0] = new Label(this, SWT.LEFT);
 		dots[0].setText("."); //$NON-NLS-1$
 		
-		parts[1] = new SizedText(this, style, 3);
+		parts[1] = new SizedText(this, style, 3, true);
 		dots[1] = new Label(this, SWT.LEFT);
 		dots[1].setText("."); //$NON-NLS-1$
 		
-		parts[2] = new SizedText(this, style, 3);
+		parts[2] = new SizedText(this, style, 3, true);
 		dots[2] = new Label(this, SWT.LEFT);
 		dots[2].setText("."); //$NON-NLS-1$
 		
-		parts[3] = new SizedText(this, style, 3);
+		parts[3] = new SizedText(this, style, 3, true);
 		
 		setBackground(white);		
 	}

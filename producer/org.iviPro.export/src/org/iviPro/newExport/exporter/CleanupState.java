@@ -19,8 +19,6 @@ public class CleanupState extends ExporterState {
 			ExportDirectories exportDirectories) {
 		super(TaskSettings.CLEANUP, exportProfile, exportDirectories);
 	}
-
-	// TODO Give feedback about the failed export!
 	
 	public void run(Exporter exporter, IProgressMonitor monitor)
 			throws ExportException {
@@ -31,6 +29,9 @@ public class CleanupState extends ExporterState {
 					taskSettings.getDuration());
 			if (exportDirectories.getTmpOutputFolder().exists()) {
 				FileUtils.delete(exportDirectories.getTmpOutputFolder());
+			}
+			if (exportDirectories.getOutputFolder().exists()) {
+				FileUtils.delete(exportDirectories.getOutputFolder());
 			}
 		} finally {
 			monitor.done();

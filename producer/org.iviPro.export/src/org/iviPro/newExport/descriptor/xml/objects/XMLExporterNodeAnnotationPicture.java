@@ -3,7 +3,6 @@ package org.iviPro.newExport.descriptor.xml.objects;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.graph.NodeAnnotationPicture;
 import org.iviPro.model.resources.IResource;
-import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

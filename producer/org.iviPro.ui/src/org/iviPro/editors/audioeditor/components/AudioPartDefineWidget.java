@@ -27,7 +27,7 @@ import org.iviPro.editors.common.EditTime;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.player.controls.SivaScale;
 import org.iviPro.model.resources.AudioPart;
 import org.iviPro.operations.IAbstractOperation;
@@ -42,7 +42,7 @@ public class AudioPartDefineWidget extends Composite {
 	private static Logger logger = Logger.getLogger(AudioPartDefineWidget.class);
 
 	// der MediaPlayer
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	// die zum AudioPartDefineWidget gehörende Audio-Part
 	private final AudioPart audioPart;
@@ -66,7 +66,7 @@ public class AudioPartDefineWidget extends Composite {
 	// der AudioEditor (wird für das neu anlegen eines Audio-Part benötigt
 	private AudioEditor editor;
 
-	public AudioPartDefineWidget(Composite parent, int style, CTabItem item, final AudioPart audioPart, final I_MediaPlayer mp, AudioEditor editor) {
+	public AudioPartDefineWidget(Composite parent, int style, CTabItem item, final AudioPart audioPart, final MediaPlayer mp, AudioEditor editor) {
 		
 		super(parent, style);
 

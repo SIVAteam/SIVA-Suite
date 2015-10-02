@@ -11,7 +11,6 @@ import org.eclipse.draw2d.geometry.Point;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 
 /**
  * @author dellwo
@@ -21,7 +20,7 @@ public abstract class IGraphNode extends IAbstractBean implements Comparable<IGr
 
 	public static final String PROP_POSITION = "position"; //$NON-NLS-1$
 	public static final String PROP_CHANGEZOOMLEVEL = "changezoomlevel"; //$NON-NLS-1$
-
+	
 	private final ConnectionConstraints connectionConstraints;
 
 	/**
@@ -52,7 +51,7 @@ public abstract class IGraphNode extends IAbstractBean implements Comparable<IGr
 	 * In case a validation of the node fails, this field contains a
 	 * message explaining the validation problem.
 	 */
-	protected String validationError = "";
+	private String validationError = "";
 
 	/**
 	 * @uml.property name="parent"
@@ -571,10 +570,23 @@ public abstract class IGraphNode extends IAbstractBean implements Comparable<IGr
 	 * This includes correct initialization of required fields as well as
 	 * correct embedding in the graph structure, i.e. existence of needed
 	 * parent and child connections.
+	 * <p/>
+	 * <b>Note:</b> Global annotations are not part of the scene graph and will,
+	 * therefore, not be validated.
+	 * 
 	 * @return true if all constraints are met - false otherwise
 	 */
 	public boolean validateNode() {
+		validationError = "";
 		return true;
+	}
+	
+	/**
+	 * Set the validation error message to the given string. 
+	 * @param error desired error message
+	 */
+	protected void setValidationError(String error) {
+		validationError = error;
 	}
 	
 	/**
@@ -584,5 +596,5 @@ public abstract class IGraphNode extends IAbstractBean implements Comparable<IGr
 	 */
 	public String getValidationError() {
 		return validationError;
-	}	
+	}
 }

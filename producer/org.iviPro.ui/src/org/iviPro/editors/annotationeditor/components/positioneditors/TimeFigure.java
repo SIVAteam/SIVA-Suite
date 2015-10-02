@@ -17,7 +17,9 @@ public class TimeFigure implements Comparable {
 	// die Figure der aktuellen Position
 	private Figure figure;
 	
-	// Zeit im gesamten Video 
+	/**
+	 * Absolute time in video where this figure occurs.
+	 */
 	private long time;
 	
 	// Rechteck zum Speichern der Koordinaten des Markierungspunkts 
@@ -49,6 +51,10 @@ public class TimeFigure implements Comparable {
 		return this.figure;
 	}
 	
+	/**
+	 * Returns the absolute time in the video where this figure occurs.
+	 * @return absolute time in video
+	 */
 	public long getTime() {
 		return this.time;
 	}
@@ -75,14 +81,14 @@ public class TimeFigure implements Comparable {
 					Point p1 = fig1.getPoints().getPoint(i);
 					Point p2 = fig2.getPoints().getPoint(i);
 					if (p1.equals(p2)) {						
-						return true;
+						return false;
 					}					
 				}
-			}				
+				return true;
+			}	
 		} else {
 			return figure.getBounds().equals(compareFigure.getBounds());
 		}
-		return false;
 	}
 
 	@Override

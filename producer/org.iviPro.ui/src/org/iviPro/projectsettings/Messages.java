@@ -5,6 +5,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.iviPro.projectsettings.messages"; //$NON-NLS-1$
 	
+	public static String PlayerSettingsComposite_0;
+
 	public static String PlayerSettingsComposite_AnnobarAlways;
 
 	public static String PlayerSettingsComposite_AnnobarAlways_Tooltip;
@@ -39,9 +41,23 @@ public class Messages extends NLS {
 
 	public static String PlayerSettingsComposite_AutoStart_Tooltip;
 
+	public static String PlayerSettingsComposite_CollabAndLogging;
+
+	public static String PlayerSettingsComposite_Collaboration;
+
+	public static String PlayerSettingsComposite_Collaboration_Tooltip;
+
 	public static String PlayerSettingsComposite_CollaborationServer;
 
+	public static String PlayerSettingsComposite_CollaborationURL;
+
 	public static String PlayerSettingsComposite_Group_Player_Functions;
+
+	public static String PlayerSettingsComposite_Logging;
+
+	public static String PlayerSettingsComposite_Logging_Tooltip;
+
+	public static String PlayerSettingsComposite_LoggingURL;
 
 	public static String PlayerSettingsComposite_NavbarSize;
 
@@ -84,6 +100,8 @@ public class Messages extends NLS {
 	public static String PlayerSettingsComposite_WarningRange;
 
 	public static String PlayerSettingsComposite_WarningRangeTo;
+
+	public static String PlayerSettingsComposite_WarningURL;
 
 	public static String PlayerSettingsPage_PlayerSettingsTitle;
 

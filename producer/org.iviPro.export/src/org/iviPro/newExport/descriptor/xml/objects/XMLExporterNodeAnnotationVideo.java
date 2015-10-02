@@ -59,5 +59,14 @@ public class XMLExporterNodeAnnotationVideo extends
 			action.setAttribute(ATTR_PLAYAUDIO_MUTE,
 					String.valueOf(videoAnnotation.isMuteVideo()));
 		}
+		
+		// Add thumbnail reference
+		String thumbnailId;
+		if (videoAnnotation.getContentType() == NodeAnnotationVideo.CONTENT_VIDEO) {
+			thumbnailId = idManager.getID(videoAnnotation.getVideo().getThumbnail());
+		} else {
+			thumbnailId = idManager.getID(videoAnnotation.getScene().getThumbnail());
+		}
+		action.setAttribute(ATTR_REF_RES_THUMBNAIL, thumbnailId);
 	}
 }

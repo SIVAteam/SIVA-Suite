@@ -65,6 +65,9 @@ public class XmlDescriptorExporter implements XmlExportSettings {
 
 		IdManager idManager = new IdManager(profile, projectResources);
 		Document document = createDocument();
+		
+		// Set of already exported objects. Since different exporters export
+		// different types, the general Object type has to be used here.
 		HashSet<Object> alreadyExported = new HashSet<Object>();
 
 		IXMLExporter exporter = ExporterFactory.createExporter(project);
@@ -76,7 +79,7 @@ public class XmlDescriptorExporter implements XmlExportSettings {
 		writeXmlFile(document);
 		logger.debug(String.format(LOG_DESCRIPTOR_CONTENT, loggerPrefix,
 				xmlFile.getAbsolutePath(), document.toString()));
-		writeJSONFile();
+		writeJsonFile();
 	}
 
 	private Document createDocument() throws ExportException {
@@ -124,7 +127,7 @@ public class XmlDescriptorExporter implements XmlExportSettings {
 	 * @throws ExportException if file manipulation causes an IOExecption 
 	 * to be thrown
 	 */
-	private void writeJSONFile() throws ExportException {
+	private void writeJsonFile() throws ExportException {
 		try {
 			IXML2JSONConvertor sivaConfigurationConvertor = 
 					new SivaPlayerXML2JSONConvertor();

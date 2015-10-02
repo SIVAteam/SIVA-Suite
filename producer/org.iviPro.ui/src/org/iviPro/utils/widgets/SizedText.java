@@ -17,15 +17,17 @@ public class SizedText extends Composite {
 	private Text text;
 	
 	/**
-	 * Creates a text field which allows the given number of input characters
-	 * and is sized to fit this number. The given style is applied to the text
-	 * field and has to be appropriate according to 
-	 * {@link org.eclipse.swt.widgets.Text}.
+	 * Creates a text field which sized to fit <code>textLength</code> number of 
+	 * characters. The <code>restrict</code> parameter determines whether or not
+	 * <code>textLength</code> also limits the number of characters which may be
+	 * entered. The given style is applied to the text field and has to be 
+	 * appropriate according to {@link org.eclipse.swt.widgets.Text}.
 	 * @param parent parent composite
 	 * @param style style of the text field
 	 * @param textLength allowed input size of the text field
+	 * @param restrict whether or not the number of allowed characters is restricted
 	 */
-	public SizedText(Composite parent, int style, int textLength) {
+	public SizedText(Composite parent, int style, int textLength, boolean restrict) {
 		super(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginWidth = 0;
@@ -39,7 +41,9 @@ public class SizedText extends Composite {
 		gc.dispose();
 		textLayout.widthHint = width;
 		text.setLayoutData(textLayout);
-		text.setTextLimit(textLength);
+		if (restrict) {
+			text.setTextLimit(textLength);
+		}
 	}
 	
 	/**

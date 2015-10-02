@@ -1,7 +1,6 @@
 package org.iviPro.editors.annotationeditor;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,6 +15,8 @@ import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -31,6 +32,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.iviPro.application.Application;
@@ -44,15 +46,18 @@ import org.iviPro.editors.common.BComparatorComposite;
 import org.iviPro.editors.common.BeanComparator;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.player.MediaPlayerWidget;
 import org.iviPro.mediaaccess.player.PlayerFactory;
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IConnection;
 import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeMark;
 import org.iviPro.model.graph.NodeScene;
+import org.iviPro.model.resources.Scene;
 import org.iviPro.model.resources.Video;
 import org.iviPro.theme.Colors;
 import org.iviPro.theme.Icons;
@@ -62,11 +67,20 @@ import org.iviPro.utils.SivaTime;
  * @author juhoffma
  */
 public class AnnotationEditor extends IAbstractEditor implements
-		PropertyChangeListener, ISelectionChangedListener {
+		ISelectionChangedListener {
 
 	private static Logger logger = Logger.getLogger(AnnotationEditor.class);
 	public static final String ID = AnnotationEditor.class.getName();
 	private static final String PREFIX_DEFINE_ANNOTATION = "Annotation-Editing - "; //$NON-NLS-1$
+	
+	/**
+	 * Component allowing the scrolling of the main component
+	 */
+	private ScrolledComposite scrollComposite;
+	/**
+	 * The main component encapsulating the editor widgets
+	 */
+	private Composite scrollContent;
 	
 	// die zum Annotationseditor gehörende Szene
 	private NodeScene nodeScene = null;
@@ -78,7 +92,7 @@ public class AnnotationEditor extends IAbstractEditor implements
 	private CTabFolder tabFolder = null;
 
 	// der zur Szene gehörende Movieplayer
-	private I_MediaPlayer mp = null;
+	private MediaPlayer mp = null;
 
 	// die zuletzt hinzugefügeten Annotationen
 	private HashMap<AnnotationType, INodeAnnotation> lastAddedAnnotations = new HashMap<AnnotationType, INodeAnnotation>();
@@ -108,7 +122,7 @@ public class AnnotationEditor extends IAbstractEditor implements
 			AnnotationDefineWidget defineWidget = (AnnotationDefineWidget) tabs[i]
 					.getControl();
 			if (defineWidget.isDirty()) {
-				defineWidget.executeSaveOperation();
+				monitor.setCanceled(!defineWidget.executeSaveOperation());
 			}
 		}
 		logger.info("Annotation Editor closed."); //$NON-NLS-1$
@@ -132,9 +146,9 @@ public class AnnotationEditor extends IAbstractEditor implements
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+		
 		nodeScene = ((AnnotationEditorInput) input).getSceneNode();
 		Graph graph = Application.getCurrentProject().getSceneGraph();
 		graph.addPropertyChangeListener(this);
@@ -183,8 +197,6 @@ public class AnnotationEditor extends IAbstractEditor implements
 		mp.stop();
 		logger.debug("Closing player"); //$NON-NLS-1$
 		mp.finish();
-		logger.debug("Dispoing super-type"); //$NON-NLS-1$
-		super.dispose();
 		
 		if (Application.getCurrentProject() != null) {
 			Graph graph = Application.getCurrentProject().getSceneGraph();
@@ -192,6 +204,8 @@ public class AnnotationEditor extends IAbstractEditor implements
 		}		
 		nodeScene.removePropertyChangeListener(this);
 		aov.removeSelectionChangedListener(this);		
+		logger.debug("Dispoing super-type"); //$NON-NLS-1$
+		super.dispose();
 	}
 
 	/*
@@ -203,23 +217,24 @@ public class AnnotationEditor extends IAbstractEditor implements
 	@Override
 	public void createPartControlImpl(final Composite parent) {	
 				
-		// Scrolling
-		final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		// Scroll component
+		scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		scrollComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		scrollComposite.setLayout(new GridLayout(1, true));			
-		final Composite scrollContent = new Composite(scrollComposite, SWT.NONE);
-		scrollContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				
+		// Main editor component
+		scrollContent = new Composite(scrollComposite, SWT.NONE);
 		scrollContent.setLayout(new GridLayout(1, false));
-		scrollComposite.setContent(scrollContent);		
-		scrollComposite.setMinSize(920, 1000);
+		scrollComposite.setContent(scrollContent);	
+		
+		scrollComposite.getVerticalBar().setIncrement(10);	
 		scrollComposite.setExpandHorizontal(true);
-		scrollComposite.setExpandVertical(true);		
+		scrollComposite.setExpandVertical(true);
+		
 		scrollComposite.addListener(SWT.Activate, new Listener() {
 	        public void handleEvent(Event e) {
 	        	scrollComposite.setFocus();
 	        }
 	    });
-		scrollComposite.getVerticalBar().setIncrement(10);		
 
 		// hole das Medienobjekt für die Szene
 		Video video = nodeScene.getScene().getVideo();
@@ -231,7 +246,7 @@ public class AnnotationEditor extends IAbstractEditor implements
 		parent.setLayout(griLayout);
 		
 		final CTabFolder tabFolderTop = new CTabFolder(scrollContent, SWT.TOP | SWT.LEFT);
-		tabFolderTop.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		tabFolderTop.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		tabFolderTop.setBorderVisible(true);
 		tabFolderTop.setSimple(false);
 		tabFolderTop.setSingle(true);
@@ -242,15 +257,14 @@ public class AnnotationEditor extends IAbstractEditor implements
 				tabFolderTop.setMinimized(true);
 				tabFolderTop.setMinimizeVisible(false);
 				tabFolderTop.setMaximizeVisible(true);			
-				scrollComposite.setMinSize(920, 520);
-				scrollContent.layout(true);
+				scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				
 			}
 			public void maximize(CTabFolderEvent event) {
 				tabFolderTop.setMinimized(false);
 				tabFolderTop.setMinimizeVisible(true);
 				tabFolderTop.setMaximizeVisible(false);				
-				scrollComposite.setMinSize(920, 900);
-				scrollContent.layout(true);				
+				scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			}
 		});		
 		tabFolderTop.setSelection(0);
@@ -274,9 +288,21 @@ public class AnnotationEditor extends IAbstractEditor implements
 		item.setControl(itemContent);
 		
 		// hält die Toolbar zum Erstellen der Annoation und die Suchauswahl
-		Composite itemContentTop = new Composite(itemContent, SWT.CENTER);
-		itemContentTop.setLayout(new GridLayout(2, false));
+		Composite itemContentLeftTop = new Composite(itemContent, SWT.CENTER);
+		itemContentLeftTop.setLayout(new GridLayout(2, false));
+		
+		// initialisiere das Auswalhmenü
+		createAnnotationChooseButton(itemContentLeftTop);
 				
+		// Composite zur Auswahl der Sortierung für den Annotationsüberblick
+		ArrayList<BeanComparator> comparators = new ArrayList<BeanComparator>();
+		for (BeanComparator bc : BeanComparator.values()) {
+			comparators.add(bc);
+		}
+		BComparatorComposite bcc = new BComparatorComposite(itemContentLeftTop, SWT.CENTER,
+				Messages.AnnotationEditor_Sort_Tooltip, comparators);
+		
+		// MediaPlayer
 		Composite itemContentTopRight = new Composite(itemContent, SWT.CENTER);
 		GridLayout itemContentTopRightGL = new GridLayout(1, false);
 		itemContentTopRightGL.marginTop=10;
@@ -284,26 +310,14 @@ public class AnnotationEditor extends IAbstractEditor implements
 		GridData itemContentTopRightGD = new GridData(SWT.FILL, SWT.FILL, false, false);
 		itemContentTopRightGD.verticalSpan = 2;
 		itemContentTopRight.setLayoutData(itemContentTopRightGD);
-		
-		// erstelle das MediaPlayer Widget
+
 		new MediaPlayerWidget(itemContentTopRight, SWT.RIGHT, mp, true, true);
 		
-		// initialisiere das Auswalhmenü
-		createAnnotationChooseButton(itemContentTop);
-		
-		// Composite zur Auswahl der Sortierung für den Annotationsüberblick
-		ArrayList<BeanComparator> comparators = new ArrayList<BeanComparator>();
-		for (BeanComparator bc : BeanComparator.values()) {
-			comparators.add(bc);
-		}
-		BComparatorComposite bcc = new BComparatorComposite(itemContentTop, SWT.CENTER,
-				Messages.AnnotationEditor_Sort_Tooltip, comparators);
-		
 		// hält die Annoationsübersicht und das MediaPlayerWidget
-		Composite itemContentBottom = new Composite(itemContent, SWT.CENTER);
-		itemContentBottom.setLayout(new GridLayout(2, false));
+		Composite itemContentLeftBottom = new Composite(itemContent, SWT.CENTER);
+		itemContentLeftBottom.setLayout(new GridLayout(2, false));
 					
-		aov = new AnnotationOverview(itemContentBottom, SWT.LEFT, nodeScene, 360, mp);
+		aov = new AnnotationOverview(itemContentLeftBottom, SWT.LEFT, nodeScene, 360, mp);
 		aov.addSelectionChangedListener(this);
 		bcc.addSivaEventConsumer(aov);
 			
@@ -360,6 +374,8 @@ public class AnnotationEditor extends IAbstractEditor implements
 				}
 			}
 		});
+		
+		scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 	
 	private void createAnnotationChooseButton(Composite parent) {
@@ -469,7 +485,13 @@ public class AnnotationEditor extends IAbstractEditor implements
 					tabFolder, SWT.CENTER, selectedAnnotation, annoType, mp, tabItem,
 					nodeScene, this);
 			
-			tabItem.setControl(newAn);			
+			tabItem.setControl(newAn);
+			tabItem.addDisposeListener(new DisposeListener() {				
+				@Override
+				public void widgetDisposed(DisposeEvent e) {
+					newAn.dispose();					
+				}
+			});
 		} else {
 			// vergleiche die Tabnamen mit dem Namen der
 			// Annotation
@@ -491,6 +513,7 @@ public class AnnotationEditor extends IAbstractEditor implements
 				}
 			}
 		}
+		scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	/**
@@ -526,8 +549,8 @@ public class AnnotationEditor extends IAbstractEditor implements
 
 	// erstellt eine neue temporäre Annotation, explizit gespeichert wird
 	// sie erst später
-	public void createNewAnnotation(AnnotationType annoType, I_MediaPlayer mp) {
-		INodeAnnotation newAnnotation = AnnotationFactory.getAnnotationForAnnotationType(annoType);
+	public void createNewAnnotation(AnnotationType annoType, MediaPlayer mp) {
+		INodeAnnotation newAnnotation = AnnotationFactory.getAnnotationForType(annoType);
 		lastAddedAnnotationType = annoType;
 		
 		newAnnotation.adjustTimeToScene(nodeScene);
@@ -563,9 +586,18 @@ public class AnnotationEditor extends IAbstractEditor implements
 		tabFolder.setSelection(tabItem);
 
 		// Das Widget zum Editieren/Erstellen einer Annotation
-		AnnotationDefineWidget newAn = new AnnotationDefineWidget(tabFolder,
-				SWT.CENTER, newAnnotation, annoType, mp, tabItem, nodeScene, this);
+		final AnnotationDefineWidget newAn = new AnnotationDefineWidget(tabFolder,
+				SWT.NONE, newAnnotation, annoType, mp, tabItem, nodeScene, this);
 		tabItem.setControl(newAn);
+		tabItem.addDisposeListener(new DisposeListener() {				
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				newAn.dispose();					
+			}
+		});
+		
+		scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		updateDirtyStatus();
 	}
 
 	/*
@@ -581,17 +613,25 @@ public class AnnotationEditor extends IAbstractEditor implements
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-
+	public void propertyChange(PropertyChangeEvent event) {	
+		super.propertyChange(event);
+		
+		// Close the editor if the underlying NodeScene is deleted
+		if (event.getPropertyName().equals(Graph.PROP_NODE_REMOVED)) {
+			if (event.getOldValue() == nodeScene) {
+				 getSite().getPage().closeEditor(this, false);
+			}
+		}		
 		if (event.getPropertyName().equals(Graph.PROP_CONNECTION_ADDED)) {			
-			// ignoriere den Endknoten
+			// React on added annotation
 			if (event.getNewValue() instanceof IConnection) {
 				IConnection conn = (IConnection) event.getNewValue();
 				IGraphNode source = conn.getSource();
 				if (source == nodeScene) {
 					// Ein Kind wurde zu unserem Szenen-Knoten hinzugefuegt
 					IGraphNode child = conn.getTarget();
-					if (child instanceof INodeAnnotation) {
+					if (child instanceof INodeAnnotationLeaf 
+							|| child instanceof NodeMark ) {
 						INodeAnnotation addedAnno = (INodeAnnotation) child;
 						if (addedAnno != null) {
 							lastAddedAnnotations.remove(lastAddedAnnotationType);
@@ -607,19 +647,20 @@ public class AnnotationEditor extends IAbstractEditor implements
 			}			
 		}
 		if (event.getPropertyName().equals(Graph.PROP_CONNECTION_REMOVED)) {
-			// ignoriere den Endknoten
+			// React on removed annotation
 			if (event.getOldValue() instanceof IConnection) {
 				IConnection conn = (IConnection) event.getOldValue();
 				IGraphNode source = conn.getSource();
 				if (source == nodeScene) {
 					// Ein Kind wurde von unserem Szenen-Knoten geloescht
 					IGraphNode child = conn.getTarget();
-					if (child instanceof INodeAnnotation) {
+					if (child instanceof INodeAnnotationLeaf 
+							|| child instanceof NodeMark ) {
 						closeTab((INodeAnnotation) child);
 					}
 				}
 			}
-		}
+		}		
 	}
 
 	@Override
@@ -639,5 +680,18 @@ public class AnnotationEditor extends IAbstractEditor implements
 					new SivaTime(selectedAnnotation.getEnd() 
 							- nodeScene.getScene().getStart())));
 		}	
+	}
+	
+	/**
+	 * Returns the <code>Scene</code> for which this editor can create annotations.
+	 * @return underlying <code>Scene</code>
+	 */
+	public Scene getScene() {
+		return nodeScene.getScene();
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return nodeScene.getScene();
 	}
 }

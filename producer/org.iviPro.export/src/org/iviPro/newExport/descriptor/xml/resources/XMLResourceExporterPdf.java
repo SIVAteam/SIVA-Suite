@@ -2,7 +2,6 @@ package org.iviPro.newExport.descriptor.xml.resources;
 
 import org.iviPro.model.LocalizedElement;
 import org.iviPro.model.LocalizedFile;
-import org.iviPro.model.resources.IResource;
 import org.iviPro.model.resources.PdfDocument;
 import org.iviPro.newExport.ExportException;
 import org.w3c.dom.Element;
@@ -22,8 +21,7 @@ public class XMLResourceExporterPdf extends IXMLResourceExporter {
 	}
 
 	@Override
-	protected void setAdditionalRessourceAttributes(Element resElement)
-			throws ExportException {
+	protected void setAdditionalRessourceAttributes(Element resElement) {
 		// TODO Auto-generated method stub
 
 	}

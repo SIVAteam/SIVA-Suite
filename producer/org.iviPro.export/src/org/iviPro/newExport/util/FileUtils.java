@@ -83,6 +83,9 @@ public class FileUtils {
 
 	public static void copyDirectoryContent(File sourceDirectory,
 			File targetDirectory) throws IOException {
+		if (!sourceDirectory.exists()) {
+			throw new IOException("Source directory does not exist.");
+		}
 		for (File file : sourceDirectory.listFiles()) {
 			if (file.isDirectory()) {
 				File targetSubDirectory = createSubdirectory(targetDirectory,

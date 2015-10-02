@@ -15,10 +15,11 @@ import org.iviPro.model.Project;
  * @author   dellwo
  * @uml.dependency   supplier="org.iviPro.model.Video"
  */
-public class Scene extends IAbstractBean implements IResource {
+public class Scene extends IAbstractBean implements IResource, IVideoResource {
 
 	public static final String PROP_START = "start"; //$NON-NLS-1$
 	public static final String PROP_END = "end"; //$NON-NLS-1$
+	public static final String PROP_THUMB = "thumb"; //$NON-NLS-1$
 
 	/**
 	 * The underlying video of the scene.
@@ -37,6 +38,11 @@ public class Scene extends IAbstractBean implements IResource {
 	 * @uml.property   name="start"
 	 */
 	private Long start;
+	
+	/**
+	 * Thumbnail used to describe this scene.
+	 */
+	private VideoThumbnail thumbnail;
 
 	/**
 	 * Konstruktor fuer eine neue Szene die sich per Default ueber ein gesamtes
@@ -52,6 +58,7 @@ public class Scene extends IAbstractBean implements IResource {
 		this.video = video;
 		start = new Long(0);
 		end = video.getDuration();
+		thumbnail = new VideoThumbnail(this, start, project);
 	}
 
 	/**
@@ -68,6 +75,7 @@ public class Scene extends IAbstractBean implements IResource {
 		this.video = video;
 		start = new Long(0);
 		end = video.getDuration();
+		thumbnail = new VideoThumbnail(this, start, project);
 	}
 
 	/**
@@ -99,6 +107,16 @@ public class Scene extends IAbstractBean implements IResource {
 	public Long getEnd() {
 		return end;
 	}
+	
+	/**
+	 * Returns the thumbnail used to describe the scene.
+	 * @return thumbnail of the scene
+	 */
+	@Override
+	public VideoThumbnail getThumbnail() {
+		return thumbnail;
+	}
+	
 
 	/**
 	 * Setter of the property <tt>start</tt>
@@ -124,11 +142,22 @@ public class Scene extends IAbstractBean implements IResource {
 		Long oldValue = this.end;
 		this.end = end;
 		firePropertyChange(PROP_END, oldValue, end);
+	}	
+	
+	/**
+	 * Set the absolute time in nanoseconds of the video frame which should be
+	 * referenced by the thumbnail of this scene.
+	 * @param time absolute time of the thumbnail frame
+	 */
+	@Override
+	public void changeThumbnailTime(long time) {
+		long oldValue = this.getThumbnail().getTime();
+		this.getThumbnail().setTime(time);
+		firePropertyChange(PROP_THUMB, oldValue, time);
 	}
 
 	@Override
 	public List<LocalizedElement> getLocalizedContents() {
 		return new ArrayList<LocalizedElement>(video.getFiles());
 	}
-
 }

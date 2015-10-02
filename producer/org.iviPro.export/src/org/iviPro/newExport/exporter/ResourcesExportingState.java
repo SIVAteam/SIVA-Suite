@@ -3,6 +3,7 @@ package org.iviPro.newExport.exporter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.iviPro.model.resources.Picture;
+import org.iviPro.model.resources.Video;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.Messages;
 import org.iviPro.newExport.profile.AudioProfile;
@@ -26,8 +28,10 @@ import org.iviPro.newExport.resources.ProjectResources;
 import org.iviPro.newExport.resources.ResourceDescriptor;
 import org.iviPro.newExport.resources.TimedResourceDescriptor;
 import org.iviPro.newExport.resources.VideoResourceDescriptor;
+import org.iviPro.newExport.resources.VideoThumbnailDescriptor;
 import org.iviPro.newExport.util.FileUtils;
 import org.iviPro.newExport.util.PathHelper;
+import org.iviPro.newExport.util.StreamHandler;
 import org.iviPro.transcoder.AudioDescriptor;
 import org.iviPro.transcoder.AudioFormat;
 import org.iviPro.transcoder.AudioQuality;
@@ -52,6 +56,7 @@ public class ResourcesExportingState extends ExporterState {
 	private static final String LOG_EXPORT_RICH_PAGE_RESOURCES = "%s Exporting the rich page resources."; //$NON-NLS-1$
 	private static final String LOG_COPY_RICH_PAGE_RESOURCE = "%s Copying the rich page '%s' to '%s'."; //$NON-NLS-1$
 	private static final String LOG_COPY_PDF_RESOURCE = "%s Copying the pdf document '%s' to '%s'."; //$NON-NLS-1$
+	private static final String LOG_CREATE_VIDEOTHUMBNAIL = "%s Creating a thumbnail for video '%s' at '%s'ns."; //$NON-NLS-1$
 	private static final String LOG_CREATE_THUMBNAIL = "%s Creating a thumbnail for image '%s'."; //$NON-NLS-1$
 	private static final String LOG_EXPORT_DYNAMIC_RESOURCES = "%s Exporting the dynamic resources."; //$NON-NLS-1$
 	private static final String LOG_EXPORT_AUDIO_RESOURCES = "%s Exporting the audio resources."; //$NON-NLS-1$
@@ -66,7 +71,7 @@ public class ResourcesExportingState extends ExporterState {
 	private static final String LOG_COPY_VIDEO_FAILED = "%s FAILED copying video from '%s' to '%s'."; //$NON-NLS-1$
 	
 	private static final String THUMBNAIL_SUFFIX = "_thumb"; //$NON-NLS-1$
-	private static final float THUMBSIZE = 150.0f;
+	private static final float THUMBSIZE = 300.0f;
 	// @formatter:on
 
 	private static final Logger logger = Logger
@@ -95,21 +100,21 @@ public class ResourcesExportingState extends ExporterState {
 			if (exportProfile.isExportResources()) {
 				checkCanceled(monitor);
 				monitor.subTask(TaskSettings.ANNOTATIONS_STATIC.getName());
-				exportStaticAnnotations(new SubProgressMonitor(monitor,
+				exportStaticResources(new SubProgressMonitor(monitor,
 						TaskSettings.ANNOTATIONS_STATIC.getDuration(),
 						SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
 
 				checkCanceled(monitor);
 				monitor.subTask(TaskSettings.ANNOTATIONS_MEDIA.getName());
-				exportMediaAnnotations(new SubProgressMonitor(monitor,
+				exportDynamicResources(new SubProgressMonitor(monitor,
 						TaskSettings.ANNOTATIONS_MEDIA.getDuration(),
 						SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK));
 			}
-		} catch (InterruptedException cause) {
-			logger.error(String.format(LOG_EXCEPTION_FORWARD, loggerPrefix,
-					cause.getMessage()));
+		} catch (InterruptedException e) {
 			exporter.switchState(new CleanupState(exportProfile,
 					exportDirectories));
+			// End export chain.
+			return;
 		} finally {
 			monitor.done();
 		}
@@ -124,15 +129,16 @@ public class ResourcesExportingState extends ExporterState {
 	 * @throws InterruptedException
 	 * @throws ExportException
 	 */
-	private void exportStaticAnnotations(IProgressMonitor monitor)
+	private void exportStaticResources(IProgressMonitor monitor)
 			throws InterruptedException, ExportException {
 		logger.debug(String.format(LOG_EXPORT_STATIC_RESOURCES, loggerPrefix));
 
 		Set<PictureResourceDescriptor> pictures = projectResources
 				.getPictures();
+		Set<VideoThumbnailDescriptor> thumbnails = projectResources.getVideoThumbnails();
 		Set<ResourceDescriptor> richPages = projectResources.getRichPages();
 		Set<ResourceDescriptor> pdfDocuments = projectResources.getPdfDocuments();
-
+		
 		File imageDirectory = null;
 		File richPageDirectory = null;
 		File pdfDirectory = null;
@@ -161,14 +167,12 @@ public class ResourcesExportingState extends ExporterState {
 			int tick = pictures.size() + richPages.size() + pdfDocuments.size() == 0
 					? TaskSettings.ANNOTATIONS_STATIC.getDuration() 
 					: TaskSettings.ANNOTATIONS_STATIC.getDuration() 
-						/(pictures.size() + richPages.size() + pdfDocuments.size());
-
-			checkCanceled(monitor);
-			monitor.beginTask(TaskSettings.ANNOTATIONS_STATIC.getName(),
-					TaskSettings.ANNOTATIONS_STATIC.getDuration());
+						/(pictures.size() + thumbnails.size() + richPages.size() 
+								+ pdfDocuments.size());
+					
 			logger.debug(String
 					.format(LOG_EXPORT_IMAGE_RESOURCES, loggerPrefix));
-
+			
 			for (PictureResourceDescriptor resourceDescriptor : pictures) {
 				checkCanceled(monitor);
 				monitor.subTask(resourceDescriptor.getTarget());
@@ -182,6 +186,16 @@ public class ResourcesExportingState extends ExporterState {
 						output.getAbsolutePath()));
 
 				renderPicture(resourceDescriptor.getPicture(), output);
+				monitor.worked(tick);
+			}
+
+			for (VideoThumbnailDescriptor thumbnailDescriptor : thumbnails) {
+				checkCanceled(monitor);
+				monitor.subTask(thumbnailDescriptor.getTarget());
+				
+				logger.debug(String.format(LOG_CREATE_VIDEOTHUMBNAIL,
+						loggerPrefix, thumbnailDescriptor.getVideo(), thumbnailDescriptor.getTime()));
+				createThumbnail(imageDirectory, thumbnailDescriptor);				
 				monitor.worked(tick);
 			}
 
@@ -247,7 +261,8 @@ public class ResourcesExportingState extends ExporterState {
 	private void renderPicture(Picture fileBasedObject, File outputFile)
 			throws ExportException {
 
-//		Badly working SWT version of thumbnail creation:
+//		Badly working SWT version of thumbnail creation, however, painting 
+//		ImageObJjects added by the ImageEditor (which will be removed soon).
 		
 //		ImageLoader loader = new ImageLoader();
 //		ImageData[] imgDataArray = loader.load(fileBasedObject.getFile()
@@ -335,6 +350,65 @@ public class ResourcesExportingState extends ExporterState {
 		}
 
 	}
+	
+	private void createThumbnail(File imageDir, VideoThumbnailDescriptor descriptor) 
+			throws ExportException {
+		String ffmpeg = PathHelper.FFMPEG_EXECUTABLE.getAbsolutePath();
+		Video video = descriptor.getVideo();
+		long time = descriptor.getTime();
+		String outputFilename = imageDir.getAbsolutePath() + File.separator
+				+ descriptor.getTarget();
+		
+		float aspect = (float)(video.getDimension().getWidth()/video.getDimension().getHeight());
+		int thumbWidth = (int)THUMBSIZE;
+		int thumbHeight = (int)THUMBSIZE;
+		if (aspect > 1.0) {
+			thumbHeight = (int)(THUMBSIZE/aspect);
+		} else {
+			thumbWidth = (int)(THUMBSIZE*aspect);
+		}
+
+		/*
+		 * ffmpeg kann derzeit den letzten Frame nur eingeschränkt extrahieren. 
+		 * Zur Sicherheit 1 Sekunde Puffer.
+		 */
+		long oneSec = 1000000000L;
+		if (time > video.getDuration()-oneSec && time > oneSec) {
+			time -= oneSec;
+		}
+		float timeInSeconds = time / 1000000000.0f;
+		String timeString = String.format(Locale.ENGLISH, "%.3f",  timeInSeconds); //$NON-NLS-1$
+		String cmd = ffmpeg + " -y -ss " + timeString + " -i \"" //$NON-NLS-1$ //$NON-NLS-2$
+				+ video.getFile().getValue().getAbsolutePath() + "\"" + " -vf scale=" //$NON-NLS-1$ //$NON-NLS-2$
+				+ thumbWidth + ":" + thumbHeight //$NON-NLS-1$
+				+ " -vframes 1 -f mjpeg \"" + outputFilename + "\""; //$NON-NLS-1$
+		
+		// Execute ffmpeg in separate process 
+		Runtime rt = Runtime.getRuntime();
+		Process p;		
+		try {
+			p = rt.exec(cmd);			
+			StreamHandler errorReader = new StreamHandler(p.getErrorStream(), "stderr"); //$NON-NLS-1$
+			StreamHandler outputReader = new StreamHandler(p.getInputStream(), "stdout"); //$NON-NLS-1$
+			outputReader.start();
+			errorReader.start();			
+			
+			// warten auf Beendigung
+			int exitVal = p.waitFor();
+			
+			// Falls ein Fehler auftrat liefert ffmpeg einen exit-Wert != 0
+			if (exitVal != 0) {
+				String errorMsg = "Could not extract image from frame.\n" //$NON-NLS-1$
+						+ "FFmpeg failed with error code: " + exitVal //$NON-NLS-1$	
+						+ "\n" + errorReader.getString(); //$NON-NLS-1$
+				throw new ExportException(errorMsg);
+			}						
+		} catch(IOException e) {
+			throw new ExportException("Could not extract image from frame.", e); //$NON-NLS-1$
+		} catch (InterruptedException e) {
+			throw new ExportException("Could not extract image from frame.", e); //$NON-NLS-1$
+		}
+	}
 
 	/**
 	 * Exports media files, i.e. files which might need transformation 
@@ -343,7 +417,7 @@ public class ResourcesExportingState extends ExporterState {
 	 * @throws InterruptedException 
 	 * @throws ExportException
 	 */
-	private void exportMediaAnnotations(IProgressMonitor monitor)
+	private void exportDynamicResources(IProgressMonitor monitor)
 			throws InterruptedException, ExportException {
 		logger.debug(String.format(LOG_EXPORT_DYNAMIC_RESOURCES, loggerPrefix));
 
@@ -366,14 +440,14 @@ public class ResourcesExportingState extends ExporterState {
 			checkCanceled(monitor);
 			monitor.beginTask(TaskSettings.ANNOTATIONS_MEDIA.getName(),
 					TaskSettings.ANNOTATIONS_MEDIA.getDuration());
-			exportAudioAnnotations(transcoder, audioAnnotations, monitor, tick);
-			exportVideoAnnotations(transcoder, videoAnnotations, monitor, tick);
+			exportAudioResources(transcoder, audioAnnotations, monitor, tick);
+			exportVideoResources(transcoder, videoAnnotations, monitor, tick);
 		} finally {
 			monitor.done();
 		}
 	}
 
-	private void exportAudioAnnotations(Transcoder transcoder,
+	private void exportAudioResources(Transcoder transcoder,
 			Set<TimedResourceDescriptor> audioAnnotations,
 			IProgressMonitor monitor, int tick) throws InterruptedException,
 			ExportException {
@@ -482,6 +556,8 @@ public class ResourcesExportingState extends ExporterState {
 						cause.getMessage()));
 				sync.failed = true;
 				sync.cause = cause;
+			} catch (InterruptedException e) {
+				logger.debug(e.getMessage(), e);
 			}
 		}
 
@@ -510,6 +586,8 @@ public class ResourcesExportingState extends ExporterState {
 						cause.getMessage()));
 				sync.failed = true;
 				sync.cause = cause;
+			} catch (InterruptedException e) {
+				logger.debug(e.getMessage(), e);
 			}
 		}
 
@@ -521,7 +599,7 @@ public class ResourcesExportingState extends ExporterState {
 		TranscodingException cause;
 	}
 
-	private void exportVideoAnnotations(Transcoder transcoder,
+	private void exportVideoResources(Transcoder transcoder,
 			Set<VideoResourceDescriptor> videoAnnotations,
 			IProgressMonitor monitor, int tick) throws InterruptedException,
 			ExportException {

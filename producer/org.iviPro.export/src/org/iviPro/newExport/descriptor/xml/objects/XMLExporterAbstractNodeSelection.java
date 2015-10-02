@@ -17,6 +17,7 @@ import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.iviPro.newExport.descriptor.xml.resources.IXMLResourceExporter;
 import org.iviPro.newExport.descriptor.xml.resources.ResourceExporterFactory;
 import org.w3c.dom.Document;
@@ -41,7 +42,7 @@ public class XMLExporterAbstractNodeSelection extends IXMLExporter {
 	// </showSelectionControl>
 
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 
@@ -53,7 +54,8 @@ public class XMLExporterAbstractNodeSelection extends IXMLExporter {
 		showSelControl.setAttribute(ATTR_SHOWSELECTIONCONTROL_TYPE, type);
 		showSelControl.setAttribute(ATTR_ACTIONID,
 				idManager.getActionID(selection));
-		String labelID = createTitleLabels(selection, doc, idManager);
+		String labelID = createLabel(selection, doc, idManager, 
+				selection.getTitles(), LabelType.TITLE);
 		showSelControl.setAttribute(ATTR_REF_RES_ID, labelID);
 		if (defaultControl != null) {
 			showSelControl.setAttribute(
@@ -94,7 +96,8 @@ public class XMLExporterAbstractNodeSelection extends IXMLExporter {
 			
 			controlElement.setAttribute(ATTR_COND_CONTROL_VISIBLE,
 					Boolean.toString(control.isVisible()));
-			String messageID = createDescriptionLabels(control, doc, idManager);
+			String messageID = createLabel(control, doc, idManager, 
+					control.getDescriptions(), LabelType.DESCRIPTION);
 			if (messageID != null) {
 				controlElement.setAttribute(ATTR_COND_REF_MSG, messageID);
 			}
@@ -124,8 +127,8 @@ public class XMLExporterAbstractNodeSelection extends IXMLExporter {
 			controlElement.setAttribute(ATTR_REF_ACTION_ID, controlActionID);
 			
 			// Export title and/or title image			
-			String conLabelID = createTitleLabels(control, doc,
-					idManager);
+			String conLabelID = createLabel(control, doc, idManager, 
+					control.getTitles(), LabelType.TITLE);
 			String conImageID = createButtonImage(control, doc, idManager,
 					alreadyExported);
 		

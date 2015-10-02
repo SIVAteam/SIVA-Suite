@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.iviPro.actions.undoable.SceneDeleteAction;
 import org.iviPro.application.Application;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.model.resources.Video;
 import org.iviPro.theme.Colors;
@@ -39,7 +39,7 @@ public class SingleSceneBar extends Composite implements PaintListener {
 
 	// die Höhe eines Szenebalkens
 	private int height = 17;
-	private I_MediaPlayer mp = null;
+	private MediaPlayer mp = null;
 
 	// Breite und Höhe des Start und Endbildes
 	private int widthImg = 50;
@@ -80,7 +80,7 @@ public class SingleSceneBar extends Composite implements PaintListener {
 	 * Springe zur Stelle im Video, Doppelklick -> spiele die Szene ab.
 	 */
 	public SingleSceneBar(Composite parent, int style,
-			final ScenesOverview overview, final Scene scene, final I_MediaPlayer mp, int width) {
+			final ScenesOverview overview, final Scene scene, final MediaPlayer mp, int width) {
 		super(parent, style);
 		
 		this.mp = mp;

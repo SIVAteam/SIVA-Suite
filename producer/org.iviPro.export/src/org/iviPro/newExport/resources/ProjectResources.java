@@ -10,6 +10,7 @@ public class ProjectResources {
 	private final Set<TimedResourceDescriptor> audios;
 	private final Set<VideoResourceDescriptor> videos;
 	private final Set<ResourceDescriptor> pdfDocuments;
+	private final Set<VideoThumbnailDescriptor> thumbnails;
 
 	public ProjectResources() {
 		this.pictures = new HashSet<PictureResourceDescriptor>();
@@ -17,6 +18,7 @@ public class ProjectResources {
 		this.audios = new HashSet<TimedResourceDescriptor>();
 		this.videos = new HashSet<VideoResourceDescriptor>();
 		this.pdfDocuments = new HashSet<ResourceDescriptor>();
+		this.thumbnails = new HashSet<VideoThumbnailDescriptor>();
 	}
 
 	public Set<PictureResourceDescriptor> getPictures() {
@@ -37,6 +39,10 @@ public class ProjectResources {
 	
 	public Set<ResourceDescriptor> getPdfDocuments() {
 		return pdfDocuments;
+	}
+	
+	public Set<VideoThumbnailDescriptor> getVideoThumbnails() {
+		return thumbnails;
 	}
 
 }

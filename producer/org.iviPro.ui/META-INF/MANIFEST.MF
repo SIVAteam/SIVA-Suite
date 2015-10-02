@@ -13,8 +13,6 @@ Require-Bundle: org.iviPro.model,
  org.iviPro.export;bundle-version="1.0.0",
  org.apache.log4j.export;bundle-version="1.2.27"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.iviPro.editors.annotationeditor.components,
- org.iviPro.editors.mediaplayer
 Export-Package: org.iviPro.actions.nondestructive;
   uses:="org.iviPro.application,
    org.iviPro.scenedetection.sd_misc,
@@ -105,28 +103,6 @@ Export-Package: org.iviPro.actions.nondestructive;
    org.iviPro.model.graph,
    org.eclipse.swt.widgets",
  org.iviPro.editors.events;uses:="org.iviPro.utils",
- org.iviPro.editors.imageeditor;
-  uses:="org.eclipse.osgi.util,
-   org.iviPro.editors,
-   org.eclipse.core.runtime,
-   org.eclipse.jface.resource,
-   org.iviPro.model.imageeditor,
-   org.iviPro.model,
-   org.eclipse.ui,
-   org.eclipse.swt.graphics,
-   org.eclipse.swt.widgets",
- org.iviPro.editors.mediaplayer;
-  uses:="org.iviPro.utils,
-   org.eclipse.core.runtime,
-   org.iviPro.editors,
-   org.eclipse.jface.resource,
-   org.eclipse.ui,
-   org.iviPro.editors.events,
-   org.eclipse.osgi.util,
-   javax.swing,
-   org.iviPro.model,
-   org.eclipse.swt.graphics,
-   org.eclipse.swt.widgets",
  org.iviPro.editors.richtextviewer;
   uses:="org.eclipse.osgi.util,
    org.iviPro.editors,

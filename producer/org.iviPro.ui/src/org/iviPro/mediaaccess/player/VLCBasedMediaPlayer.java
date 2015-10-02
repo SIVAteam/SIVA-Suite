@@ -14,7 +14,7 @@ import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventType;
 import org.iviPro.mediaaccess.videograb.FrameGrabingJob;
 import org.iviPro.mediaaccess.videograb.framegraber.FrameGraberFactory;
-import org.iviPro.mediaaccess.videograb.interfaces.I_FrameGrabber;
+import org.iviPro.mediaaccess.videograb.interfaces.FrameGrabber;
 import org.iviPro.model.IMediaObject;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.Video;
@@ -28,7 +28,7 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.videosurface.VideoSurfaceAdapter;
 import uk.co.caprica.vlcj.player.embedded.videosurface.windows.WindowsVideoSurfaceAdapter;
 
-public class VLCBasedMediaPlayer extends AMediaPlayer {
+public class VLCBasedMediaPlayer extends AbstractMediaPlayer {
 	
 	public VLCBasedMediaPlayer(IMediaObject mediaObject) {
 		super(mediaObject);
@@ -114,7 +114,7 @@ public class VLCBasedMediaPlayer extends AMediaPlayer {
 	private void createFirstFrame(int surfaceWidth, int surfaceHeight){
 		Video vid = (Video) media;
 		
-		I_FrameGrabber frameGrabber = FrameGraberFactory.getFrameGrabber();
+		FrameGrabber frameGrabber = FrameGraberFactory.getFrameGrabber();
 		FrameGrabingJob frameGrabberJob = new FrameGrabingJob(getStartTime().getNano(),
 					new Dimension(surfaceWidth,surfaceHeight), "Startbild", vid);
 		frameGrabber.grabFrame(frameGrabberJob);

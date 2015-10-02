@@ -22,6 +22,8 @@ public class Messages extends NLS {
 	public static String SceneDefineWidget_Label_SceneName;
 	public static String SceneDefineWidget_Label_Keywords;
 	public static String SceneDefineWidget_Label_KeywordsTooltip;
+
+	public static String SceneDefineWidget_Label_Preview;
 	public static String SceneDefineWidget_Text_SaveButton;
 	public static String SceneDefineWidget_Text_SaveCreateButton;
 	public static String SceneDefineWidget_PositionInput_inTime;
@@ -44,6 +46,8 @@ public class Messages extends NLS {
 	public static String VideoTimelineWidget_Timeline_ThumbnailFrame;
 	public static String VideoTimelineWidget_Timeline_Time;
 	
+	public static String SceneDefineWidget_MessageBox_CloseAnnoEditors;
+
 	public static String SceneDefineWidget_MsgBoxNameAlreadyUsed_Text1;
 	public static String SceneDefineWidget_MsgBoxNameAlreadyUsed_Text2;
 	public static String SceneDefineWidget_MsgBoxNameAlreadyUsed_Text3;

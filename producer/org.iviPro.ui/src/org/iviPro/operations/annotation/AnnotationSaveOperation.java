@@ -23,10 +23,16 @@ import org.iviPro.model.annotation.OverlayPathItem;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IConnection;
 import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.NodeAnnotationVideo;
 import org.iviPro.model.graph.NodeMark;
 import org.iviPro.model.graph.NodeMarkType;
 import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.graph.ScreenArea;
+import org.iviPro.model.resources.IVideoResource;
+import org.iviPro.model.resources.PdfDocument;
+import org.iviPro.model.resources.Scene;
+import org.iviPro.model.resources.Video;
+import org.iviPro.model.resources.VideoThumbnail;
 import org.iviPro.operations.CompoundOperation;
 import org.iviPro.operations.IAbstractOperation;
 import org.iviPro.operations.global.ChangeImagesOperation;
@@ -48,8 +54,6 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 	// Die Variablen zum Speichern der Operations-Daten
 	private INodeAnnotation annotation;
 	private final NodeScene nodeScene;
-	private IConnection annoConn;
-	private IConnection triggerConn;
 	
 	// hält Operationen zum Ändern von Titel, Zeit ...
 	CompoundOperation<IAbstractOperation> changeAnnotation;
@@ -71,7 +75,8 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 			Long start, Long end, String keywords, boolean disableable,
 			boolean pause, boolean mute, NodeMarkType markType,
 			List<IMarkShape> markShapes, long markDuration, String buttonLabel,
-			IAbstractBean editorContent, ScreenArea screenArea, List<OverlayPathItem> opItems) {
+			IAbstractBean editorContent, String contentDescription, long thumbnailTime,  
+			ScreenArea screenArea, List<OverlayPathItem> opItems) {
 		
 		super(Messages.AnnotationSaveOperation_UndoLabel);
 		Project project = Application.getCurrentProject();
@@ -83,6 +88,10 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 		this.annotation = annotation;
 		this.nodeScene = nodeScene;
 		
+		//if (editorContent != null && annotationType.getContentType().equals(AnnotationContentType.PDF)) {
+		//	((PdfDocument)editorContent).changeThumbnailTime(thumbnailTime);
+		//} 
+				
 		changeAnnotation = new CompoundOperation<IAbstractOperation>(Messages.AnnotationSaveOperation_UndoLabel);
 		changeAnnotation.addOperation(new ChangeTitleOperation(annotation, title));
 		changeAnnotation.addOperation(new ChangeTimeOperation(annotation, start, end));
@@ -107,7 +116,8 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 		// Some values have to be stored also/only in the content annotation, which 
 		// is the triggered annotation in case of a mark annotation
 		INodeAnnotation contentAnnotation = AnnotationFactory.getContentAnnotation(annotation);
-		changeAnnotation.addOperation(new ChangeContentOperation(contentAnnotation, editorContent));
+		changeAnnotation.addOperation(new ChangeContentOperation(contentAnnotation, editorContent, 
+				contentDescription, thumbnailTime));
 		changeAnnotation.addOperation(new ChangeDisableableOperation(contentAnnotation, disableable));	
 		changeAnnotation.addOperation(new ChangePauseOperation(contentAnnotation, pause));
 		changeAnnotation.addOperation(new ChangeMuteOperation(contentAnnotation, mute));
@@ -116,6 +126,7 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 		if (!(annotationType.getContentType().equals(AnnotationContentType.SUBTITLE))) {
 			changeAnnotation.addOperation(new ChangeScreenPositionOperation(contentAnnotation, screenArea, opItems));			
 		}
+		
 		Graph graph = nodeScene.getGraph();
 		if (!graph.containsConnection(nodeScene, annotation)) {
 			isNew = true;
@@ -141,34 +152,30 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 	@Override
 	public IStatus redo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
-
-		IEditPartNode editPartNode = PartFactory.getReferingEditPart(nodeScene);
-		//hole aktuelle größe
-		int oldWidth = editPartNode.getFigure().getBounds().width;
-		int oldHeight = editPartNode.getFigure().getBounds().height;
+		
 		changeAnnotation.execute(monitor, info);
-
+		
 		// add annotation (and possibly connected trigger annotation) to the graph
 		if (isNew) {
 			Graph graph = nodeScene.getGraph();
 			graph.addNode(annotation);
-			annoConn = IConnection.createConnection(nodeScene, 
+			IConnection annoConn = IConnection.createConnection(nodeScene, 
 					annotation, Application.getCurrentProject());
 			graph.addConnection(annoConn);
 			
 			if (annotation instanceof NodeMark) {
 				INodeAnnotation trigger = ((NodeMark) annotation).getTriggerAnnotation();
 				graph.addNode(trigger);
-				triggerConn = IConnection.createConnection(annotation, 
-						trigger, Application.getCurrentProject());
+				IConnection triggerConn = IConnection.createConnection(annotation, trigger, 
+						Application.getCurrentProject());
 				graph.addConnection(triggerConn);
 			}
-		}
-
-		//PropertyChange zum Refresh der Figure
-		//(benötigt wenn Semantic Fisheye aktiv und Annotation gelöscht wurde)
-		nodeScene.firePropertyChange(PROP_ANNO_ADDED, null, nodeScene);
+		}		
 		
+		IEditPartNode editPartNode = PartFactory.getReferingEditPart(nodeScene);
+		//hole aktuelle größe
+		int oldWidth = editPartNode.getFigure().getBounds().width;
+		int oldHeight = editPartNode.getFigure().getBounds().height;
 		//hole neue größe
 		int newWidth = editPartNode.getFigure().getBounds().width;
 		int newHeight = editPartNode.getFigure().getBounds().height;
@@ -179,13 +186,17 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 		
 		//PropertyChange für den Layoutmanager
 		this.firePropChange(LayoutManager.PROP_ADDED_ANNOTATION, null, editPartSizeChangedList);
+		
+		//PropertyChange zum Refresh der Figure
+		//(benötigt wenn Semantic Fisheye aktiv und Annotation gelöscht wurde)
+		nodeScene.firePropertyChange(PROP_ANNO_ADDED, null, nodeScene);
+		
 		return Status.OK_STATUS;
 	}
 
 	@Override
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
-		changeAnnotation.undo(monitor, info);
 		if (isNew) {
 			Graph graph = nodeScene.getGraph();
 			
@@ -195,9 +206,9 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 			if (annotation instanceof NodeMark) {
 				INodeAnnotation trigger = ((NodeMark) annotation).getTriggerAnnotation();
 				graph.removeNode(trigger);
-			}
-			
+			}			
 		}
+		changeAnnotation.undo(monitor, info);
 		return Status.OK_STATUS;
 	}
 

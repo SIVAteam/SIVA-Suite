@@ -2,32 +2,41 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Contents" topic="help/html/toc.html">
-   <topic href="help/html/gettingstarted/overview.html" label="First Steps">
-      <anchor id="gettingstarted"/>
-      <topic href="help/html/gettingstarted/gui.html" label="GUI">
+   <topic href="help/html/tutorial/overview.html" label="Tutorial">
+      <topic href="help/html/tutorial/createNewProject.html" label="Creating a video project">
       </topic>
-      <topic href="help/html/gettingstarted/menue.html" label="Menu Structure">
+      <topic href="help/html/tutorial/loadMedium.html" label="Adding media files">
       </topic>
-      <topic href="help/html/gettingstarted/editorsandviews/viewsandeditors.html" label="Editors and Views">
-         <topic href="help/html/gettingstarted/editorsandviews/editors.html" label="Editors">
+      <topic href="help/html/tutorial/cutVideo.html" label="Cutting videos">
+      </topic>
+      <topic href="help/html/tutorial/addSceneToScenegrapheditor.html" label="Composing a scene graph">
+      </topic>
+      <topic href="help/html/tutorial/addAnnotation.html" label="Adding scene annotations">
+      </topic>
+      <topic href="help/html/tutorial/saveAndExport.html" label="Exporting a video project">
+      </topic>
+   </topic>
+   <topic href="help/html/components/overview.html" label="Components">
+      <topic href="help/html/components/overview.html" label="Overview">
+      </topic>
+      <topic href="help/html/components/menu.html" label="Menu">
+      </topic>
+      <topic label="editors">
+         <topic href="help/html/components/editors/bildeditor.html" label="Picture editor">
          </topic>
-         <topic href="help/html/gettingstarted/editorsandviews/views.html" label="Views">
+         <topic href="help/html/components/editors/sceneneditor.html" label="Scene editor">
          </topic>
-         <topic href="help/html/gettingstarted/editorsandviews/viewcloseopen.html" label="Close and Reopen">
+         <topic href="help/html/components/editors/annotationeditor.html" label="Annotation editor">
+         </topic>
+         <topic href="help/html/components/editors/scenegrapheditor.html" label="Scene graph editor">
+         </topic>
+         <topic href="help/html/components/editors/toceditor.html" label="Toc editor">
          </topic>
       </topic>
-      <topic href="help/html/gettingstarted/simpleiavp/simpleproject.html" label="A Simple Interactive Video Project">
-         <topic href="help/html/gettingstarted/simpleiavp/createproject.html" label="Create an Interactive Video Project">
+      <topic label="views">
+         <topic href="help/html/components/views/views.html" label="Types of views">
          </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/loadvideo.html" label="Load a Video">
-         </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/cutvideo.html" label="Cutting a Video">
-         </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/scenetographi.html" label="Adding a Scene to the Scene Graph">
-         </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/addannotation.html" label="Adding an Annotation">
-         </topic>
-         <topic href="help/html/gettingstarted/simpleiavp/saveandexport.html" label="Save and Export">
+         <topic href="help/html/components/views/viewsEdit.html" label="Editing views">
          </topic>
       </topic>
    </topic>

@@ -33,12 +33,22 @@ public class LocalizedString extends LocalizedElement {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof LocalizedString) {
-			LocalizedString other = (LocalizedString) obj;
-			return language.equals(other.language) && value.equals(other.value);
-		} else {
-			return false;
+		if (this == obj) {
+			return true;
 		}
+		
+		if (!(obj instanceof LocalizedString)) {
+			return false;
+		}	
+		
+		LocalizedString lsObj = (LocalizedString) obj;
+		return language.equals(lsObj.language) 
+				&& value.equals(lsObj.value);
+	}
+	
+	@Override
+	public int hashCode() {
+		return language.hashCode() + value.hashCode();
 	}
 
 }

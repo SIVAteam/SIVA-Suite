@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SIVA Producer" uid="org.iviPro.ui.product" id="org.iviPro.ui.product" application="org.iviPro.ui.application" version="0.6.4" useFeatures="false" includeLaunchers="true">
+<product name="SIVA Producer" uid="org.iviPro.ui.product" id="org.iviPro.ui.product" application="org.iviPro.ui.application" version="0.7" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.iviPro.ui/branding/orange/about/about.png"/>
       <text>
          SIVA Producer
 
-Version 0.6.4 - ZMK SS 2015
+Version 0.7
 (c) 2015 - All rights reserved
 
 Programmers (alphabetic order):
-Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Grill, Christian Handschigl, Jürgen Hoffmann, Stefan John,
-Johannes Köstler, Andreas Lang, Britta Meixner, Florian Niederhuber, Tristan Schneider, Stefan Zwicklbauer
+Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Grill, Christian Handschigl, Jürgen Hoffmann, Stefan John, Johannes Köstler, Andreas Lang, Britta Meixner, Florian Niederhuber, Tristan Schneider, Stefan Zwicklbauer
       </text>
    </aboutInfo>
 

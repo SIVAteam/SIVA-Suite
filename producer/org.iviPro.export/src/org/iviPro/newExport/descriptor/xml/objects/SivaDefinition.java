@@ -41,11 +41,10 @@ public interface SivaDefinition {
 	
 	public static final String VAL_VIDEOTITLE = "videoTitle"; //$NON-NLS-1$
 	public static final String VAL_AUTOSTART = "autoStart"; //$NON-NLS-1$
-	public static final String VAL_LOGGING = "log"; //$NON-NLS-1$
-	
+		
 	public static final String VAL_COLLABORATION = "collaboration"; //$NON-NLS-1$
-	public static final String VAL_SERVERURL= "serverUrl"; //$NON-NLS-1$
-	
+	public static final String VAL_LOGGING = "log"; //$NON-NLS-1$
+	public static final String VAL_LOGGINGSERVERURL= "loggingServerUrl"; //$NON-NLS-1$
 	
 	public static final String TAG_PROJECTRESSOURCES = "projectRessources"; //$NON-NLS-1$
 	public static final String TAG_PROJECTSTATES = "projectStates"; //$NON-NLS-1$
@@ -102,6 +101,7 @@ public interface SivaDefinition {
 
 	public static final String TAG_ACTIONS = "actions"; //$NON-NLS-1$
 	public static final String ATTR_REFresIDtitle = "REFresIDtitle"; //$NON-NLS-1$
+	public static final String ATTR_REFresIDdescription = "REFresIDdescription"; //$NON-NLS-1$
 	public static final String ATTR_ACTIONID = "actionID"; //$NON-NLS-1$
 	public static final String ATTR_PAUSEVIDEO = "pauseVideo"; //$NON-NLS-1$
 	public static final String ATTR_DISABLEABLE = "disableable"; //$NON-NLS-1$
@@ -141,7 +141,7 @@ public interface SivaDefinition {
 	public static final String TAG_SHOWSUBTITLE = "showSubTitle"; //$NON-NLS-1$
 	public static final String TAG_SHOWVIDEO = "showVideo"; //$NON-NLS-1$
 	public static final String TAG_SHOWRICHPAGE = "showRichPage"; //$NON-NLS-1$
-	public static final String TAG_SHOWPDF = "showPdf"; //$NON-NLS-1$
+	public static final String TAG_SHOWPDF = "showPdfDocument"; //$NON-NLS-1$
 	public static final String TAG_SHOWIMAGE = "showImage"; //$NON-NLS-1$
 	public static final String TAG_SHOWIMAGE_GAL = "showImages"; //$NON-NLS-1$
 	public static final String TAG_SHOWIMAGE_GALRES = "galleryRessources"; //$NON-NLS-1$
@@ -203,7 +203,6 @@ public interface SivaDefinition {
 	public static final String ATTR_RANDOM_ID = "randomID"; //$NON-NLS-1$
 	public static final String ATTR_PROBABILITY = "probability"; //$NON-NLS-1$
 	
-
 	// ----- <tableOfContent> ---------------------------
 
 	public static final String TAG_TOC_ROOT = "tableOfContents"; //$NON-NLS-1$
@@ -221,7 +220,7 @@ public interface SivaDefinition {
 	public static final String ATTR_RESSOURCE_TYPE = "ressourceType"; //$NON-NLS-1$
 
 	// ------ GLOBAL: REFERENCES -------------------------------------------
-
+	
 	public static final String ATTR_REF_RES_ID = "REFresID"; //$NON-NLS-1$
 	public static final String ATTR_REF_RES_ID_SECONDARY = "REFresIDsec"; //$NON-NLS-1$
 	public static final String ATTR_REF_ACTION_ID = "REFactionID"; //$NON-NLS-1$
@@ -229,6 +228,9 @@ public interface SivaDefinition {
 	public static final String VAL_TIME_NULL = "00:00:00.000"; //$NON-NLS-1$
 	public static final String VAL_POINT_NULL = "-1.0"; //$NON-NLS-1$
 	public static final String VAL_NO_PROJECT_TITLE = "NoProjectTitle"; //$NON-NLS-1$
+	
+	// ----- <video based> ------------------------------
+	public static final String ATTR_REF_RES_THUMBNAIL = "REFresIDthumb"; //$NON-NLS-1$
 
 	// ========================================================================
 }

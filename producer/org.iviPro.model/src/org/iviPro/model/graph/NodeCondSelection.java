@@ -30,4 +30,9 @@ public class NodeCondSelection extends AbstractNodeSelection {
 		super(new LocalizedString(title, project), project,
 				CONNECTION_CONSTRAINTS);
 	}
+
+	@Override
+	public String getBeanTag() {
+		return "Conditional selection";
+	}
 }

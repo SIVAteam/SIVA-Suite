@@ -9,6 +9,7 @@ import org.iviPro.model.resources.RichText;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.model.resources.Subtitle;
 import org.iviPro.model.resources.Video;
+import org.iviPro.model.resources.VideoThumbnail;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.Messages;
 
@@ -19,13 +20,16 @@ public class ResourceExporterFactory {
 			return new XMLResourceExporterVideo((Video)objectToExport);
 		} else if (objectToExport instanceof Scene) {
 			Scene scene = (Scene)objectToExport;
-			return new XMLResourceExporterVideo(scene.getVideo(), 
+			return new XMLResourceExporterVideo(scene, 
 					scene.getStart(), scene.getEnd());
+		} else if (objectToExport instanceof VideoThumbnail) {
+			return new XMLResourceExporterVideoThumbnail(
+					(VideoThumbnail)objectToExport);
 		} else if (objectToExport instanceof Audio) {
 			return new XMLResourceExporterAudio((Audio)objectToExport);
 		} else if (objectToExport instanceof AudioPart) {
 			AudioPart audioPart = (AudioPart) objectToExport;
-			return new XMLResourceExporterAudio(audioPart.getAudio(), 
+			return new XMLResourceExporterAudio(audioPart, 
 					audioPart.getStart(), audioPart.getEnd());
 		} else if (objectToExport instanceof Picture) {
 			return new XMLResourceExporterPicture((Picture)objectToExport);

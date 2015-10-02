@@ -54,13 +54,18 @@ public class LocalizedFile extends LocalizedElement {
 		if (this == obj) {
 			return true;
 		}
-		if (obj instanceof LocalizedFile) {
-			LocalizedFile other = (LocalizedFile) obj;
-			return language.equals(other.language) 
-					&& getValue().equals(other.getValue());
-		} else {
+		if (!(obj instanceof LocalizedFile)) {
 			return false;
 		}
+		
+		LocalizedFile lfObj = (LocalizedFile) obj;
+		return language.equals(lfObj.language) 
+				&& getValue().equals(lfObj.getValue());
+	}
+	
+	@Override
+	public int hashCode() {
+		return language.hashCode() + value.hashCode();
 	}
 
 	/**

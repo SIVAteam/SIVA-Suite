@@ -5,9 +5,7 @@ package org.iviPro.model.graph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 import org.iviPro.model.IAbstractBean;
@@ -169,9 +167,9 @@ public class Graph extends IAbstractBean {
 	}
 
 	/**
-	 * Gibt alle Knoten zurueck, die Bestandteil dieses Graphen sind.
+	 * Returns the list of nodes contained by this graph. 
 	 * 
-	 * @return Alle Knoten dieses Graphen.
+	 * @return list of graph nodes
 	 */
 	public List<IGraphNode> getNodes() {
 		return nodes;
@@ -263,29 +261,14 @@ public class Graph extends IAbstractBean {
 	public List<IGraphNode> searchNodes(Class<? extends IGraphNode> type,
 			boolean searchSceneSequences) {
 
-		// Hashset mit allen bereits gefundenen Knoten
-		HashSet<IGraphNode> alreadyFound = new HashSet<IGraphNode>();
-
-		// Queue mit den noch abzuarbeitenden Knoten
-		Queue<IGraphNode> workingNodes = new LinkedList<IGraphNode>();
-		workingNodes.addAll(nodes);
-
 		List<IGraphNode> result = new ArrayList<IGraphNode>();
 
-		while (!workingNodes.isEmpty()) {
-			IGraphNode current = workingNodes.poll();
-			// Nur noch nicht abgearbeitete Knoten bearbeiten
-			if (!alreadyFound.contains(current)) {
-				alreadyFound.add(current);
-				// Falls der gefundene Knoten vom angegebenen Typ ist, fuegen
-				// wir ihn ins Ergebnis ein.
-				if (type.isAssignableFrom(current.getClass())) {
+		for (IGraphNode current : nodes) {
+			if (type.isAssignableFrom(current.getClass())) {
 					result.add(current);
-				}
 			}
 		}
 		return result;
-
 	}
 
 	/**
@@ -364,11 +347,8 @@ public class Graph extends IAbstractBean {
 	public Set<IGraphNode> searchDependentNodes(List<IAbstractBean> objects,
 			boolean searchSequences) {
 		Set<IGraphNode> result = new HashSet<IGraphNode>();
-
-		// Alle direkt vom Medien-Objekt abhaengigen Knoten suchen
-		List<IGraphNode> allNodes = searchNodes(IGraphNode.class,
-				searchSequences);
-		for (IGraphNode node : allNodes) {
+		
+		for (IGraphNode node : nodes) {
 			for (IAbstractBean object : objects) {
 				if (node.isDependentOn(object) && !result.contains(node)) {
 					result.add(node);
@@ -376,7 +356,6 @@ public class Graph extends IAbstractBean {
 				}
 			}
 		}
-
 		return result;
 	}
 

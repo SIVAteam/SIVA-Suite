@@ -11,16 +11,18 @@ if(!sivaPlayerInitated){
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/jquery.hashchange.min.js" type="text/javascript"></script>');
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/modernizr.min.js" type="text/javascript"></script>');
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/d3.v3.min.js" type="text/javascript"></script>');
+	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/linkify.min.js" type="text/javascript"></script>');
+	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/jquery.linkify.min.js" type="text/javascript"></script>');
 	document.write('<script src="' + sivaPlayerPath + '/js/frameworks/fastclick.js" type="text/javascript"></script>');
 	sivaPlayerInitParameters = sivaPlayerInitParameters.split('?');
 	if(sivaPlayerInitParameters.length > 1){
 		sivaPlayerInitParameters = sivaPlayerInitParameters[1].split('&');
 		for(var i = 0; i < sivaPlayerInitParameters.length; i++){
-			var param = sivaPlayerInitParameters[i].split('=');
-			if(param[0] == 'lang' && param[1]){
-				var languages = param[1].split(',');
-				for(var j = 0; j < languages.length; j++){
-					document.write('<script src="' + sivaPlayerPath + '/js/lang/' + languages[j] + '.js" type="text/javascript"></script>');
+			var sivaPlayerParam = sivaPlayerInitParameters[i].split('=');
+			if(sivaPlayerParam[0] == 'lang' && sivaPlayerParam[1]){
+				var sivaPlayerLanguages = sivaPlayerParam[1].split(',');
+				for(var j = 0; j < sivaPlayerLanguages.length; j++){
+					document.write('<script src="' + sivaPlayerPath + '/js/lang/' + sivaPlayerLanguages[j] + '.js" type="text/javascript"></script>');
 				}
 			}
 		}

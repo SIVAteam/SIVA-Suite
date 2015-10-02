@@ -317,7 +317,7 @@ public class FigureNodeSemanticAdditionFisheye extends IFigureNode {
 				pdfContainer.add(imgfig);
 				//Annotationstitelanfang
 				String text = ""; //$NON-NLS-1$
-				LocalizedString localizedString = ((NodeAnnotationAudio) item).getLocalizedTitle();
+				LocalizedString localizedString = ((NodeAnnotationPdf) item).getLocalizedTitle();
 				if(localizedString != null) {
 					text = localizedString.getValue();
 				}

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="../../../../help.css" CHARSET="ISO-8859-1" TYPE="text/css">
+
+<title>Annotationseditor</title>
+</head>
+
+<body>
+<h1>Annotationseditor</h1>
+<p align="justify">
+<br>
+
+Der Annotationseditor wird benötigt, um zu einer im Szenengraphen ausgewählten Szene weiterführende Ressourcen wie 
+Bilder, Texte, Videos, Audio-Dateien, HTML-Elemente oder Links auf externe Seiten als Annotationen hinzuzufügen. 
+Diese Ressourcen können entweder direkt in einem der Editoren, oder in einem externen Programm erstellt werden und 
+dann als Ressource ins Ressourcen-Repository importiert werden. Im SIVA Producer ist die Unterstützung von drei 
+Annotationseditoren vorgesehen. Ein WYSIWYG-Richtext-Editor ermöglicht es, formatierte Texte mit Bildern, Links und 
+HTML-Markup Elementen zu erstellen. Die so gestaltete Seite kann in eine XHTML-Datei exportiert werden, die dann als 
+Annotation mit der selektierten Szene verknüpft wird. Zudem werden ein Bild-Editor und ein Plaintext-Editor angeboten. 
+Vordefinierte Inhalte, die bereits geladen wurden und sich im Ressourcen-Repository befinden, können ebenso als 
+Annotation an eine Szene angehängt werden. <br><br>
+
+Im Folgenden erfahren Sie:
+<ul>
+	<li>wie man den Annotationseditor <a href="#Öffnen des Annotationseditors">öffnet</a></li>
+	<li>welche <a href="#Einstellungen und Anzeigebereiche">Einstellungen und Anzeigebereiche</a> möglich sind</li>
+	<li>welche <a href="#Dateiformate">Dateiformate benutzt werden können</a></li>
+	<li>wie man <a href="../../../../html/components/editors/annotationeditor/createannotations.html">Annotationen 
+	erstellt</a>.</li>
+</ul>
+<br>
+
+<a name="Öffnen des Annotationseditors"><h2>Öffnen des Annotationseditors</h2></a>
+Um den Annotationseditor zu öffnen, klicken Sie in der Funktionsleiste auf <b>"Globale Annotationen"</b>.<br>
+<img src="../../../../imagesNeu/editorAnnotationseditorBearbeiten.PNG" alt="Annotationseditor" width="1000"><br>
+Hier können Sie Annotationen erstellen und diese später auf Szenen anwenden.<br>
+<img alt="Annotation erstellen" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-global-annotation.jpg" width=70%><br><br>
+
+<ol>
+	<li>Neue Annotation erstellen</li>
+	<li>Hier können Sie zwischen den verschiedenen Annotationstypen (Audio, Bild, Richtext, Untertitel, Video oder PDF)
+		auswählen.</li>
+	<li>Wenn Sie die Art der Annotation ausgewählt haben, ziehen Sie die entsprechende Datei, die Sie bearbeiten wollen,
+		per Drag and Drop aus dem Medien-Repository in die Arbeitsfläche.</li>
+</ol><br>
+
+Wird eine Annotation in den Videobereich gelegt, so öffnet sich der <b>Overlayeditor</b> mittels eines Doppelklicks auf den
+Anzeigebereich.
+In diesem Editor lässt sich die Position der Annotation im Video und die Größe festlegen. Oben im Editor ist 
+die Zeitleiste der Szene zu sehen. Für jeden Zeitpunkt lässt sich eine Position festlegen.
+Dazu muss durch Klicken der Zeitpunkt ausgewählt werden, die Szenen positioniert werden und dann durch 
+"Position speichern" die Position in den Pfad eingefügt werden.<br>
+<img alt="Overlay Position" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-overlay-position.jpg" width=50%><br><br>
+
+
+Will man eine Szene direkt aus dem Szenengraph annotieren so wird im Szenengraph in der Szene, die annotiert 
+werden soll auf den Annoationsbutton 
+<img src="../../../../images/graph-annotations-existent.PNG" alt="Annotation vorhanden">
+(bereits Annotationen an Szene angehängt) bzw. 
+<img src="../../../../images/graph-annotations-nonexistent.PNG" alt="keine Annotation vorhanden">
+(noch keine Annotationen an Szene angehängt) geklickt.<br><br>
+<img alt="Overlay Position" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-open-in-scenegraph.jpg" width=50%><br><br>
+
+<a name="Einstellungen und Anzeigebereiche"><h2>Einstellungen und Anzeigebereiche</h2></a>
+<p align="justify">
+Bei einer Annotation können folgende Einstellungen festgelegt werden:
+<ul>
+	<li>Szene an die die Annotation angehängt werden soll (wird im Szenengraphen festgelegt)</li>
+	<li>Art der Annotation: Audio, Bild, Richtext, Untertitel, Video, PDF</li>
+	<li>Startzeitpunkt der Annotation </li>
+	<li>Endzeitpunkt der Annotation </li>
+  	<li>Name der Annotation (wird vom System vergeben, falls der Benutzer keinen festlegt)</li>
+  	<li>Anzeigebereich im Player</li>
+  	<li>Öffnen eines neuen Fensters zum Anzeigen der Annotation</li>  			
+</ul>
+
+<a name="Dateiformate"><h2>Dateiformate</h2></a>
+Folgende <b>Dateiformate</b> können benutzt werden:
+<ul>
+	<li>Bilder und Grafiken als .jpeg oder .png</li>
+	<li>PDFs oder andere Textdateien können nur als Bilddatei (.jpeg/.png) benutzt werden</li>
+	<li>Am Besten in 1280x720 Pixel mit H.264-Codec gerenderte Videodateien importieren</li>
+	<li>Tonspuren (v.a. in Videodateien) sollten in 48kHz aufgenommen/gerendert sein</li>
+</ul><br>
+
+Wie man Annotationen aus dem Szenengraphen erstellt, erfahren Sie 
+<a href="../../../../html/components/editors/annotationeditor/createannotations.html">hier</a>.
+
+
+</p>
+<p align="left">
+
+</p> 
+<p align="justify">
+<br><br>
+
+
+
+
+</p>
+</body>
+</html>

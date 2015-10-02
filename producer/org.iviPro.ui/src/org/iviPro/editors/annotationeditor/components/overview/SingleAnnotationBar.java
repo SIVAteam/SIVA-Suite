@@ -23,7 +23,7 @@ import org.iviPro.actions.undoable.AnnotationDeleteAction;
 import org.iviPro.application.Application;
 import org.iviPro.listeners.GraphNodeEventConsumer;
 import org.iviPro.listeners.GraphNodeListener;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.graph.INodeAnnotation;
@@ -80,7 +80,7 @@ public class SingleAnnotationBar extends Composite implements PaintListener, Gra
 
 	public SingleAnnotationBar(final Composite parent, int style,
 			INodeAnnotation barAnno, AnnotationOverview aov, NodeScene nodeS,
-			int width, final I_MediaPlayer mp) {
+			int width, final MediaPlayer mp) {
 		super(parent, style);
 		this.anno = barAnno;
 		this.width = width;
@@ -287,7 +287,8 @@ public class SingleAnnotationBar extends Composite implements PaintListener, Gra
 		int textOffsetX = 20;
 
 		// setze die Beschreibung
-		String desc = adjustDescriptionText(anno.getTitle(), textOffsetX,
+		String desc = adjustDescriptionText(anno.getTitle() + " (id: " 
+				+ anno.getNodeID() + ")", textOffsetX,
 				4, e.gc, points[1], minWidth);
 		e.gc.setForeground(Colors.VIDEO_OVERVIEW_ITEM_FONT.getColor());
 		e.gc.drawText(desc, textOffsetX, 1);

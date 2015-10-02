@@ -153,7 +153,7 @@ public class NodeRandomSelectionEditor extends TitledNodeEditor {
 			succTitle.setText(title);
 			SizedText succProb = 
 					new SizedText(pathComp, SWT.SINGLE | SWT.CENTER 
-							| SWT.BORDER, 3);
+							| SWT.BORDER, 3, true);
 			succProb.getTextField().addVerifyListener(new NumericInputListener());
 			succProb.getTextField().addModifyListener(new ModifyListener() {
 				

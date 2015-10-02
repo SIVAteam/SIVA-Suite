@@ -4,7 +4,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 
-	private static final String BUNDLE_NAME = "org.iviPro.editors.mediaplayer.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.iviPro.mediaaccess.player.messages"; //$NON-NLS-1$
 
 	// Tooltips für die Buttons
 	public static String MediaPlayer_Tooltip_FB;
@@ -15,7 +15,6 @@ public class Messages extends NLS {
 	public static String MediaPlayer_Tooltip_FF;
 	public static String MediaPlayer_Tooltip_Volume;
 	public static String MediaPlayer_Tooltip_Mute;
-	public static String MediaPlayer_Tooltip_Aspect;
 	
 	static {
 		// initialize resource bundle

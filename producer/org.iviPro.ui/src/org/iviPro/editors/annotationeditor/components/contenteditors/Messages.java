@@ -13,11 +13,14 @@ public class Messages extends NLS {
 	public static String RichHTMLEditor_ComboSizeTitle;
 	public static String RichHTMLEditor_TabEditorTitle;
 	public static String RichHTMLEditor_TabHTMLTitle;
-	public static String VideoEditor_0;
 	public static String VideoEditor_1;
+	public static String VideoEditor_Label_DragMedia;
 	public static String VideoEditor_Label_Scene;
 	public static String VideoEditor_Label_Video;
 	public static String ImageEditor_0;
+	public static String PdfEditor_Label_Description;
+	public static String PdfEditor_Label_DragMedia;
+	public static String PdfEditor_Label_Pdf;
 	public static String PictureEditor_SelectElement_None;
 	public static String PictureEditor_Delete_Picture;
 	public static String PictureEditor_Delete_AllPictures;

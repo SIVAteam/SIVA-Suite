@@ -10,8 +10,11 @@ import org.iviPro.application.Application;
 import org.iviPro.model.BeanList;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.Project;
+import org.iviPro.model.graph.AbstractNodeSelectionControl;
+import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
+import org.iviPro.model.resources.PdfDocument;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.model.resources.RichText;
 import org.iviPro.model.resources.Scene;
@@ -33,6 +36,12 @@ public class MediaDeleteOperation extends IAbstractDeleteOperation {
 	private final IAbstractBean mediaObject;
 	
 	private Map<String, String> documentContents;
+	
+	/**
+	 * List of <code>AbstractNodeSelectionControl</code> elements referencing the
+	 * mediaObject which is to be deleted.
+	 */
+	private List<AbstractNodeSelectionControl> controlRefs;
 	
 	/**
 	 * Erstellt eine neue Operation zum Loeschen eines Medien-Objekts aus einem
@@ -65,8 +74,11 @@ public class MediaDeleteOperation extends IAbstractDeleteOperation {
 		} else if (mediaObject instanceof Audio
 				| mediaObject instanceof AudioPart) {
 			setLabel(Messages.MediaDeleteOperation_LabelAudio);
+		} else if (mediaObject instanceof PdfDocument) {
+			setLabel("remove pdf");
 		}
 	}
+	
 
 	@Override
 	public boolean canExecute() {
@@ -103,6 +115,9 @@ public class MediaDeleteOperation extends IAbstractDeleteOperation {
 			}
 		} else if (mediaObject instanceof Picture) {
 				documentContents = RichText.removeAll(((Picture) mediaObject).getId(), project);
+				for (AbstractNodeSelectionControl control : controlRefs) {
+					control.setButtonImage(null);
+				}
 				((Picture) mediaObject).clearThumbnails();
 			// TODO force reload if any richtext editor is opened
 			
@@ -141,15 +156,75 @@ public class MediaDeleteOperation extends IAbstractDeleteOperation {
 			audio.getAudioParts().add((AudioPart) mediaObject);
 		} else if (mediaObject instanceof Picture) {
 			RichText.restoreAll(documentContents, project);
-			project.getMediaObjects().add(mediaObject);
+			for (AbstractNodeSelectionControl control : controlRefs) {
+				control.setButtonImage((Picture)mediaObject);
+			}
 		} else if (mediaObject instanceof RichText) {
 			RichText richtext = (RichText)mediaObject;
 			if (!richtext.isFromMedia()) {
 				// Don't delete file on next project save operation
 				project.getUnusedFiles().remove(richtext.getFile().getValue());
 			}
-		} else {
-			project.getMediaObjects().add(mediaObject);
 		}
+		project.getMediaObjects().add(mediaObject);
+	}
+
+	@Override
+	protected List<IAbstractBean> calcAdditionalDependencies(
+			List<IAbstractBean> objectsToDelete) {
+		List<IAbstractBean> dependencies = new ArrayList<IAbstractBean>();
+		return dependencies;
+	}
+
+	@Override
+	protected List<IAbstractBean> calcAdditionalReferences(
+			List<IAbstractBean> objectsToDelete) {
+		List<IAbstractBean> references = new ArrayList<IAbstractBean>();
+		if (mediaObject instanceof Picture) {
+			Picture pic = (Picture)mediaObject;
+			controlRefs = calcControlRefs(pic);
+			references.addAll(calcRichtextRefs(pic));
+			references.addAll(controlRefs);
+		}
+		return references;
+	}
+
+	/**
+	 * Returns a list of <code>AbstractNodeSelectionControl</code> elements using
+	 * the given <code>Picture</code> as button image. 
+	 * @param pic <code>Picture</code> which might be referenced
+	 * @return list of nodes referencing the <code>Picture</code>
+	 */
+	private final List<AbstractNodeSelectionControl> calcControlRefs(Picture pic) {
+		List<AbstractNodeSelectionControl> imgRefs = new ArrayList<AbstractNodeSelectionControl>();
+		// Selection controls
+		List<IGraphNode> controlNodes = project.getSceneGraph()
+				.searchNodes(AbstractNodeSelectionControl.class, false);		
+		for (IGraphNode node : controlNodes) {
+			AbstractNodeSelectionControl control = (AbstractNodeSelectionControl)node;
+			if (control.getButtonImage() == pic) {
+					imgRefs.add(control);
+			}
+		}
+		return imgRefs; 
+	}
+	
+	/**
+	 * Returns a list of <code>RichText</code> elements referencing the given 
+	 * <code>Picture</code> within their HTML code. 
+	 * @param pic <code>Picture</code> which might be referenced
+	 * @return list of nodes referencing the <code>Picture</code>
+	 */
+	private final List<RichText> calcRichtextRefs(Picture pic) {
+		List<RichText> imgRefs = new ArrayList<RichText>();
+		for (IAbstractBean bean : project.getMediaObjects()) {
+			if (bean instanceof RichText) {
+				RichText richtext = (RichText)bean;
+				if (richtext.getPictureSet().contains(pic)) {
+					imgRefs.add(richtext);
+				}
+			}
+		}
+		return imgRefs;
 	}
 }

@@ -19,12 +19,19 @@ import org.w3c.dom.NodeList;
  */
 public abstract class IXMLResourceExporter implements SivaDefinition {
 	
+	/**
+	 * The resource to export.
+	 */
 	protected IResource resource;
 	protected Document document;
 	protected IdManager idManager;
 	
+	/**
+	 * Constructor for abstract resource exporters. 
+	 * @param exportObj resource to export
+	 */
 	public IXMLResourceExporter(IResource exportObj) {
-		resource = exportObj;		
+		resource = exportObj;
 	}
 	
 	/**
@@ -39,7 +46,6 @@ public abstract class IXMLResourceExporter implements SivaDefinition {
 	 */
 	public void exportResource(Document doc, 
 			IdManager idManager, Set<Object> alreadyExported) throws ExportException {
-		
 		if (alreadyExported.contains(resource)) {
 			return;	
 		}
@@ -94,7 +100,22 @@ public abstract class IXMLResourceExporter implements SivaDefinition {
 		}
 	}
 	
+	/**
+	 * Returns the tag used to identify the type of the exported resource in the XML structure.
+	 * @return XML tag for the resource.
+	 */
 	protected abstract String getResourceTag();
-	protected abstract void setAdditionalRessourceAttributes(Element resElement) throws ExportException;
+	/**
+	 * Adds exporter specific attributes to the XML element representing the exported resource.
+	 * @param resElement XML element representing the exported resource
+	 */
+	protected abstract void setAdditionalRessourceAttributes(Element resElement);
+	/**
+	 * Adds exporter specific attributes to the content element used within the XML element of
+	 * the exported resource.
+	 * @param contentElement content element to which attributes are added
+	 * @param content content of the resource
+	 * @throws ExportException
+	 */
 	protected abstract void setAdditionalContentAttributes(Element contentElement, LocalizedElement content) throws ExportException;
 }

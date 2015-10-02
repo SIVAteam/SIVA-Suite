@@ -16,8 +16,7 @@ public class XMLResourceExporterPicture extends IXMLResourceExporter {
 	}
 	
 	@Override
-	protected void setAdditionalRessourceAttributes(Element resElement)
-			throws ExportException {
+	protected void setAdditionalRessourceAttributes(Element resElement) {
 	}
 
 	@Override

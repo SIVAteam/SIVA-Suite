@@ -88,7 +88,6 @@ public class NodeAnnotationPicture extends INodeAnnotationLeaf {
 		this.pictureGallery = pictureGallery;
 		this.picture = null;
 		this.contentType = CONTENT_PICTUREGALLERY;
-		System.out.println("SET PICTURE GALLERY" + this.contentType);
 		firePropertyChange(PROP_SETCONTENT, null, pictureGallery);
 	}	
 	
@@ -139,5 +138,10 @@ public class NodeAnnotationPicture extends INodeAnnotationLeaf {
 	public boolean isDependentOn(IAbstractBean object) {
 		// Bild-Annotation ist abhaengig von ihrem Bild
 		return object != null && (object == picture || object == pictureGallery);
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Picture annotation";
 	}
 }

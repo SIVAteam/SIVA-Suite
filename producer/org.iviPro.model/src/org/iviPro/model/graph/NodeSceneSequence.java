@@ -3,14 +3,10 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.draw2d.geometry.Point;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 
 /**
  * @author dellwo
@@ -65,5 +61,10 @@ public class NodeSceneSequence extends IGraphNode {
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
 		return object != null && object == sceneSequence;
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Scene sequence";
 	}
 }

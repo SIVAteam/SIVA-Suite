@@ -1,7 +1,5 @@
 package org.iviPro.operations.annotation;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -21,10 +19,10 @@ import org.iviPro.model.graph.NodeAnnotationPdf;
 import org.iviPro.model.graph.NodeAnnotationPicture;
 import org.iviPro.model.graph.NodeAnnotationRichtext;
 import org.iviPro.model.graph.NodeAnnotationSubtitle;
-import org.iviPro.model.graph.NodeAnnotationText;
 import org.iviPro.model.graph.NodeAnnotationVideo;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
+import org.iviPro.model.resources.IVideoResource;
 import org.iviPro.model.resources.PdfDocument;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.model.resources.RichText;
@@ -47,6 +45,10 @@ public class ChangeContentOperation extends IAbstractOperation {
 	private final INodeAnnotation target;
 	private IAbstractBean oldContent;
 	private IAbstractBean newContent;
+	private long oldThumbnailTime;
+	private long newThumbnailTime;
+	private String oldContentDescription;
+	private String newContentDescription;
 
 	// für Richtext Annotationen
 	private boolean addToRepository;
@@ -61,7 +63,8 @@ public class ChangeContentOperation extends IAbstractOperation {
 	 * @throws IllegalArgumentException
 	 *             Falls einer der obigen Parameter null ist.
 	 */
-	public ChangeContentOperation(INodeAnnotation target, IAbstractBean content)
+	public ChangeContentOperation(INodeAnnotation target, IAbstractBean content, 
+			String contentDescription, long thumbnailTime)
 			throws IllegalArgumentException {
 		super(Messages.ChangeScreenPositionOperation_Label);
 		
@@ -69,7 +72,7 @@ public class ChangeContentOperation extends IAbstractOperation {
 			throw new IllegalArgumentException(
 					"Neither of the parameters may be null."); //$NON-NLS-1$
 		}
-		
+				
 		if (target instanceof NodeAnnotationVideo) {
 			NodeAnnotationVideo videoAnnotation = (NodeAnnotationVideo) target;
 			if (content instanceof Video) {
@@ -78,16 +81,22 @@ public class ChangeContentOperation extends IAbstractOperation {
 			if (content instanceof Scene) {
 				this.newContent = content;
 			}
-			
-			if (videoAnnotation.getContentType() == NodeAnnotationVideo.CONTENT_VIDEO) {
+			newThumbnailTime = thumbnailTime;
+						
+			int contentType = videoAnnotation.getContentType();
+			if (contentType == NodeAnnotationVideo.CONTENT_VIDEO) {
 				Video oldVid = videoAnnotation.getVideo();
 				this.oldContent = oldVid;				
 			} else
-			if (videoAnnotation.getContentType() == NodeAnnotationVideo.CONTENT_SCENE) {	
+			if (contentType == NodeAnnotationVideo.CONTENT_SCENE) {	
 				Scene oldScene = videoAnnotation.getScene();
 				this.oldContent = oldScene;
 			}
+			if (oldContent != null) {
+				oldThumbnailTime = ((IVideoResource)oldContent).getThumbnail().getTime();
+			}
 		} else if (target instanceof NodeAnnotationAudio) {
+			NodeAnnotationAudio audioAnno = (NodeAnnotationAudio) target;
 			if (content instanceof Audio) {
 				this.newContent = content;
 			} else
@@ -95,34 +104,34 @@ public class ChangeContentOperation extends IAbstractOperation {
 				this.newContent = content;
 			}
 			
-			int contentType = ((NodeAnnotationAudio) target).getContentType();
+			int contentType = audioAnno.getContentType();
 			if (contentType == NodeAnnotationAudio.CONTENT_AUDIO) {
-				this.oldContent = ((NodeAnnotationAudio) target).getAudio();
+				this.oldContent = audioAnno.getAudio();
 			} else 
 			if (contentType == NodeAnnotationAudio.CONTENT_AUDIOPART) {
-				this.oldContent = ((NodeAnnotationAudio) target).getAudioPart();
-			}	
-			
+				this.oldContent = audioAnno.getAudioPart();
+			}				
 		} else if (target instanceof NodeAnnotationPicture) {
+			NodeAnnotationPicture pictureAnno = (NodeAnnotationPicture) target;
 			if (content instanceof Picture) {
 				this.newContent = content;
 			} else if (content instanceof PictureGallery) {
 				// die Galerie aus dem Editor
 				PictureGallery contentGallery = (PictureGallery) content;
-				PictureGallery newGallery = ((NodeAnnotationPicture) target).getPictureGallery();
+				PictureGallery newGallery = pictureAnno.getPictureGallery();
 				newGallery.setPictures(((PictureGallery) content).getPictures());
 				newGallery.setTitle(contentGallery.getTitle());
 				newGallery.setNumberColumns(contentGallery.getNumberColumns());
 				this.newContent = newGallery;
 			}
 			
-			int contentType = ((NodeAnnotationPicture) target).getContentType();
+			int contentType = pictureAnno.getContentType();
 			if (contentType == NodeAnnotationPicture.CONTENT_PICTURE) {
-				Picture old = ((NodeAnnotationPicture) target).getPicture();
+				Picture old = pictureAnno.getPicture();
 				this.oldContent = old;				
 			} else
 			if (contentType == NodeAnnotationPicture.CONTENT_PICTUREGALLERY) {
-				PictureGallery old = ((NodeAnnotationPicture) target).getPictureGallery();
+				PictureGallery old = pictureAnno.getPictureGallery();
 				this.oldContent = old;
 			}
 			
@@ -140,42 +149,29 @@ public class ChangeContentOperation extends IAbstractOperation {
 			
 		} else if (target instanceof NodeAnnotationRichtext) {			
 			NodeAnnotationRichtext richtextAnnotation = (NodeAnnotationRichtext) target;
-			RichText annoRichtext = richtextAnnotation.getRichtext();
+			RichText annoRichtext = richtextAnnotation.getRichtext();			
 			
-			boolean isDummy = annoRichtext.getFile().getValue() instanceof DummyFile;
-			addToRepository = isDummy || annoRichtext.isFromMedia();
-			
-			/* When the current annotation richtext is backed by a loaded html
-			 * file or has not been saved as a file yet, a file for the new 
-			 * richtext needs to be created.
+			/* When the old content is backed by an imported html file and the new 
+			 * content is a modified version of it, the new content needs to be 
+			 * saved to a new file to not overwrite the content of the imported 
+			 * file. In case, the document did not change we can keep the reference
+			 * to the imported file. 
+			 * If the annotation has not been saved yet at all, a new file
+			 * has to be created as well. 
 			 */
-			if (addToRepository) {
-				RichText castContent = (RichText)content;
-				Project project = Application.getCurrentProject();
-				BeanList<RichText> rtList = new BeanList<RichText>(project);
-				for (IAbstractBean obj : project.getMediaObjects()) {
-					if (obj instanceof RichText) {
-						rtList.add((RichText) obj);
-					}
-				}
-				// generiere den Dateinamen für den Richtext
-				// prüfe ob es ein neuer Richtext ist und setze 
-				// den Namen auf leer
-				if (castContent.getTitle().contains("Unnamed_Richtext")) {
-					castContent.setTitle("");
-				}
-				BeanNameGenerator bng = new BeanNameGenerator("", castContent, rtList, richtextAnnotation.getTitle());
-				String richTextTitle = bng.generateAuto();
-				castContent.setTitle(richTextTitle);
-				castContent.createFileFromTitle();
-			}	
-			
+			boolean isDummy = annoRichtext.getFile().getValue() instanceof DummyFile;
+			boolean contentChanged = annoRichtext != content;
+			addToRepository = isDummy || (annoRichtext.isFromMedia() && contentChanged);
+					
 			oldContent = annoRichtext;	
-			newContent = new RichText((RichText)content);
+			newContent = content;
 		} else if (target instanceof NodeAnnotationPdf) {
-			NodeAnnotationPdf pdfAnnotation = (NodeAnnotationPdf) target;
-			oldContent = pdfAnnotation.getPdf();
-			newContent = content;			
+			oldContent = ((NodeAnnotationPdf) target).getPdf();
+			newContent = content;
+			if (oldContent != null) {
+				oldContentDescription = ((PdfDocument)oldContent).getSummary();
+			}
+			newContentDescription = contentDescription;
 		}			
 		this.target = target;
 	}
@@ -204,6 +200,9 @@ public class ChangeContentOperation extends IAbstractOperation {
 				((NodeAnnotationVideo) target).setVideo((Video) newContent);
 			} else if (newContent instanceof Scene) {
 				((NodeAnnotationVideo) target).setScene((Scene) newContent);
+			}
+			if (newContent != null) {
+				((IVideoResource)newContent).changeThumbnailTime(newThumbnailTime);
 			}
 		} else if (target instanceof NodeAnnotationAudio) {
 			if (newContent instanceof Audio) {
@@ -288,18 +287,52 @@ public class ChangeContentOperation extends IAbstractOperation {
 		} else if (target instanceof NodeAnnotationRichtext) {
 			NodeAnnotationRichtext richtextAnnotation = (NodeAnnotationRichtext) target;
 			RichText richtext = (RichText)newContent;
-						
 			Project project = Application.getCurrentProject();
+			
+			/* Using setRichtext() fires an event which triggers 
+			 * AADW.initContentEditors() which in turn clones the current richtext
+			 * to the RichHTMLEditor. Therefore, the new title has to be set before 
+			 * setting the richtext via setRichtext().
+			 */  
 			if (addToRepository) {
+				// Generate richtext title
+				BeanList<RichText> rtList = new BeanList<RichText>(project);
+				for (IAbstractBean obj : project.getMediaObjects()) {
+					if (obj instanceof RichText) {
+						rtList.add((RichText) obj);
+					}
+				}
+				// Clear title to not reuse dummy title or title of imported file
+				newContent.setTitle("");
+				String titlePrefix; 
+				if (richtextAnnotation.isTriggerAnnotation()) {
+					titlePrefix = richtextAnnotation.getParentMarkAnno().getTitle(); 
+				} else {
+					titlePrefix = richtextAnnotation.getTitle();
+				}
+				BeanNameGenerator bng = new BeanNameGenerator("", newContent, rtList,
+						titlePrefix);
+				String richTextTitle = bng.generateAuto();
+				newContent.setTitle(richTextTitle);
+				((RichText)newContent).createFileFromTitle();
+			}
+			
+			// Set richtext before modifying the media list to avoid deletion events
+			// being sent to open editors.
+			richtextAnnotation.setRichtext(richtext);
+				
+			if (addToRepository) {	
+				// Add richtext to repository
 				project.getMediaObjects().add(richtext);
 				project.getUnusedFiles().remove(richtext.getFile().getValue());			
-			} else {		
+			} else if (newContent != oldContent) {
 				project.getMediaObjects().remove(oldContent);
-				project.getMediaObjects().add(richtext);
+				project.getMediaObjects().add(newContent);
 			}			
-			richtextAnnotation.setRichtext(richtext);
+			
 		} else if (target instanceof NodeAnnotationPdf) {
-			((NodeAnnotationPdf)target).setPdf((PdfDocument)newContent);
+			((PdfDocument)newContent).setSummary(newContentDescription);
+			((NodeAnnotationPdf)target).setPdf((PdfDocument)newContent);			
 		}
 		return Status.OK_STATUS;		
 	}
@@ -308,21 +341,22 @@ public class ChangeContentOperation extends IAbstractOperation {
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		if (target instanceof NodeAnnotationVideo) {
-			if (oldContent instanceof Video) {
+			if (oldContent == null || oldContent instanceof Video) {
 				((NodeAnnotationVideo) target).setVideo((Video) oldContent);
 			} else if (oldContent instanceof Scene) {
 				((NodeAnnotationVideo) target).setScene((Scene) oldContent);
-			} else { 
-				((NodeAnnotationVideo) target).setVideo((Video) oldContent);
+			}
+			if (oldContent != null) {
+				((IVideoResource)oldContent).changeThumbnailTime(oldThumbnailTime);
 			}
 		} else if (target instanceof NodeAnnotationAudio) {
-			if (oldContent instanceof Audio) {
+			if (oldContent == null || oldContent instanceof Audio) {
 				((NodeAnnotationAudio) target).setAudio((Audio) oldContent);
 			} else if (oldContent instanceof AudioPart) {
 				((NodeAnnotationAudio) target).setAudioPart((AudioPart) oldContent);
 			}
 		} else if (target instanceof NodeAnnotationPicture) {
-			if (oldContent instanceof Picture) {
+			if (oldContent == null || oldContent instanceof Picture) {
 				((NodeAnnotationPicture) target).setPicture((Picture) oldContent);	
 			} else if (oldContent instanceof PictureGallery) {
 				((NodeAnnotationPicture) target).setPictureGallery((PictureGallery) oldContent);
@@ -342,17 +376,23 @@ public class ChangeContentOperation extends IAbstractOperation {
 		} else if (target instanceof NodeAnnotationRichtext) {
 			NodeAnnotationRichtext richtextAnnotation = (NodeAnnotationRichtext) target;			
 			RichText richtext = (RichText)oldContent;
-			
 			Project project = Application.getCurrentProject();
+			
+			// Set richtext before modifying the media list to avoid deletion events
+			// being sent to open editors.
+			richtextAnnotation.setRichtext(richtext);	
 			if (addToRepository) {
 				project.getMediaObjects().remove(newContent);
 				project.getUnusedFiles().add(((RichText)newContent).getFile().getValue());
-			} else {
+			} else if (oldContent != newContent) {
 				project.getMediaObjects().remove(newContent);
-				project.getMediaObjects().add(richtext);
+				project.getMediaObjects().add(oldContent);
 			}			
-			richtextAnnotation.setRichtext(richtext);			
+					
 		} else if (target instanceof NodeAnnotationPdf) {
+			if (oldContent != null) {
+				((PdfDocument)oldContent).setSummary(oldContentDescription);
+			}
 			((NodeAnnotationPdf)target).setPdf((PdfDocument)oldContent);
 		}
 		return Status.OK_STATUS;

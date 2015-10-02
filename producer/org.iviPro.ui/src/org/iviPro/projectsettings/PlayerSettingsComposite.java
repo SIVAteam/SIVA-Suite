@@ -1,11 +1,15 @@
 package org.iviPro.projectsettings;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
@@ -37,6 +41,8 @@ import org.iviPro.utils.widgets.SizedTextWithUnit;
  */
 public class PlayerSettingsComposite extends Composite implements SettingsComposite {
 	
+	
+	private static final Pattern urlRegex = Pattern.compile(Messages.PlayerSettingsComposite_0);
 	private static final int GROUP_MARGIN = 20;
 	private static final int PREVIEW_MAXWIDTH = 360;
 	private static final int PREVIEW_MAXHEIGHT = 180;
@@ -67,9 +73,12 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 	private ColorSelector secColorField;
 	private IpAddressText ipField;
 	private Text portField;
+	private Button userDiaryField;
 	private Text videoTitleField;
 	private Button autoStartField;
-	private Button userDiaryField;
+	private Button collabField;
+	private Button loggingField;
+	private Text loggingServerUrlField;
 	
 	private Label warning;
 	
@@ -87,8 +96,8 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		super(parent, style);
 		this.settings = settings;
 		setLayout(new GridLayout(1, false));
-		
-		compPreview(this);
+		//Preview not finished yet
+		//compPreview(this);
 		compResolution(this);
 		compAnnobarVisibility(this);
 		compAnnobarBehavior(this);		
@@ -97,13 +106,14 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		//addServerComp(this);
 		compPlayerFunction(this);
 		compVideo(this);
+		compCollabAndLog(this);
 
 		warning = new Label(this, SWT.LEFT);
 		warning.setForeground(Colors.WARNING_FONT.getColor());
 		warning.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		warning.setVisible(false);
 		initializeValues();
-		repaintPreview();
+		//repaintPreview();
 		addListeners();
 	}
 	
@@ -315,57 +325,57 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 	
 	}
 	
-	/**
-	 * Adds a group for server settings to the given parent.
-	 * @param parent parent composite
-	 */
-	private void compServer(Composite parent) {
-		// Group
-		Group server = new Group(parent, SWT.NONE);
-		server.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		setStandardGroupLayout(server);
-		server.setText(Messages.PlayerSettingsComposite_CollaborationServer);
-		
-		compIp(server);
-		compPort(server);			
-	}
-	
-	/**
-	 * Add component for setting the server IP to the given parent.
-	 * @param parent parent composite
-	 */
-	private void compIp(Composite parent) {
-		// Internal container
-		Composite ipComp = new Composite(parent, SWT.NONE);
-		GridLayout compLayout = new GridLayout(2, false);
-		compLayout.marginWidth = 0;
-		compLayout.marginHeight = 0;
-		ipComp.setLayout(compLayout);
-
-		// Controls
-		Label ipLabel = new Label(ipComp, SWT.LEFT);
-		ipLabel.setText(Messages.PlayerSettingsComposite_ServerIP);
-		ipField = new IpAddressText(ipComp, SWT.RIGHT | SWT.SINGLE);
-	}
-	
-	/**
-	 * Adds component for setting the server port to the given parent.
-	 * @param parent parent composite
-	 */
-	private void compPort(Composite parent) {
-		// Internal container
-		Composite portComp = new Composite(parent, SWT.NONE);
-		GridLayout compLayout = new GridLayout(2, false);
-		compLayout.marginWidth = 0;
-		compLayout.marginHeight = 0;
-		portComp.setLayout(compLayout);
-
-		// Controls
-		Label portLabel = new Label(portComp, SWT.LEFT);
-		portLabel.setText(Messages.PlayerSettingsComposite_ServerPort);
-		SizedText portText = new SizedText(portComp, SWT.SINGLE | SWT.RIGHT, 5);
-		portField = portText.getTextField();
-	}
+//	/**
+//	 * Adds a group for server settings to the given parent.
+//	 * @param parent parent composite
+//	 */
+//	private void compServer(Composite parent) {
+//		// Group
+//		Group server = new Group(parent, SWT.NONE);
+//		server.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+//		setStandardGroupLayout(server);
+//		server.setText(Messages.PlayerSettingsComposite_CollaborationServer);
+//		
+//		compIp(server);
+//		compPort(server);			
+//	}
+//	
+//	/**
+//	 * Add component for setting the server IP to the given parent.
+//	 * @param parent parent composite
+//	 */
+//	private void compIp(Composite parent) {
+//		// Internal container
+//		Composite ipComp = new Composite(parent, SWT.NONE);
+//		GridLayout compLayout = new GridLayout(2, false);
+//		compLayout.marginWidth = 0;
+//		compLayout.marginHeight = 0;
+//		ipComp.setLayout(compLayout);
+//
+//		// Controls
+//		Label ipLabel = new Label(ipComp, SWT.LEFT);
+//		ipLabel.setText(Messages.PlayerSettingsComposite_ServerIP);
+//		ipField = new IpAddressText(ipComp, SWT.RIGHT | SWT.SINGLE);
+//	}
+//	
+//	/**
+//	 * Adds component for setting the server port to the given parent.
+//	 * @param parent parent composite
+//	 */
+//	private void compPort(Composite parent) {
+//		// Internal container
+//		Composite portComp = new Composite(parent, SWT.NONE);
+//		GridLayout compLayout = new GridLayout(2, false);
+//		compLayout.marginWidth = 0;
+//		compLayout.marginHeight = 0;
+//		portComp.setLayout(compLayout);
+//
+//		// Controls
+//		Label portLabel = new Label(portComp, SWT.LEFT);
+//		portLabel.setText(Messages.PlayerSettingsComposite_ServerPort);
+//		SizedText portText = new SizedText(portComp, SWT.SINGLE | SWT.RIGHT, 5, true);
+//		portField = portText.getTextField();
+//	}
 	
 	/**
 	 * Adds a group containing player functions to the given parent.
@@ -428,7 +438,7 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		// Controls
 		Label videoTitleLabel = new Label(videoTitleComp, SWT.LEFT);
 		videoTitleLabel.setText(Messages.PlayerSettingsComposite_VideoTitle);
-		SizedText videoTitle = new SizedText(videoTitleComp, SWT.SINGLE | SWT.LEFT, 20);
+		SizedText videoTitle = new SizedText(videoTitleComp, SWT.SINGLE | SWT.LEFT, 30, false);
 		videoTitleField = videoTitle.getTextField();
 	}
 	
@@ -451,6 +461,78 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 	}
 	
 	/**
+	 * Adds a group containing collaboration settings to the given parent.
+	 * @param parent parent composite
+	 */
+	private void compCollabAndLog(Composite parent) {
+		// Group
+		Group collabSettings = new Group(parent, SWT.NONE);
+		collabSettings.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		setStandardGroupLayout(collabSettings);
+		collabSettings.setText(Messages.PlayerSettingsComposite_CollabAndLogging);
+
+		compCollabToggle(collabSettings);
+		compLoggingToggle(collabSettings);
+		compLoggingServerUrl(collabSettings);
+	
+	}	
+	
+	/**
+	 * Add a component for enabling automatic video playback to the given parent.
+	 * @param parent parent composite
+	 */
+	private void compCollabToggle(Composite parent) {
+		// Internal container
+		Composite collabComp = new Composite(parent, SWT.NONE);
+		GridLayout compLayout = new GridLayout(2, false);
+		compLayout.marginWidth = 0;
+		collabComp.setLayout(compLayout);
+
+		// Controls
+		collabField = new Button(collabComp, SWT.CHECK);
+		collabField.setAlignment(SWT.CENTER);
+		collabField.setText(Messages.PlayerSettingsComposite_Collaboration);
+		collabField.setToolTipText(Messages.PlayerSettingsComposite_Collaboration_Tooltip);	
+	}
+		
+	/**
+	 * Add a component for enabling automatic video playback to the given parent.
+	 * @param parent parent composite
+	 */
+	private void compLoggingToggle(Composite parent) {
+		// Internal container
+		Composite loggingComp = new Composite(parent, SWT.NONE);
+		GridLayout compLayout = new GridLayout(2, false);
+		compLayout.marginWidth = 0;
+		loggingComp.setLayout(compLayout);
+		
+		// Controls
+		loggingField = new Button(loggingComp, SWT.CHECK);
+		loggingField.setAlignment(SWT.CENTER);
+		loggingField.setText(Messages.PlayerSettingsComposite_Logging);
+		loggingField.setToolTipText(Messages.PlayerSettingsComposite_Logging_Tooltip);	
+	}
+	
+	/**
+	 * Add a component for entering the URL of the desired collaboration server.
+	 * @param parent parent composite
+	 */
+	private void compLoggingServerUrl(Composite parent) {
+		// Internal container
+		Composite loggingUrlComp = new Composite(parent, SWT.NONE);
+		GridLayout compLayout = new GridLayout(2, false);
+		compLayout.marginWidth = 0;
+		loggingUrlComp.setLayout(compLayout);
+		
+		// Controls
+		Label loggingUrlLabel = new Label(loggingUrlComp, SWT.LEFT);
+		loggingUrlLabel.setText(Messages.PlayerSettingsComposite_LoggingURL);
+		SizedText serverUrl = new SizedText(loggingUrlComp,
+				SWT.SINGLE | SWT.LEFT, 30, false);
+		loggingServerUrlField = serverUrl.getTextField();
+	}
+	
+	/**
 	 * Add listeners to the controls where needed. For all fields a listener
 	 * is needed to inform this <code>PlayerSettingsComposite</code> about 
 	 * changes to its subcomponents.
@@ -462,7 +544,24 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		annotationBarField.addVerifyListener(inputConstraints);
 		navigationBarField.addVerifyListener(inputConstraints);
 	//	ipField.addVerifyListeners(inputConstraints);
-		
+		loggingField.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				boolean logEnabled = loggingField.getSelection();
+				if (!logEnabled) {
+					loggingServerUrlField.setText(""); //$NON-NLS-1$
+					userDiaryField.setSelection(logEnabled);
+				}
+				loggingServerUrlField.setEnabled(logEnabled);
+				userDiaryField.setEnabled(logEnabled);
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);				
+			}
+		});		
 		addFieldChangeListeners();
 	}
 	
@@ -505,9 +604,12 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		secColorField.addListener(passPropEvents);
 		//ipField.addListener(SWT.Modify, passEvents);
 		//portField.addListener(SWT.Modify, passEvents);
+		userDiaryField.addListener(SWT.Selection, passEvents);
 		videoTitleField.addListener(SWT.Modify, passEvents);
-		autoStartField.addListener(SWT.Modify, passEvents);
-		userDiaryField.addListener(SWT.Modify, passEvents);
+		autoStartField.addListener(SWT.Selection, passEvents);
+		collabField.addListener(SWT.Selection, passEvents);
+		loggingField.addListener(SWT.Selection, passEvents);
+		loggingServerUrlField.addListener(SWT.Modify, passEvents);
 	}
 	
 	/**
@@ -544,12 +646,10 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		// Resolution
 		widthField.setText(String.valueOf(settings.getResolutionWidth()));
 		heightField.setText(String.valueOf(settings.getResolutionHeight()));
-		// Annotation bar visibility
+		// Sidebars
 		setAnnobarVisibility(settings.getAnnobarVisibility());
-		// Annotation bar behavior		 
 		overlapField.setSelection(settings.isAnnobarOverlayEnabled());
 		shrinkField.setSelection(!settings.isAnnobarOverlayEnabled());
-		// Side bar widths
 		int widthAsPercent = (int)(settings.getNavigationBarWidth()*100);
 		navigationBarField.setText(String.valueOf(widthAsPercent));
 		widthAsPercent = (int)(settings.getAnnotationBarWidth()*100);
@@ -558,12 +658,17 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		primColorField.setColorValue(stringToRGB(settings.getPrimaryColor()));
 		secColorField.setColorValue(stringToRGB(settings.getSecondaryColor()));
 		// Server
-	//	ipField.setIpAddress(settings.getServerUrl());
-		// Player functions
-		userDiaryField.setSelection(settings.isUserDiaryEnabled());
+		//	ipField.setIpAddress(settings.getServerUrl());
 		// Video settings
 		autoStartField.setSelection(settings.isAutostartEnabled());
 		videoTitleField.setText(settings.getVideoTitle());
+		// Player functions
+		userDiaryField.setSelection(settings.isUserDiaryEnabled());
+		userDiaryField.setEnabled(settings.isLoggingEnabled());
+		collabField.setSelection(settings.isCollaborationEnabled());
+		loggingField.setSelection(settings.isLoggingEnabled());
+		loggingServerUrlField.setText(settings.getLoggingServerUrl());
+		loggingServerUrlField.setEnabled(settings.isLoggingEnabled());
 	}
 	
 	@Override
@@ -571,12 +676,10 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		// Resolution
 		widthField.setText(String.valueOf(ProjectSettings.DEFAULT_RESOLUTIONWIDTH));
 		heightField.setText(String.valueOf(ProjectSettings.DEFAULT_RESOLUTIONHEIGHT));
-		// Annotation bar visibility
+		// Sidebars
 		setAnnobarVisibility(ProjectSettings.DEFAULT_ANNOBARVISIBILITY);		
-		// Annotation bar behavior
 		overlapField.setSelection(ProjectSettings.DEFAULT_ANNOTATIONOVERLAY);
 		shrinkField.setSelection(!ProjectSettings.DEFAULT_ANNOTATIONOVERLAY);
-		// Side bar widths
 		int widthAsPercent = (int)(ProjectSettings.DEFAULT_NAVIGATIONBARWIDTH*100);
 		navigationBarField.setText(String.valueOf(widthAsPercent));
 		widthAsPercent = (int)(ProjectSettings.DEFAULT_ANNOTATIONBARWIDTH*100);
@@ -585,12 +688,15 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		primColorField.setColorValue(stringToRGB(ProjectSettings.DEFAULT_PRIMARYCOLOR));
 		secColorField.setColorValue(stringToRGB(ProjectSettings.DEFAULT_SECONDARYCOLOR));
 		// Server
-	//	ipField.setIpAddress(ProjectSettings.DEFAULT_SERVERURL);
-		// Player functions
-		userDiaryField.setSelection(ProjectSettings.DEFAULT_USERDIARY);
+		//	ipField.setIpAddress(ProjectSettings.DEFAULT_SERVERURL);
 		// Video settings
 		videoTitleField.setText(ProjectSettings.DEFAULT_VIDEONAME);
-		autoStartField.setSelection(ProjectSettings.DEFAULT_AUTOPLAY);	
+		autoStartField.setSelection(ProjectSettings.DEFAULT_AUTOPLAY);
+		// Player functions
+		userDiaryField.setSelection(ProjectSettings.DEFAULT_USERDIARY);
+		collabField.setSelection(ProjectSettings.DEFAULT_COLLABORATION);
+		loggingField.setSelection(ProjectSettings.DEFAULT_LOGGING);
+		loggingServerUrlField.setText(ProjectSettings.DEFAULT_SERVERURL);
 	}
 	
 	/**
@@ -651,6 +757,8 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		checkRange(navigationBarField, MIN_SIDEBARSIZE, MAX_SIDEBARSIZE, true);
 		checkRange(annotationBarField, MIN_SIDEBARSIZE, MAX_SIDEBARSIZE, true);
 		//checkIP();
+		checkUrl(loggingServerUrlField, loggingField.getSelection());
+
 		return !warning.isVisible();		
 	}
 	
@@ -733,38 +841,54 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		}
 	}
 	
+	private void checkUrl(Text textField, boolean required) {
+		if (warning.isVisible()) {
+			textField.setBackground(Display.getCurrent()
+					.getSystemColor(SWT.COLOR_WHITE));
+			return;
+		}
+		if (required && !urlRegex.matcher(textField.getText()).matches()) {
+			textField.setBackground(Colors.WARNING_BG.getColor());
+			warning.setText(Messages.PlayerSettingsComposite_WarningURL);
+			warning.setVisible(true);
+		} else {
+			textField.setBackground(Display.getCurrent()
+					.getSystemColor(SWT.COLOR_WHITE));
+		}
+	}
+	
 	@Override
-	public ProjectSettings getSettings() {
-		ProjectSettings newSettings = new ProjectSettings(settings);
+	public void writeSettingsTo(ProjectSettings settings) {
 		// Resolution
-		newSettings.setResolutionWidth(Integer.valueOf(widthField.getText()));
-		newSettings.setResolutionHeight(Integer.valueOf(heightField.getText()));
-		// Annotation bar
-		newSettings.setAnnobarVisibility(getAnnobarVisibility());
-		newSettings.setAnnobarOverlay(overlapField.getSelection());
-		// Sidebar widths
+		settings.setResolutionWidth(Integer.valueOf(widthField.getText()));
+		settings.setResolutionHeight(Integer.valueOf(heightField.getText()));
+		// Sidebars
+		settings.setAnnobarVisibility(getAnnobarVisibility());
+		settings.setAnnobarOverlay(overlapField.getSelection());
 		float widthAsFraction = Float.valueOf(navigationBarField.getText())/100;
-		newSettings.setNavigationBarWidth(widthAsFraction);
+		settings.setNavigationBarWidth(widthAsFraction);
 		widthAsFraction = Float.valueOf(annotationBarField.getText())/100;
-		newSettings.setAnnotationBarWidth(widthAsFraction);
+		settings.setAnnotationBarWidth(widthAsFraction);
 		// Colors
-		newSettings.setPrimaryColor(rgbToString(primColorField.getColorValue()));
-		newSettings.setSecondaryColor(rgbToString(secColorField.getColorValue()));
-		// Server
-		//settings.setServerUrl(ipField.getIpAddress());
-		// Player functions
-		newSettings.setUserDiary(userDiaryField.getSelection());
+		settings.setPrimaryColor(rgbToString(primColorField.getColorValue()));
+		settings.setSecondaryColor(rgbToString(secColorField.getColorValue()));
 		// Video settings
-		newSettings.setVideoTitle(videoTitleField.getText());
-		newSettings.setAutoStart(autoStartField.getSelection());
-		return newSettings;
+		settings.setVideoTitle(videoTitleField.getText());
+		settings.setAutoStart(autoStartField.getSelection());
+		// Player functions
+		settings.setUserDiary(userDiaryField.getSelection());
+		settings.setCollaboration(collabField.getSelection());
+		settings.setLogging(loggingField.getSelection());
+		settings.setLoggingServerUrl(loggingServerUrlField.getText());
 	}
 	
 	@Override
 	public void updateProjectSettings() {
 		if(this.isDirty()){
+			// Create new settings objects which can be used during Undo/Redo
 			ProjectSettings oldSettings = new ProjectSettings(settings);	
-			ProjectSettings newSettings = getSettings();								
+			ProjectSettings newSettings = new ProjectSettings(settings.getProject());
+			writeSettingsTo(newSettings);								
 			IAbstractOperation op = new ProjectSettingsSaveOperation(newSettings, oldSettings);
 			try {
 				OperationHistory.execute(op);
@@ -788,17 +912,13 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 			return true;
 		}
 		
-		// Annotation bar visibility
+		// Siedbars
 		if(settings.getAnnobarVisibility() != getAnnobarVisibility()){
 			return true;
 		}
-		
-		// Annotation bar behaviour
 		if(settings.isAnnobarOverlayEnabled() != overlapField.getSelection()){
 			return true;
 		}
-
-		// Sidebar widths
 		if(settings.getNavigationBarWidth() != Float.valueOf(navigationBarField.getText())/100){
 			return true;
 		}
@@ -815,20 +935,28 @@ public class PlayerSettingsComposite extends Composite implements SettingsCompos
 		}
 
 		// Server
-		//if(!settings.getServerUrl().equals(ipField.getIpAddress())){
+		//  if(!settings.getServerUrl().equals(ipField.getIpAddress())){
 		//	return true;
 		//}
-		
-		// Player functions
-		if(settings.isUserDiaryEnabled() != userDiaryField.getSelection()){
-			return true;
-		}
 		
 		// Video settings
 		if(!settings.getVideoTitle().equals(videoTitleField.getText())){
 			return true;
 		}
 		if(settings.isAutostartEnabled() != autoStartField.getSelection()){
+			return true;
+		}
+		// Player functions
+		if(settings.isUserDiaryEnabled() != userDiaryField.getSelection()){
+			return true;
+		}
+		if(settings.isCollaborationEnabled() != collabField.getSelection()){
+			return true;
+		}
+		if(settings.isLoggingEnabled() != loggingField.getSelection()){
+			return true;
+		}
+		if(!settings.getLoggingServerUrl().equals(loggingServerUrlField.getText())){
 			return true;
 		}
 		

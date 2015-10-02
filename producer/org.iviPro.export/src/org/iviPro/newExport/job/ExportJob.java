@@ -52,7 +52,7 @@ public class ExportJob extends UIProcess {
 					outputFolder, exportProfile.getProfileTitle()), monitor)
 					.export();
 		} catch (ExportException cause) {
-			logger.error(cause.getMessage());
+			logger.error(cause.getMessage(), cause);
 			logger.error(String.format(LOG_EXPORT_FAILED,
 					projectFile.getName(), exportProfile.getProfileTitle()));
 		} finally {

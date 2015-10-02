@@ -307,13 +307,8 @@ public class SivaPlayerXML2JSONConvertor implements IXML2JSONConvertor {
 			String value = setting.getAttribute("value");
 			
 			// Names exported to xml can be found in SivaDefinition (see methods JavaDoc)
-			// Access restrictions
-			if (name.equals("serverUrl")) {
-				access.put("serverUrl", new JSONNode(value));
-			}
-			
 			// Style
-			else if (name.equals("resolutionWidth")) {
+			if (name.equals("resolutionWidth")) {
 				styles.put("resolutionWidth", new JSONNode(value));
 			}
 			else if (name.equals("resolutionHeight")) {
@@ -345,12 +340,15 @@ public class SivaPlayerXML2JSONConvertor implements IXML2JSONConvertor {
 			else if (name.equals("autoStart")){
 				common.put("autoStart", new JSONNode(value, false));
 			}
+			else if (name.equals("collaboration")){
+				common.put("collaboration", new JSONNode(value, false));
+			}
 			else if (name.equals("log")){
 				common.put("log", new JSONNode(value, false));
 			}
-			else if (name.equals("collaboration")){
-				common.put("collaboration", new JSONNode(value, false));
-			}	
+			else if (name.equals("loggingServerUrl")){
+				common.put("logUrl", new JSONNode(value, true));
+			}
 			
 		}
 		this.json.appendEntry("accessRestrictions", new JSONNode(access));
@@ -690,7 +688,7 @@ public class SivaPlayerXML2JSONConvertor implements IXML2JSONConvertor {
 					break;
 				}
 			}			
-			
+			scene.put("thumbnail", this.getResource(element.getAttribute("REFresIDthumb")));
 			ArrayList<JSONNode> files = new ArrayList<JSONNode>();
 			for(int i = 0; i < AVAILABLE_VIDEO_FILE_FORMATS.length; i++){
 				String format = AVAILABLE_VIDEO_FILE_FORMATS[i];
@@ -824,7 +822,7 @@ public class SivaPlayerXML2JSONConvertor implements IXML2JSONConvertor {
 			}
 			else if(name.equals("showSubTitle")){
 				type = "subTitle";
-			} else if(name.equals("showPdf")) {
+			} else if(name.equals("showPdfDocument")) {
 				type = "pdf";
 			} else if(name.equals("showMarkControl")){
 				type = "marker";
@@ -836,8 +834,14 @@ public class SivaPlayerXML2JSONConvertor implements IXML2JSONConvertor {
 			LinkedHashMap<String, JSONNode> annotation = new LinkedHashMap<String, JSONNode>();
 			annotation.put("id", new JSONNode(element.getAttribute("actionID")));
 			annotation.put("type", new JSONNode(type));
-			if (!type.equals("marker")) {
+			if (!type.equals("marker") && !element.getAttribute("REFresIDtitle").isEmpty()) {
 				annotation.put("title", this.getResource(element.getAttribute("REFresIDtitle")));
+			}
+			if (type.equals("pdf") && !element.getAttribute("REFresIDdescription").isEmpty()) {
+				annotation.put("description",  this.getResource(element.getAttribute("REFresIDdescription")));
+			}
+			if (type.equals("video")) {
+				annotation.put("thumbnail", this.getResource(element.getAttribute("REFresIDthumb")));
 			}
 			if(!element.getAttribute("REFresID").equals("")){
 				if(type.equals("video") || type.equals("audio")){

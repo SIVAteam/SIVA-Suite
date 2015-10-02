@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -46,7 +47,8 @@ class ProjectCreateWizardPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.None);
+		final ScrolledComposite scrollComp = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		Composite composite = new Composite(scrollComp, SWT.None);
 
 		// Basis-Panel
 		final Shell shell = parent.getShell();
@@ -92,9 +94,14 @@ class ProjectCreateWizardPage extends WizardPage {
 		Listener listener = createInputChangeListener();
 		dirTextfield.addListener(SWT.Modify, listener);
 		nameTextfield.addListener(SWT.Modify, listener);
+		
+		scrollComp.setContent(composite);
+		scrollComp.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		scrollComp.setExpandHorizontal(true);
+		scrollComp.setExpandVertical(true);	
 
 		// Finish
-		setControl(composite);
+		setControl(scrollComp);
 
 	}
 

@@ -3,14 +3,12 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 import org.iviPro.model.resources.Scene;
 
 /**
@@ -38,7 +36,7 @@ public class NodeScene extends IGraphNode {
 	 * @uml.property name="scene"
 	 */
 	private Scene scene;
-
+	
 	/**
 	 * 
 	 * @param title
@@ -83,7 +81,7 @@ public class NodeScene extends IGraphNode {
 	public Scene getScene() {
 		return scene;
 	}
-
+	
 	/**
 	 * Setter of the property <tt>scene</tt>
 	 * 
@@ -93,12 +91,17 @@ public class NodeScene extends IGraphNode {
 	 */
 	public void setScene(Scene scene) {
 		this.scene = scene;
-	}	
+	}
 
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
 		// Szenen-Knoten ist abhaengig von seiner Szene
 		return object != null
 				&& (object == scene || object == scene.getVideo());
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Scene";
 	}
 }

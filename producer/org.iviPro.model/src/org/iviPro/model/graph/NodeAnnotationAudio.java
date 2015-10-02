@@ -21,12 +21,6 @@ import org.iviPro.model.resources.IResource;
 public class NodeAnnotationAudio extends INodeAnnotationLeaf {
 	
 	/**
-	 * Der Name des "audio"-Properties, so wie es in PropertyChangeEvents
-	 * verwendet wird.
-	 */
-	public static final String PROP_AUDIO = "audio"; //$NON-NLS-1$
-
-	/**
 	 * Das Audio-Objekt dem die Annotation zu Grunde liegt.
 	 * 
 	 * @uml.property name="audio"
@@ -138,5 +132,10 @@ public class NodeAnnotationAudio extends INodeAnnotationLeaf {
 	public boolean isDependentOn(IAbstractBean object) {
 		// Audio-Annotation ist abhaengig von ihrem Audio-Objekt.
 		return object != null && (object == audio || object == audioPart);
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Audio annotation";
 	}
 }

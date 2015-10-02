@@ -64,7 +64,6 @@ public class FinishingState extends ExporterState {
 							exportDirectories.getOutputFolder());
 					FileUtils.delete(exportDirectories.getTmpOutputFolder());
 				} catch (IOException cause) {
-					cause.printStackTrace();
 					throw new ExportException(
 							Messages.Exception_CopyingOutputFailed, cause);
 				}

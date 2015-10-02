@@ -3,13 +3,9 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 import org.iviPro.model.resources.Picture;
 
 public class NodeQuizControl extends INodeAnnotationAction {
@@ -23,8 +19,6 @@ public class NodeQuizControl extends INodeAnnotationAction {
 
 	private int minValue = 0;
 	private int maxValue = 0;
-
-	private Picture buttonImage = null;
 
 	/** Definition der moeglichen und erforderlichen Verbindungen */
 	private static final ConnectionConstraints CONNECTION_CONSTRAINTS = //
@@ -64,5 +58,10 @@ public class NodeQuizControl extends INodeAnnotationAction {
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
 		return false;
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Quiz control";
 	}
 }

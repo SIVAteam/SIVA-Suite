@@ -16,6 +16,7 @@ import org.iviPro.model.quiz.DbQueries;
 import org.iviPro.model.quiz.Node;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,7 +38,7 @@ public class XMLExporterNodeQuiz extends IXMLExporter {
 
 	// TODO: Use this method or delete/uncomment it...
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 		List<NodeQuizControl> defaultControlList = quiz.getDefaultControl();
@@ -46,7 +47,8 @@ public class XMLExporterNodeQuiz extends IXMLExporter {
 
 		// Dann Label fuer Control exportieren
 		@SuppressWarnings("unused")
-		String labelID = createTitleLabels(quiz, doc, idManager);
+		String labelID = createLabel(quiz, doc, idManager, 
+				quiz.getTitles(), LabelType.TITLE);
 
 		@SuppressWarnings("unused")
 		Element actions = getActions(doc);

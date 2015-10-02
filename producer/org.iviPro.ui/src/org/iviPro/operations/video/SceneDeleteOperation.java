@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.iviPro.application.Application;
 import org.iviPro.model.IAbstractBean;
+import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.model.resources.Video;
 import org.iviPro.operations.IAbstractDeleteOperation;
@@ -68,6 +69,18 @@ public class SceneDeleteOperation extends IAbstractDeleteOperation {
 	@Override
 	protected void restoreObjects() {
 		video.getScenes().add(scene);
+	}
+
+	@Override
+	protected List<IAbstractBean> calcAdditionalDependencies(
+			List<IAbstractBean> objectsToDelete) {
+		return new ArrayList<IAbstractBean>();
+	}
+
+	@Override
+	protected List<IAbstractBean> calcAdditionalReferences(
+			List<IAbstractBean> objectsToDelete) {
+		return new ArrayList<IAbstractBean>();
 	}
 
 }

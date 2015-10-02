@@ -35,7 +35,7 @@ public class SizedTextWithUnit extends Composite {
 		layout.horizontalSpacing = 1;
 		this.setLayout(layout);
 			
-		SizedText sText = new SizedText(this, style, textLength);
+		SizedText sText = new SizedText(this, style, textLength, true);
 		text = sText.getTextField();
 		if (unit != null) {
 			unitLabel = new Label(this, SWT.LEFT);

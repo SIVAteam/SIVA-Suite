@@ -13,6 +13,7 @@ import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeStart;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.iviPro.newExport.profile.AudioProfile;
 import org.iviPro.newExport.profile.Profile;
 import org.iviPro.newExport.profile.VideoProfile;
@@ -33,7 +34,7 @@ public class XMLExporterProject extends IXMLExporter {
 	}
 
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project pro, Set<Object> alreadyExported)
 			throws ExportException {
 		
@@ -102,7 +103,8 @@ public class XMLExporterProject extends IXMLExporter {
 		// TOC Root-Element erstellen
 		Element tocRoot = doc.createElement(TAG_TOC_ROOT);
 
-		String tocRootLabelID = createTitleLabels(toc, doc, idManager);
+		String tocRootLabelID = createLabel(toc, doc, idManager, 
+				toc.getTitles() ,LabelType.TITLE);
 		tocRoot.setAttribute(ATTR_REF_RES_ID, tocRootLabelID);
 
 		siva.appendChild(tocRoot);
@@ -213,7 +215,8 @@ public class XMLExporterProject extends IXMLExporter {
 		// Add title attribute
 		IAbstractBean videoTitleBean = 
 				new IAbstractBean(settings.getVideoTitle(), project){};
-		String pNameLabelID = createTitleLabels(videoTitleBean, doc, idManager);
+		String pNameLabelID = createLabel(videoTitleBean, doc, idManager,
+				videoTitleBean.getTitles(), LabelType.TITLE);
 		projectInfo.setAttribute(ATTR_VIDEONAMEREF, pNameLabelID);
 
 		// Resolution
@@ -279,28 +282,28 @@ public class XMLExporterProject extends IXMLExporter {
 		autoplay.setAttribute(ATTR_VALUE, Boolean.toString(
 				settings.isAutostartEnabled()));
 		projectInfo.appendChild(autoplay);
-		Element logging = doc.createElement(TAG_SETTINGS);
-		logging.setAttribute(ATTR_NAME, VAL_LOGGING);
-		logging.setAttribute(ATTR_VALUE, Boolean.toString(
-				settings.isLoggingEnabled()));
-		projectInfo.appendChild(logging);
 		
-		// Collaboration
+		// Collaboration & logging
 		Element collaboration = doc.createElement(TAG_SETTINGS);
 		collaboration.setAttribute(ATTR_NAME, VAL_COLLABORATION);
 		collaboration.setAttribute(ATTR_VALUE, Boolean.toString(
 				settings.isCollaborationEnabled()));
 		projectInfo.appendChild(collaboration);
-		Element serverUrl = doc.createElement(TAG_SETTINGS);
-		serverUrl.setAttribute(ATTR_NAME, VAL_SERVERURL);
-		serverUrl.setAttribute(ATTR_VALUE,
-				String.valueOf(settings.getServerUrl()));
-		projectInfo.appendChild(serverUrl);
+		Element logging = doc.createElement(TAG_SETTINGS);
+		logging.setAttribute(ATTR_NAME, VAL_LOGGING);
+		logging.setAttribute(ATTR_VALUE, Boolean.toString(
+				settings.isLoggingEnabled()));
+		projectInfo.appendChild(logging);
+		Element loggingServerUrl = doc.createElement(TAG_SETTINGS);
+		loggingServerUrl.setAttribute(ATTR_NAME, VAL_LOGGINGSERVERURL);
+		loggingServerUrl.setAttribute(ATTR_VALUE,
+				String.valueOf(settings.getLoggingServerUrl()));
+		projectInfo.appendChild(loggingServerUrl);
 		
 		// FIXME: Why is this needed?! <-- EDIT: needed for player  
 		addResourceSettings(doc, projectInfo, idManager.getProfile());
 
-		// Project Ressources
+		// Global annotations (referenced in XML as: projectResources)
 		BeanList<INodeAnnotationLeaf> globalAnnos = project
 				.getGlobalAnnotations();
 		for (INodeAnnotationLeaf anno : globalAnnos) {

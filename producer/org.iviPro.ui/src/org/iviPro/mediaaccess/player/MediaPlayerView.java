@@ -24,11 +24,13 @@ import org.iviPro.theme.Colors;
 import org.iviPro.theme.Icons;
 
 public class MediaPlayerView extends IAbstractEditor {
+	
 	private static Logger logger = Logger.getLogger(MediaPlayerView.class);
 	public static final String ID = MediaPlayerView.class.getName();
 	public static final String PREFIX_MOVIEEDITOR = "Player - "; //$NON-NLS-1$
 
-	private I_MediaPlayer mp = null;
+	private IAbstractBean mo;
+	private MediaPlayer mp = null;
 	
 	private Composite root;
 
@@ -49,10 +51,9 @@ public class MediaPlayerView extends IAbstractEditor {
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
 
-		IAbstractBean mo = ((MediaPlayerWidgetInput) input).getMediaObject();
+		mo = ((MediaPlayerWidgetInput) input).getMediaObject();
 		mo.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -117,5 +118,10 @@ public class MediaPlayerView extends IAbstractEditor {
 			mp.finish();
 		}
 		super.dispose();
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return mo;
 	}
 }

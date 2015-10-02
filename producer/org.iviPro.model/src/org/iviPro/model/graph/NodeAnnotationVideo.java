@@ -29,7 +29,7 @@ public class NodeAnnotationVideo extends INodeAnnotationLeaf {
 	 * 
 	 * @uml.property name="scene"
 	 */
-	private Scene scene;	
+	private Scene scene;
 	
 	/**
 	 * Der Name des "mute"-Properties, so wie es in PropertyChangeEvents
@@ -40,7 +40,7 @@ public class NodeAnnotationVideo extends INodeAnnotationLeaf {
 	/**
 	 * der Content-Typ, Video bzw. Szene 
 	 */
-	private int contentType = CONTENT_NONE;
+	private int contentType = CONTENT_VIDEO;
 	
 	public static final int CONTENT_NONE = -1;
 	public static final int CONTENT_VIDEO = 0;
@@ -121,14 +121,16 @@ public class NodeAnnotationVideo extends INodeAnnotationLeaf {
 		this.contentType = CONTENT_SCENE;
 		firePropertyChange(PROP_SETCONTENT, null, scene);
 	}
-
+	
 	@Override
 	public List<IResource> getResources() {
-		ArrayList<IResource> resources = new ArrayList<IResource>(1);
-		if (contentType == CONTENT_VIDEO && video != null) {
+		ArrayList<IResource> resources = new ArrayList<IResource>(2);
+		if (contentType == CONTENT_VIDEO) {
 			resources.add(video);
-		} else if (contentType == CONTENT_SCENE && scene != null) {
+			resources.add(video.getThumbnail());
+		} else if (contentType == CONTENT_SCENE) {
 			resources.add(scene);
+			resources.add(scene.getThumbnail());
 		}
 		return resources;
 	}
@@ -137,5 +139,10 @@ public class NodeAnnotationVideo extends INodeAnnotationLeaf {
 	public boolean isDependentOn(IAbstractBean object) {
 		// Video-Annotation ist abhaengig von ihrem Video
 		return object != null && (object == video || object == scene);
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Video annotation";
 	}
 }

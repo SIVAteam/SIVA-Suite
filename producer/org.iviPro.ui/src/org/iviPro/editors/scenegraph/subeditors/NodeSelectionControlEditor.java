@@ -8,6 +8,8 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -96,6 +98,22 @@ public class NodeSelectionControlEditor extends TitledNodeEditor {
 		visibileComp.setLayout(new GridLayout(2, false));		
 		hideButton = new Button(visibileComp, SWT.CHECK);
 		hideButton.setSelection(!selectionControl.isVisible());
+		hideButton.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				boolean selected = hideButton.getSelection();
+				fieldMessage.setEnabled(!selected);
+				if (selected) {
+					fieldMessage.setText("");
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);				
+			}
+		});
 		Label visibleLable = new Label(visibileComp, SWT.LEFT);
 		visibleLable.setText(Messages.NodeSelectionControlEditor_Condition_Visibility);		
 				
@@ -148,17 +166,6 @@ public class NodeSelectionControlEditor extends TitledNodeEditor {
 			msg = ""; //$NON-NLS-1$
 		}
 		fieldMessage.setText(msg);
-		
-				
-		// Need to discuss details of conditional statements
-		// before implementation
-//		Group exprGroup = new Group(parent, SWT.NONE);
-//		exprGroup.setLayout(new GridLayout(1, false));		
-//		GridData exprGroupGd = new GridData();
-//		exprGroupGd.grabExcessHorizontalSpace = true;
-//		exprGroupGd.horizontalAlignment = SWT.FILL;
-//		exprGroup.setLayoutData(exprGroupGd);
-//		exprGroup.setText(Messages.NodeSelectionControlEditor_Group_Conditional_Expressions);
 	}
 	
 	private Combo createImageCombo(Composite parent) {

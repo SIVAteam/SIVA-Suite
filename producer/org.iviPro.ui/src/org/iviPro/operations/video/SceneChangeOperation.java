@@ -1,5 +1,8 @@
 package org.iviPro.operations.video;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -9,6 +12,9 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
 import org.iviPro.application.Application;
 import org.iviPro.model.Project;
+import org.iviPro.model.graph.IGraphNode;
+import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.operations.CompoundOperation;
 import org.iviPro.operations.IAbstractOperation;
@@ -29,6 +35,13 @@ public class SceneChangeOperation extends IAbstractOperation {
 
 	// Die Variablen zum Speichern der Operations-Daten
 	private Scene scene;
+	
+	/**
+	 * Time of the frame which should be used as thumbnail. 
+	 * No separate operation is created for this value. 
+	 */
+	private long oldThumbTime;
+	private long newThumbTime;
 	
 	// hält Operationen zum Ändern von Titel, Zeit ...
 	CompoundOperation<IAbstractOperation> changeScene;
@@ -53,7 +66,7 @@ public class SceneChangeOperation extends IAbstractOperation {
 	 *             Falls einer der Parameter null ist.
 	 */
 	public SceneChangeOperation(Scene scene, String title, SivaTime start,
-			SivaTime end, String keywords) throws IllegalArgumentException {
+			SivaTime end, String keywords, long thumbTime) throws IllegalArgumentException {
 		super(Messages.SceneCreateOperation_UndoLabel);
 		Project project = Application.getCurrentProject();
 		if (project == null || title == null || start == null || end == null || keywords == null) {
@@ -67,6 +80,25 @@ public class SceneChangeOperation extends IAbstractOperation {
 		changeScene.addOperation(new ChangeImagesOperation(scene));
 		
 		this.scene = scene;
+		// Adapt timings of annotations relying on this scene
+		List<IGraphNode> potentialAnnos = project.getSceneGraph()
+				.searchNodes(INodeAnnotation.class, true);
+		for (IGraphNode potAnno : potentialAnnos) {
+			INodeAnnotation anno = (INodeAnnotation)potAnno;
+			NodeScene parentScene = anno.getParentScene();
+			if (parentScene != null && parentScene.getScene() == scene) {
+				long annoStart = (start.getNano() > anno.getStart()?start.getNano()
+						:anno.getStart());
+				long annoEnd = (end.getNano() < anno.getEnd()?end.getNano()
+						:anno.getEnd());
+				changeScene.addOperation(new ChangeTimeOperation(anno, 
+						annoStart, annoEnd));
+			}
+		}
+		
+		// Could be done in a separate operation but would be overhead
+		this.oldThumbTime = scene.getThumbnail().getTime();
+		this.newThumbTime = thumbTime;
 		
 		if (scene.getVideo().getScene(scene.getTitle(), Application.getCurrentLanguage()) == null)  {
 			this.isNew = true;
@@ -98,6 +130,7 @@ public class SceneChangeOperation extends IAbstractOperation {
 	public IStatus redo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		changeScene.execute(monitor, info);
+		scene.changeThumbnailTime(newThumbTime);
 		if (isNew) {
 			scene.getVideo().getScenes().add(scene);	
 		}
@@ -108,6 +141,7 @@ public class SceneChangeOperation extends IAbstractOperation {
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		changeScene.undo(monitor, info);
+		scene.changeThumbnailTime(oldThumbTime);
 		if (isNew) {
 			scene.getVideo().getScenes().remove(scene);
 		}

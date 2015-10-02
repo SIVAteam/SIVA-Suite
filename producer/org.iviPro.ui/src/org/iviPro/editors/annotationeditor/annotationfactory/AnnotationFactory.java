@@ -5,6 +5,7 @@ import org.iviPro.editors.common.ScreenAreaSelector;
 import org.iviPro.model.Project;
 import org.iviPro.model.graph.IConnection;
 import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeAnnotationAudio;
 import org.iviPro.model.graph.NodeAnnotationPdf;
 import org.iviPro.model.graph.NodeAnnotationPicture;
@@ -30,7 +31,7 @@ public class AnnotationFactory {
 	 * @param type
 	 * @return
 	 */
-	public static INodeAnnotation getAnnotationForAnnotationType(AnnotationType type) {
+	public static INodeAnnotation getAnnotationForType(AnnotationType type) {
 		INodeAnnotation annotation = null;
 		Project project = Application.getCurrentProject();
 		String title = "";
@@ -51,12 +52,13 @@ public class AnnotationFactory {
 	}
 	
 	/**
-	 * liefert ein INodeAnnotation Objekt für den entsprechenden Inhaltstyp
-	 * @param content
-	 * @return
+	 * Returns an annotation (<code>INodeAnnotationLeaf</code>) for the given
+	 * content type.
+	 * @param content type of the content of the desired annotation
+	 * @return annotation of type <code>content</code>
 	 */
-	private static INodeAnnotation getAnnotationForContent(AnnotationContentType content) {
-		INodeAnnotation annotation = null;
+	private static INodeAnnotationLeaf getAnnotationForContent(AnnotationContentType content) {
+		INodeAnnotationLeaf annotation = null;
 		Project project = Application.getCurrentProject();
 		String title = "";
 		switch (content) {

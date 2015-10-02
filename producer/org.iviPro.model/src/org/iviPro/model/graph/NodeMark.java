@@ -3,7 +3,6 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
 import org.iviPro.model.annotation.IMarkShape;
-import org.iviPro.model.resources.IResource;
 
 /**
  * @author dellwo
@@ -66,8 +64,9 @@ public class NodeMark extends INodeAnnotationAction {
 		this.setScreenArea(ScreenArea.OVERLAY);
 	}
 
-	public void setTriggerAnnotation(INodeAnnotation annotation) {
+	public void setTriggerAnnotation(INodeAnnotationLeaf annotation) {
 		this.trigAnnotation = annotation;
+		annotation.setAsTriggerAnnotation(this);
 	}
 
 	public INodeAnnotation getTriggerAnnotation() {
@@ -177,6 +176,11 @@ public class NodeMark extends INodeAnnotationAction {
 
 	@Override
 	public boolean isDependentOn(IAbstractBean object) {
-		return object != null && object == trigAnnotation;
+		return object != null && trigAnnotation.isDependentOn(object);
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Mark annotation";
 	}
 }

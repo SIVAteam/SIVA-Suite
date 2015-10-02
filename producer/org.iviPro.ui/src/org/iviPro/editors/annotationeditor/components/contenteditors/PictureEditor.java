@@ -23,7 +23,6 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,12 +38,11 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.iviPro.application.Application;
 import org.iviPro.dnd.TransferMedia;
-import org.iviPro.editors.common.SivaComposite;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventType;
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.PictureGallery;
 import org.iviPro.model.graph.NodeAnnotationPicture;
-import org.iviPro.model.imageeditor.ImageObject;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.theme.Colors;
 
@@ -52,7 +50,7 @@ import org.iviPro.theme.Colors;
  * Editor zum hinzufügen eines Bilders und zum Editieren der Bildergalerie
  * @author juhoffma
  */
-public class PictureEditor extends SivaComposite {
+public class PictureEditor extends ContentEditor {
 		
 	// die Bildergallerie
 	private PictureGallery gallery;
@@ -83,16 +81,18 @@ public class PictureEditor extends SivaComposite {
 	private final int GALLERY_REPLACE = 1;
 	private int dropGalleryParam = -1;
 		
-	public PictureEditor(Composite parent, int style, final PictureGallery gallery, int columns) {
+	public PictureEditor(Composite parent, int style, final PictureGallery gallery) {
 		super(parent, style);
 		init();	
-		setPictureGallery(gallery, columns);
+		setPicAnnoContentType(NodeAnnotationPicture.CONTENT_PICTUREGALLERY);
+		setContent(gallery);
 	}
 
 	public PictureEditor(Composite parent, int style, final Picture picture) {
 		super(parent, style);
 		init();
-		setPicture(picture);
+		setPicAnnoContentType(NodeAnnotationPicture.CONTENT_PICTURE);
+		setContent(picture);
 	}
 	
 	private void init() {
@@ -155,6 +155,10 @@ public class PictureEditor extends SivaComposite {
 		return this.picAnnoContentType;
 	}
 	
+	public void setPicAnnoContentType(int contentType) {
+		this.picAnnoContentType = contentType;
+	}
+	
 	/**
 	 * setzt den PictureEditor mit einem neuen Bild in den Bildannotationsmodus
 	 * @param picture
@@ -167,22 +171,11 @@ public class PictureEditor extends SivaComposite {
 			this.gallery = null;
 		}
 		this.pictures.clear();
-		this.picAnnoContentType = NodeAnnotationPicture.CONTENT_PICTURE;
 		
-		if (this.pictures != null) {
+		if (this.pictures != null && picture != null) {
 			this.pictures.add(picture);
 		}
-
-		try {
-			contentComposite.setLayout(new GridLayout(1, false));
-		} catch (Exception e) {
-			Display.getCurrent().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					contentComposite.setLayout(new GridLayout(1, false));
-				}
-			});
-		}
+		contentComposite.setLayout(new GridLayout(1, false));
 							
 		this.contentComposite.addKeyListener(new KeyListener() {
 
@@ -196,12 +189,8 @@ public class PictureEditor extends SivaComposite {
 				pressedKeyCode = -1;
 			}
 		});
-		initPictures();
-		Picture pic = null;
-		if (this.pictures.size() > 0) {
-			pic = this.pictures.get(0);
-		}
-		SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.EDITOR_CHANGED, pic);
+		initPictures();		
+		SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.CONTENT_CHANGED, picture);
 		notifySivaEventConsumers(edEvent);
 	}	
 
@@ -210,8 +199,6 @@ public class PictureEditor extends SivaComposite {
 	 * @param gallery
 	 */
 	public void setPictureGallery(final PictureGallery newGal, final int columns) {	
-
-		this.picAnnoContentType = NodeAnnotationPicture.CONTENT_PICTUREGALLERY;
 		
 		if (contentComposite.isDisposed() || mainComposite.isDisposed()) {
 			return;
@@ -230,7 +217,7 @@ public class PictureEditor extends SivaComposite {
 		}
 		contentComposite.setLayout(new GridLayout(columns, false));
 		initPictures();	
-		SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.EDITOR_CHANGED, this.gallery);
+		SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.CONTENT_CHANGED, this.gallery);
 		notifySivaEventConsumers(edEvent);
 	}
 	
@@ -333,7 +320,7 @@ public class PictureEditor extends SivaComposite {
 		}
 		if (this.picAnnoContentType == NodeAnnotationPicture.CONTENT_PICTUREGALLERY) {
 			this.gallery.setPictures(this.pictures);
-			SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.EDITOR_CHANGED, this.gallery);
+			SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.CONTENT_CHANGED, this.gallery);
 			notifySivaEventConsumers(edEvent);
 		}
 		this.selectedPictures.clear();		
@@ -372,7 +359,7 @@ public class PictureEditor extends SivaComposite {
 					pictures.clear();
 					pictures.add(newPic);
 					target.setPicture(newPic);
-					SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.EDITOR_CHANGED, newPic);
+					SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.CONTENT_CHANGED, newPic);
 					notifySivaEventConsumers(edEvent);
 				}
 			}
@@ -449,7 +436,7 @@ public class PictureEditor extends SivaComposite {
 				}				
 			}
 			this.gallery.setPictures(this.pictures);
-			SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.EDITOR_CHANGED, this.gallery);
+			SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.CONTENT_CHANGED, this.gallery);
 			notifySivaEventConsumers(edEvent);
 		}	
 		adjustScrolledComposite();
@@ -809,11 +796,6 @@ public class PictureEditor extends SivaComposite {
 				this.pcWidth = 100;
 				this.pcHeight = 100;
 			}
-			GC gc = new GC(thumb);
-			for (ImageObject imgObj : picture.getObjects()) {
-				org.iviPro.editors.imageeditor.ImageEditWidget.drawObject(gc, imgObj, thumb);
-			}			
-			gc.dispose();
 			this.image = thumb;
 			refreshPCLayoutData();						
 		}
@@ -848,9 +830,23 @@ public class PictureEditor extends SivaComposite {
 				this.gallery.setNumberColumns(cols);
 				this.gallery.setPictures(this.pictures);
 			}
-			SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.EDITOR_CHANGED, this.gallery);
+			SivaEvent edEvent = new SivaEvent(PictureEditor.this, SivaEventType.CONTENT_CHANGED, this.gallery);
 			notifySivaEventConsumers(edEvent);
 			adjustScrolledComposite();	
 		}
+	}
+
+	@Override
+	public void setContent(IAbstractBean newContent) {
+		if (picAnnoContentType == NodeAnnotationPicture.CONTENT_PICTURE) {
+			setPicture((Picture)newContent);
+		} else if (picAnnoContentType == NodeAnnotationPicture.CONTENT_PICTUREGALLERY) {
+			PictureGallery gallery = (PictureGallery)newContent;
+			if (gallery != null) { 
+				setPictureGallery(gallery, gallery.getNumberColumns());
+			} else {
+				setPictureGallery(gallery, PictureGallery.PICGAL_COLS_STD);
+			}
+		}		
 	}	
 }

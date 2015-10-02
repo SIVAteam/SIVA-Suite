@@ -3,11 +3,8 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.List;
-
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 
 /**
  * Simple selection control element used to define an alternative path for
@@ -27,5 +24,10 @@ public class NodeSelectionControl extends AbstractNodeSelectionControl {
 	public NodeSelectionControl(String title, Project project) {
 		super(new LocalizedString(title, project), project);
 		setType(SelectionControlType.DEFAULT);
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Selection control";
 	}
 }

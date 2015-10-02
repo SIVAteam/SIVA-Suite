@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -116,6 +117,7 @@ public abstract class IAbstractRepositoryView extends IAbstractView {
 		getSite().setSelectionProvider(treeViewer);
 		treeViewerFilter = createRepositoryFilter();
 		treeViewer.addFilter(treeViewerFilter);
+		treeViewer.setSorter(new ViewerSorter());
 		treeViewer.getControl().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 

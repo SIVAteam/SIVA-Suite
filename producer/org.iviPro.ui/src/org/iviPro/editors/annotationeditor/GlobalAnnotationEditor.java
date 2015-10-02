@@ -58,6 +58,7 @@ import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationFactory;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationType;
 import org.iviPro.editors.annotationeditor.components.GlobalAnnotationDefineWidget;
 import org.iviPro.model.BeanList;
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.graph.INodeAnnotation;
 import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeAnnotationAudio;
@@ -79,6 +80,15 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 	private static Logger logger = Logger
 			.getLogger(GlobalAnnotationEditor.class);
 	public static final String ID = GlobalAnnotationEditor.class.getName();
+	
+	/**
+	 * Component allowing the scrolling of the main component
+	 */
+	private ScrolledComposite scrollComposite;
+	/**
+	 * The main component encapsulating the editor widgets
+	 */
+	private Composite scrollContent;
 
 	// hält für jede globale Annotation einen Tab
 	private CTabFolder tabFolder = null;
@@ -156,8 +166,8 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
+		
 		setPartName(Messages.GlobalAnnotationEditorName);
 	}
 
@@ -215,16 +225,16 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 		parent.setLayout(griLayout);
 		
 		// Scrolling
-		final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+		scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		scrollComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		scrollComposite.setLayout(new GridLayout(1, true));			
-		final Composite scrollContent = new Composite(scrollComposite, SWT.NONE);
-		scrollContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		scrollContent.setLayout(new GridLayout(2, false));
-		scrollComposite.setContent(scrollContent);		
-		scrollComposite.setMinSize(860, 600);
+			
+		scrollContent = new Composite(scrollComposite, SWT.NONE);
+		scrollContent.setLayout(new GridLayout(2, false));		
+		scrollComposite.setContent(scrollContent);
+		
+		scrollComposite.getVerticalBar().setIncrement(10);
 		scrollComposite.setExpandHorizontal(true);
-		scrollComposite.setExpandVertical(true);
+		scrollComposite.setExpandVertical(true);			
 		
 		scrollComposite.addDisposeListener(new DisposeListener() {
 			@Override
@@ -255,9 +265,7 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 	        	scrollComposite.setFocus();
 	        }
 	    });
-		scrollComposite.getVerticalBar().setIncrement(10);
-				
-				
+						
 		// Container für die Liste und zum Anlegen der Annotationen
 		Composite container = new Composite(scrollContent, SWT.TOP | SWT.BORDER);
 		container.setLayout(new GridLayout(2, false));
@@ -528,8 +536,8 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 		// Tabs: jedes Tab enthält den Editor für genau eine Annotation
 		tabFolder = new CTabFolder(scrollContent, SWT.TOP);
 		tabFolder.setBorderVisible(true);
-		GridData tabFolderGD = new GridData(SWT.CENTER, SWT.FILL, false, true);
-		tabFolderGD.widthHint = 654;
+		GridData tabFolderGD = new GridData(SWT.FILL, SWT.FILL, true, true);
+		//tabFolderGD.widthHint = 654;
 		tabFolder.setLayoutData(tabFolderGD);
 		tabFolder.setSimple(false);
 		tabFolder.setUnselectedCloseVisible(false);
@@ -577,6 +585,8 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 				}
 			}
 		});
+		
+		scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	private void updateSelection(INodeAnnotationLeaf leaf) {
@@ -673,6 +683,12 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 			final GlobalAnnotationDefineWidget newAn = new GlobalAnnotationDefineWidget(
 					tabFolder, SWT.CENTER, selectedAnnotation, annotationType, tabItem, this);
 			tabItem.setControl(newAn);
+			tabItem.addDisposeListener(new DisposeListener() {				
+				@Override
+				public void widgetDisposed(DisposeEvent e) {
+					newAn.dispose();					
+				}
+			});
 			selectedAnnotation
 					.addPropertyChangeListener(new PropertyChangeListener() {
 						@Override
@@ -704,6 +720,8 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 				}
 			}
 		}
+		
+		scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
 	/**
@@ -742,9 +760,9 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 
 	// erstellt eine neue temporäre Annotation, explizit gespeichert wird
 	// sie erst später
-	private void createNewGlobalAnnotation(AnnotationType annotationType) {
-		final INodeAnnotation newAnnotation = AnnotationFactory.getAnnotationForAnnotationType(annotationType);
-		lastAddedGlobalAnnotationType = annotationType;
+	private void createNewGlobalAnnotation(AnnotationType annoType) {
+		final INodeAnnotation newAnnotation = AnnotationFactory.getAnnotationForType(annoType);
+		lastAddedGlobalAnnotationType = annoType;
 
 		logger.debug("Creating new annotation..."); //$NON-NLS-1$
 
@@ -757,13 +775,13 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 
 		CTabItem tabItem = new CTabItem(tabFolder, SWT.CLOSE);
 		tabItem.setText(Messages.AnnotationEditor_TabTitle_UnnamedAnnotation1
-				+ annotationType.getName()
+				+ annoType.getName()
 				+ Messages.AnnotationEditor_TabTitle_UnnamedAnnotation2);
 		tabFolder.setSelection(tabItem);
 
 		// Das Widget zum Editieren/Erstellen einer Annotation
 		final GlobalAnnotationDefineWidget newAn = new GlobalAnnotationDefineWidget(
-				tabFolder, SWT.CENTER, newAnnotation, annotationType, tabItem, this);
+				tabFolder, SWT.CENTER, newAnnotation, annoType, tabItem, this);
 		newAnnotation.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -773,8 +791,17 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 				updateTreeViewer();
 			}
 		});
-		lastAddedAnnotations.put(annotationType, newAnnotation);
+		lastAddedAnnotations.put(annoType, newAnnotation);
 		tabItem.setControl(newAn);
+		tabItem.addDisposeListener(new DisposeListener() {				
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				newAn.dispose();					
+			}
+		});
+		
+		scrollComposite.setMinSize(scrollContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		updateDirtyStatus();
 	}
 
 	/*
@@ -941,5 +968,10 @@ public class GlobalAnnotationEditor extends IAbstractEditor {
 			}
 			return false;
 		}	
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return null;
 	}
 }

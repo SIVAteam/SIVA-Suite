@@ -27,10 +27,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.part.EditorPart;
 import org.iviPro.application.Application;
+import org.iviPro.editors.annotationeditor.GlobalAnnotationEditor;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationContentType;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationType;
+import org.iviPro.editors.annotationeditor.components.contenteditors.PictureEditor;
 import org.iviPro.editors.annotationeditor.components.positioneditors.OverlayEditor;
 import org.iviPro.editors.common.BeanNameGenerator;
 import org.iviPro.editors.common.ScreenAreaSelector;
@@ -50,8 +51,8 @@ import org.iviPro.utils.ImageHelper;
 public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 
 	public GlobalAnnotationDefineWidget(Composite parent, int style,
-			final INodeAnnotation annotation, AnnotationType annotationType, CTabItem it, EditorPart editor) {
-		super(parent, style, annotation, annotationType, it);		
+			final INodeAnnotation annotation, AnnotationType annotationType, CTabItem it, GlobalAnnotationEditor editor) {
+		super(parent, style, annotation, annotationType, it, editor);		
 		createContent();
 	}
 
@@ -64,18 +65,18 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 		setLayout(adWLayout);
 
 		// Composite für den oberen Bereich
-		editorComposite = new Composite(this, SWT.TOP | SWT.BORDER);
+		Composite editorComposite = new Composite(this, SWT.BORDER);
 		GridLayout leftLayout = new GridLayout(4, false);
 		editorComposite.setLayout(leftLayout);
-		GridData topGD = new GridData();
-		topGD.widthHint = 640;
-		topGD.verticalAlignment = SWT.TOP;
+		GridData topGD = new GridData(SWT.FILL, SWT.FILL, true, false);
+		//topGD.widthHint = 640;
+		//topGD.verticalAlignment = SWT.TOP;
 		editorComposite.setLayoutData(topGD);
 
 		// Composite für den Inhaltseditorbereich
 		contentEditorComposite = new Composite(this, SWT.TOP);
-		GridData bottomGD = new GridData(SWT.CENTER, SWT.FILL, false, true);
-		bottomGD.widthHint = 644;		
+		GridData bottomGD = new GridData(SWT.FILL, SWT.FILL, true, true);
+		//bottomGD.widthHint = 644;		
 		contentEditorComposite.setLayoutData(bottomGD);
 		GridLayout rightLayout = new GridLayout(1, false);
 		rightLayout.marginWidth = 0;
@@ -141,7 +142,7 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 
 		// für Bilder auswahl zum Umschalten zwischen Bild und Bildergallerie
 		if (annotation instanceof NodeAnnotationPicture) {
-		    Group group = new Group(editorComposite, SWT.SHADOW_IN);
+			Group group = new Group(editorComposite, SWT.SHADOW_IN);
 		    group.setLayout(new GridLayout(2, false));
 		    group.setText(Messages.PictureOrPictureGalleryText);
 		    picButton = new Button(group, SWT.RADIO);
@@ -187,11 +188,12 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 		    pictureAnnoColumnField.addModifyListener(new ModifyListener() {
 
 				@Override
-				public void modifyText(ModifyEvent arg0) {					
-					if (tmpPicture != null && pictureAnnoColumnField != null) {
+				public void modifyText(ModifyEvent arg0) {	
+					PictureEditor picEditor = ((PictureEditor)contentEditor);
+					if (picEditor != null && pictureAnnoColumnField != null) {
 						if (pictureAnnoColumnField.getText().length() > 0) {
 							Integer cols = Integer.parseInt(pictureAnnoColumnField.getText());
-							tmpPicture.setColumns(cols);
+							picEditor.setColumns(cols);
 						}					
 					}
 				}
@@ -219,7 +221,9 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 							Display.getCurrent().asyncExec(new Runnable() {
 								@Override
 								public void run() {
-									tmpPicture.setPicture(((NodeAnnotationPicture) annotation).getPicture());	
+									PictureEditor picEditor = ((PictureEditor)contentEditor);
+									picEditor.setPicAnnoContentType(NodeAnnotationPicture.CONTENT_PICTURE);
+									picEditor.setContent(((NodeAnnotationPicture) annotation).getPicture());
 									pictureAnnoColumnField.setText("1"); //$NON-NLS-1$
 									updateDirty();
 								}
@@ -255,7 +259,9 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 							Display.getCurrent().asyncExec(new Runnable() {
 								@Override
 								public void run() {
-									tmpPicture.setPictureGallery(picGal, picGal.getNumberColumns());
+									PictureEditor picEditor = ((PictureEditor)contentEditor);
+									picEditor.setPicAnnoContentType(NodeAnnotationPicture.CONTENT_PICTUREGALLERY);
+									picEditor.setContent(picGal);
 									updateDirty();
 								}
 								
@@ -413,7 +419,9 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 				}
 				IAbstractOperation op = new GlobalAnnotationSaveOperation(annotation, 
 						annotationType, tmpTitle.getText(), tmpDescription.getText(), 
-					Messages.GlobalAnnotationDefineWidget_4, mute, editorContent, tmpScreenArea, tmpOpItems);
+					Messages.GlobalAnnotationDefineWidget_4, mute, editorContent, 
+					tmpContentDescription, tmpThumbnailTime, tmpScreenArea, 
+					tmpOpItems);
 				try {
 					OperationHistory.execute(op);
 					tabItem.setText(annotation.getTitle());
@@ -425,6 +433,7 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 		} else {
 			return false;
 		}
+		updateDirty();
 		return true;
 	}
 

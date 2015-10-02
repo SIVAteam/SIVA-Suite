@@ -1,5 +1,6 @@
 package org.iviPro.newExport.descriptor.xml.objects;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.iviPro.model.IAbstractBean;
@@ -12,8 +13,10 @@ import org.iviPro.model.annotation.PolygonShape.Position;
 import org.iviPro.model.annotation.PositionalShape;
 import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeMark;
+import org.iviPro.model.resources.Scene;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.iviPro.newExport.util.SivaTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,41 +36,34 @@ public class XMLExporterNodeMark extends IXMLExporter {
 	}
 
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 
 		INodeAnnotationLeaf contentAnnotation = 
 				(INodeAnnotationLeaf) nodeMark.getTriggerAnnotation();
+		Scene scene = nodeMark.getParentScene().getScene();
+		long sceneStartTime = 0L;
+		if (scene != null) {
+			sceneStartTime = scene.getStart();
+		}
 
 		// exportiere zuerst die zugehörige normale Annotation
 		IXMLExporter exp = ExporterFactory.createExporter(contentAnnotation);
 		IXMLExporterNodeAnnotationLeaf leafExp = (IXMLExporterNodeAnnotationLeaf) exp;
 		leafExp.exportContentAnno(doc, idManager, project, alreadyExported,
 				nodeMark, contentAnnotation);
-		
-		Element buttonLabel = doc.createElement(TAG_LABEL);
-		buttonLabel.setAttribute(ATTR_RES_ID,
-				idManager.getDescriptionLabelID(nodeMark));
-
-		Element labelContent = doc.createElement(TAG_CONTENT);
-		labelContent.setAttribute(ATTR_LANGCODE,
-				LocalizedString.getSivaLangcode(project.getCurrentLanguage()));
-		labelContent.setTextContent(nodeMark.getButtonLabel());
-
-		// Einhaengen des Labels in Ressource
-		Element ressource = getRessources(doc);
-		ressource.appendChild(buttonLabel);
-		buttonLabel.appendChild(labelContent);
 
 		// Entsprechenden <trigger> Eintrag in <storyboard>-Liste erstellen
 		Element trigger = doc.createElement(TAG_TRIGGER);
 		trigger.setAttribute(ATTR_REF_ACTION_ID,
 				idManager.getActionID(nodeMark));
 		trigger.setAttribute(ATTR_TRIGGER_STARTTIME,
-				SivaTime.getSivaXMLTime(nodeMark.getStart()));
+				SivaTime.getSivaXMLTime(nodeMark.getStart()
+						- sceneStartTime));
 		trigger.setAttribute(ATTR_TRIGGER_ENDTIME,
-				SivaTime.getSivaXMLTime(nodeMark.getEnd()));
+				SivaTime.getSivaXMLTime(nodeMark.getEnd()
+						- sceneStartTime));
 		trigger.setAttribute(ATTR_TRIGGER_ID,
 				idManager.getTriggerID(nodeMark));
 
@@ -88,17 +84,26 @@ public class XMLExporterNodeMark extends IXMLExporter {
 		showMarkAction.setAttribute(ATTR_DURATION,
 				SivaTime.getSivaXMLTime(nodeMark.getDuration()));
 
+		// Create shape information
 		Element shapeElement = null;
-		// only one type is allowed, determine element Button, Ellipse or
-		// Polygon
 		switch (nodeMark.getType()) {
 		case ELLIPSE:
 			shapeElement = doc.createElement(TAG_ELLIPSE);
 			break;
 		case BUTTON:
+			/* Create label for button text. Since button text is not localized
+			 * yet, a Collection<LocalizedString> with the current project language
+			 * needs to be created. */
+			LocalizedString localButton = 
+				new LocalizedString(nodeMark.getButtonLabel(), project);
+			ArrayList<LocalizedString> tmpList = new ArrayList<LocalizedString>(1);
+			tmpList.add(localButton);
+			String buttonLabelId = createLabel(nodeMark,doc, idManager, tmpList,
+					LabelType.BUTTON);
+			
 			shapeElement = doc.createElement(TAG_BUTTON);
 			shapeElement.setAttribute(ATTR_REF_RES_ID,
-					buttonLabel.getAttribute(ATTR_RES_ID));
+					buttonLabelId);
 			break;
 		case POLYGON:
 			shapeElement = doc.createElement(TAG_POLYGON);
@@ -110,13 +115,13 @@ public class XMLExporterNodeMark extends IXMLExporter {
 			for (IMarkShape shape : nodeMark.getShapes()) {
 				if (shape instanceof EllipseShape) {
 					shapeElement.appendChild(createEllipsePathElement(doc,
-							(EllipseShape) shape));
+							(EllipseShape) shape, sceneStartTime));
 				} else if (shape instanceof PositionalShape) {
 					shapeElement.appendChild(createButtonPathElement(doc,
-							(PositionalShape) shape));
+							(PositionalShape) shape, sceneStartTime));
 				} else if (shape instanceof PolygonShape) {
 					shapeElement.appendChild(createPolygonChainElement(doc,
-							(PolygonShape) shape));
+							(PolygonShape) shape, sceneStartTime));
 				}
 			}
 			showMarkAction.appendChild(shapeElement);
@@ -128,7 +133,7 @@ public class XMLExporterNodeMark extends IXMLExporter {
 	}
 
 	private Element createButtonPathElement(Document doc,
-			PositionalShape shapeButton) {
+			PositionalShape shapeButton, long sceneStartTime) {
 		Element pathElement = doc.createElement(TAG_BUTTON_PATH);
 		float x = shapeButton.getX();
 		float y = shapeButton.getY();
@@ -136,12 +141,13 @@ public class XMLExporterNodeMark extends IXMLExporter {
 		pathElement.setAttribute(ATTR_POINT_XPOS, String.valueOf(x));
 		pathElement.setAttribute(ATTR_POINT_YPOS, String.valueOf(y));
 		pathElement
-				.setAttribute(ATTR_POINT_TIME, SivaTime.getSivaXMLTime(time));
+				.setAttribute(ATTR_POINT_TIME, SivaTime.getSivaXMLTime(time
+						- sceneStartTime));
 		return pathElement;
 	}
 
 	private Element createEllipsePathElement(Document doc,
-			EllipseShape shapeEllipse) {
+			EllipseShape shapeEllipse, long sceneStartTime) {
 		Element pathElement = doc.createElement(TAG_ELLIPSE_PATH);
 		float x = shapeEllipse.getX();
 		float y = shapeEllipse.getY();
@@ -151,18 +157,20 @@ public class XMLExporterNodeMark extends IXMLExporter {
 		pathElement.setAttribute(ATTR_POINT_XPOS, String.valueOf(x));
 		pathElement.setAttribute(ATTR_POINT_YPOS, String.valueOf(y));
 		pathElement
-				.setAttribute(ATTR_POINT_TIME, SivaTime.getSivaXMLTime(time));
+				.setAttribute(ATTR_POINT_TIME, SivaTime.getSivaXMLTime(time 
+						- sceneStartTime));
 		pathElement.setAttribute(ATTR_ELL_LENGTHA, String.valueOf(lengthA));
 		pathElement.setAttribute(ATTR_ELL_LENGTHB, String.valueOf(lengthB));
 		return pathElement;
 	}
 
 	private Element createPolygonChainElement(Document doc,
-			PolygonShape shapePolygon) {
+			PolygonShape shapePolygon, long sceneStartTime) {
 		Element chainElement = doc.createElement(TAG_POLYGON_CHAIN);
 		long time = shapePolygon.getTime();
 		chainElement.setAttribute(ATTR_POINT_TIME,
-				SivaTime.getSivaXMLTime(time));
+				SivaTime.getSivaXMLTime(time
+						- sceneStartTime));
 		for (Position pos : shapePolygon.getVertices()) {
 			Element verticesElement = doc
 					.createElement(TAG_POLYGON_CHAIN_VERTICES);

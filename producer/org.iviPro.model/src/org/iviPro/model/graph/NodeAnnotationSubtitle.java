@@ -70,4 +70,9 @@ public class NodeAnnotationSubtitle extends INodeAnnotationLeaf {
 	public boolean isDependentOn(IAbstractBean object) {
 		return object != null && object == subtitle;
 	}
+
+	@Override
+	public String getBeanTag() {
+		return "Subtitle annotation";
+	}
 }

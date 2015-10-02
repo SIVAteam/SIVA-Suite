@@ -14,9 +14,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.Project;
+import org.iviPro.model.graph.DependentConnection;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IConnection;
 import org.iviPro.model.graph.IGraphNode;
+import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeScene;
 
 /**
@@ -33,7 +36,10 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 	 * Szenen-Graph. Diese muessen ebenfalls geloescht werden.
 	 */
 	private List<GraphDependency> graphDependencies;
-
+	protected List<INodeAnnotationLeaf> globalAnnoDependencies;
+	protected List<IAbstractBean> dependencies;
+	protected List<IAbstractBean> references;
+	
 	/**
 	 * Das Projekt, wo nach abhaengigen Objekten gesucht wird.
 	 */
@@ -73,38 +79,58 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 			throws ExecutionException {
 		// Diese Liste enthaelt die urspruenglich zu loeschenden Objekte,
 		// so wie sie die implementierende Klasse zur Verfuegung stellt.
-		List<IAbstractBean> originalObjectsToDelete = getObjectsToDelete();
-
-		// Diese Liste enthaelt zusaetzlich noch alle abhaengigen Objekte
-		// die mitgeloesch werden mussen.
-		// Derzeit ist beides das gleiche, da objectsToDelete nirgends
-		// erweitert wird.
-		List<IAbstractBean> objectsToDelete = new ArrayList<IAbstractBean>(
-				originalObjectsToDelete);
-		this.graphDependencies = calcGraphDependencies(objectsToDelete);
-
-		// Pruefen ob Abhaengigkeiten vorhanden sind. Es duerfen keine
-		// Graph-Abhaengigkeiten vorhanden sein und in objectsToDelete darf nur
-		// das Medien-Objekt selbst drin sein.
-		if (graphDependencies.isEmpty()) {
-			// Keine Abhaengigkeiten => Gleich loeschen
+		List<IAbstractBean> objectsToDelete  = getObjectsToDelete();
+		graphDependencies = calcGraphDependencies(objectsToDelete);
+		globalAnnoDependencies = calcGlobalDependencies(objectsToDelete);
+		dependencies = (calcAdditionalDependencies(objectsToDelete));
+		dependencies.addAll(globalAnnoDependencies);
+		references = calcAdditionalReferences(objectsToDelete);
+		
+		if (graphDependencies.isEmpty() && dependencies.isEmpty() && references.isEmpty()) {
 			return redo(monitor, info);
 		} else {
 			// Abhaengigkeiten vorhanden => Vorher fragen ob diese geloescht
 			// werden duerfen.
 			StringBuilder listOfDependencies = new StringBuilder();
-			for (IAbstractBean objectToDelete : objectsToDelete) {
-				if (!originalObjectsToDelete.contains(objectToDelete)) {
-					listOfDependencies.append(objectToDelete);
-					listOfDependencies.append("\n"); //$NON-NLS-1$
+			if (!graphDependencies.isEmpty() || !dependencies.isEmpty()) {
+				listOfDependencies.append(Messages.IAbstractDeleteOperation_QuestionDeleteDependentObj_Dependencies)
+				.append("\n");				
+				for (GraphDependency dependency : graphDependencies) {
+					if (!dependency.isSubDependency()) {
+						IGraphNode node = dependency.getNode();
+						listOfDependencies.append("- ").append(node.getBeanTag())//$NON-NLS-1$
+						.append(": ") //$NON-NLS-1$
+						.append(node.getTitle())
+						.append(" (id: ") //$NON-NLS-1$
+						.append(node.getNodeID())
+						.append(")");
+												
+						if (node instanceof INodeAnnotation) {
+							NodeScene parentScene = ((INodeAnnotation)node).getParentScene();
+							if (parentScene != null) {
+								listOfDependencies.append(" [Scene: ")
+								.append(parentScene.getTitle())
+								.append(" (id: ")
+								.append(parentScene.getNodeID())
+								.append(")]");
+							}
+						}						
+						listOfDependencies.append("\n"); //$NON-NLS-1$
+					}
+				}
+				for (IAbstractBean bean : dependencies) {
+					addDependencyEntry(bean, listOfDependencies);
 				}
 			}
-			for (GraphDependency dependency : graphDependencies) {
-				if (dependency.getNode() instanceof NodeScene) {
-					listOfDependencies.append(dependency.getNode().getTitle() + "\n"); //$NON-NLS-1$
+									
+			if (!references.isEmpty()) {
+				listOfDependencies.append("\n").append(Messages.IAbstractDeleteOperation_QuestionDeleteDependentObj_Uses)//$NON-NLS-1$
+				.append("\n"); //$NON-NLS-1$
+				for (IAbstractBean bean : references) {
+					addDependencyEntry(bean, listOfDependencies);
 				}
 			}
-
+			
 			MessageBox messageBox = new MessageBox(Display.getCurrent()
 					.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 			messageBox
@@ -115,7 +141,7 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 							+ Messages.IAbstractDeleteOperation_QuestionDeleteDependentObj_Part2);
 			messageBox
 					.setText(Messages.IAbstractDeleteOperation_QuestionDeleteDependentObj_Title);
-
+			
 			int option = messageBox.open();
 			// Fortfahren, wenn Benutzer der Loeschung abhaengiger Objekte
 			// zugestimmt hat, ansonsten abbrechen
@@ -141,11 +167,68 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 		Set<IGraphNode> dependentNodes = graph.searchDependentNodes(
 				objectsToDelete, true);
 		for (IGraphNode node : dependentNodes) {
-			dependencies.add(new GraphDependency(node));
+			boolean subDependency = false;
+			for (IConnection conn : graph.getConnectionsByTarget(node)) {
+				if (conn instanceof DependentConnection 
+						&& dependentNodes.contains(conn.getSource())){
+					subDependency = true;
+				}
+			}
+			dependencies.add(new GraphDependency(node, subDependency));
 		}
 		return dependencies;
 	}
-
+	
+	/**
+	 * Returns global annotations depending on the given list of beans.
+	 * @param objectsToDelete list of beans
+	 * @return list of global annotations depending on the beans
+	 */
+	private final List<INodeAnnotationLeaf> calcGlobalDependencies(List<IAbstractBean> objectsToDelete) {
+		List<INodeAnnotationLeaf> dependentAnnotations = new ArrayList<INodeAnnotationLeaf>();
+		for (IAbstractBean object : objectsToDelete) {
+			for (INodeAnnotationLeaf annotation : project.getGlobalAnnotations()) {
+				if (annotation.isDependentOn(object)) {
+					dependentAnnotations.add(annotation);
+				}
+			}
+		}
+		return dependentAnnotations;
+	}
+	
+	private void addDependencyEntry(IAbstractBean bean, StringBuilder listOfDependencies) {
+		listOfDependencies.append("- ") //$NON-NLS-1$
+			.append(bean.getBeanTag())
+			.append(": ") //$NON-NLS-1$
+			.append(bean.getTitle());
+		if (bean instanceof IGraphNode) {
+			IGraphNode node = (IGraphNode)bean;
+			listOfDependencies.append(" (id: ") //$NON-NLS-1$
+				.append(node.getNodeID())
+				.append(")"); //$NON-NLS-1$
+			if (node instanceof INodeAnnotationLeaf) {
+				listOfDependencies.append(" [global]");
+			}
+		}
+		listOfDependencies.append("\n"); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Returns a list of subclass specific dependencies for the given list of objects.
+	 * <p/><b>Note:</b> may not return <code>null</code>
+	 * @param objectsToDelete objects which are deleted
+	 * @return list of dependencies of the given objects - may not be null
+	 */
+	protected abstract List<IAbstractBean> calcAdditionalDependencies(List<IAbstractBean> objectsToDelete);
+	
+	/**
+	 * Returns a list of subclass specific references for the given list of objects.
+	 * <p/><b>Note:</b> may not return <code>null</code>
+	 * @param objectsToDelete objects which are deleted
+	 * @return list of references to the given objects
+	 */
+	protected abstract List<IAbstractBean> calcAdditionalReferences(List<IAbstractBean> objectsToDelete);
+			
 	protected abstract boolean deleteObjects();
 
 	protected abstract void restoreObjects();
@@ -160,6 +243,9 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 			// Kanten muessen nicht extra geloescht werden, da sie automatisch
 			// bei removeNode() mit geloescht werden.
 			graph.removeNode(dependency.getNode());
+		}
+		for (INodeAnnotationLeaf anno : globalAnnoDependencies) {
+			project.getGlobalAnnotations().remove(anno);
 		}
 		// .. dann die eigentlich zu loeschenden Objekte loeschen
 		// falls es schief geht oder der User entscheidet abzubrechen (z.B. weil
@@ -177,6 +263,9 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 		// Erst wieder die urspruenglichen Basis-Objekte wiederherstellen...
 		restoreObjects();
 		recreateDependencies();
+		for (INodeAnnotationLeaf anno : globalAnnoDependencies) {
+			project.getGlobalAnnotations().add(anno);
+		}
 		return Status.OK_STATUS;
 	}
 
@@ -218,14 +307,16 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 		private final IGraphNode node;
 		private final List<IConnection> incomingConnections;
 		private final List<IConnection> outgoingConnections;
+		private final boolean subDependency;
 
-		GraphDependency(IGraphNode node) {
+		GraphDependency(IGraphNode node, boolean subDependency) {
 			this.node = node;
 			this.graph = node.getGraph();
 			this.incomingConnections = new ArrayList<IConnection>();
 			this.outgoingConnections = new ArrayList<IConnection>();
 			outgoingConnections.addAll(graph.getConnectionsBySource(node));
 			incomingConnections.addAll(graph.getConnectionsByTarget(node));
+			this.subDependency = subDependency;
 		}
 
 		Graph getGraph() {
@@ -243,6 +334,14 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 		List<IConnection> getOutgoingConnections() {
 			return outgoingConnections;
 		}
+		
+		/**
+		 * Returns whether or not this dependency is already covered by another dependency.
+		 * @return true if this is just a sub dependency of another dependency
+		 */
+		boolean isSubDependency() {
+			return subDependency;
+		}
 
 		@Override
 		public boolean equals(Object obj) {
@@ -253,5 +352,4 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 		}
 
 	}
-
 }

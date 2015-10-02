@@ -1,5 +1,6 @@
 package org.iviPro.newExport.descriptor.xml.objects;
 
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.Project;
 import org.iviPro.model.TocItem;
 import org.iviPro.model.graph.AbstractNodeSelection;
@@ -33,7 +34,7 @@ public class ExporterFactory {
 	 * @throws ExportException
 	 *             If there is no exporter defined for the submitted object.
 	 */
-	public static IXMLExporter createExporter(Object objectToExport)
+	public static IXMLExporter createExporter(IAbstractBean objectToExport)
 			throws ExportException {
 		if (objectToExport instanceof Project) {
 			return new XMLExporterProject((Project)objectToExport);

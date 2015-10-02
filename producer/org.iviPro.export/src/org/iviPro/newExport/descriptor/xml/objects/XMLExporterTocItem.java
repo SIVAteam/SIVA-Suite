@@ -7,6 +7,7 @@ import org.iviPro.model.Project;
 import org.iviPro.model.TocItem;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -23,7 +24,7 @@ class XMLExporterTocItem extends IXMLExporter {
 	}
 
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 		// Das zu exportierende Toc-Item
@@ -31,7 +32,8 @@ class XMLExporterTocItem extends IXMLExporter {
 
 		// Eintrag fuer diesen Punkt des Inhaltsverzeichnis erstellen
 		Element tocNode = doc.createElement(TAG_TOC_CONTENTS);
-		String tocNodeLabelID = createTitleLabels(tocItem, doc, idManager);
+		String tocNodeLabelID = createLabel(tocItem, doc, idManager, 
+				tocItem.getTitles(), LabelType.TITLE);
 		tocNode.setAttribute(ATTR_REF_RES_ID, tocNodeLabelID);
 		String tocNodeID = idManager.getID(tocItem);
 		tocNode.setAttribute(ATTR_TOC_CONTENTSNODEID, tocNodeID);

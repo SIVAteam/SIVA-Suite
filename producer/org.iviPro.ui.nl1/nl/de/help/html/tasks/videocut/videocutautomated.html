@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="../../../help.css" CHARSET="ISO-8859-1" TYPE="text/css">
+	<title>Automatischer Videoschnitt</title>
+</head>
+
+<body>
+<h1>Automatischer Videoschnitt</h1>
+<p align="justify">
+Bei der automatischen Shoterkennung werden die Shotgrenzen 
+(Shotgrenze = Wechsel der Kameraperspektive) des Videos ermittelt. 
+Shotgrenzen können harte Schnitte ohne Übergang zwischen zwei 
+aufeinanderfolgenden Frames, Überblendungen oder andere Übergangseffekte sein. 
+Die Shotgrenzen werden anhand eines Vergleichs extrahierter Bildmerkmale 
+aufeinanderfolgender Frames ermittelt. Große Unterschiede deuten meist auf 
+ein Shotgrenze hin. Die so ermittelten Shotgrenzen können dann zur Definition 
+von Szenen verwendet werden.
+<br><br>
+Im SIVA Producer werden der Scalable Color Descriptor und Edge Histogram Descriptor 
+für diesen Vergleich herangezogen. Die berechneten Unterschiede werden im nächsten 
+Schritt mit einer Threshholdfunktion einem experimentell festgelegten Schwellwert 
+gegenüber gestellt, um tatsächliche Schnitte im Video von schnellen Bildwechseln 
+unterscheiden zu können. Die gefundenen Übergänge zwischen zwei Shots werden nun 
+durch ihre Grenzen definiert und gespeichert. Zwei aufeinanderfolgende Shotgrenzen 
+definieren jeweils einen Shot, der als vorläufige Szene gespeichert wird. 
+<br><br>
+Der automatische Videoschnitt wird durch Auswahl von "Automatische Szenen-Erkennung" 
+im Medien-Menü gestartet.
+</p>
+</body>
+</html>

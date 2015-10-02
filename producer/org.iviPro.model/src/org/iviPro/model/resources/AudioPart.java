@@ -121,4 +121,9 @@ public class AudioPart extends IAbstractBean implements IResource {
 	public List<LocalizedElement> getLocalizedContents() {
 		return new ArrayList<LocalizedElement>(audio.getFiles());
 	}
+	
+	@Override
+	public String getBeanTag() {
+		return "Audio part";
+	}
 }

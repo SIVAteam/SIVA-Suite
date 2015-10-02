@@ -17,7 +17,7 @@ import org.iviPro.model.Project;
  *
  */
 public class NodeCondSelectionControl extends AbstractNodeSelectionControl {
-	
+		
 	private List<NodeScene> prerequisiteScenes = new ArrayList<NodeScene>();
 		
 	public NodeCondSelectionControl(LocalizedString title, Project project) {
@@ -49,4 +49,20 @@ public class NodeCondSelectionControl extends AbstractNodeSelectionControl {
 	public void setPrequisiteScenes(List<NodeScene> prerequisiteScenes) {
 		this.prerequisiteScenes = prerequisiteScenes;
 	}
+
+	@Override
+	public String getBeanTag() {
+		return "Conditional control";
+	}
+	
+	@Override
+	public boolean validateNode() {
+		if (getPrerequisiteScenes().isEmpty()) {
+			setValidationError(getBeanTag() + ": " + getTitle() + " (id: " + getNodeID() + ")\n\n" +
+					"No condition has been defined!" );
+			return false;
+		}
+		return super.validateNode();
+	}
+	
 }

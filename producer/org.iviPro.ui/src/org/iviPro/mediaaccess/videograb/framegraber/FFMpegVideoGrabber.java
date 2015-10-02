@@ -11,12 +11,12 @@ import org.apache.log4j.Logger;
 import org.iviPro.mediaaccess.MediaAccessException;
 import org.iviPro.mediaaccess.StreamHandler;
 import org.iviPro.mediaaccess.videograb.FrameGrabingJob;
-import org.iviPro.mediaaccess.videograb.interfaces.I_FrameGrabber;
+import org.iviPro.mediaaccess.videograb.interfaces.FrameGrabber;
 import org.iviPro.model.resources.Video;
 import org.iviPro.utils.ImageHelper;
 import org.iviPro.utils.PathHelper;
 
-public class FFMpegVideoGrabber implements I_FrameGrabber {
+public class FFMpegVideoGrabber implements FrameGrabber {
 	
 	private static final Logger logger = Logger.getLogger(FFMpegVideoGrabber.class);
 
@@ -60,10 +60,9 @@ public class FFMpegVideoGrabber implements I_FrameGrabber {
 			time -= oneSec;
 		}
 		float timeInSeconds = time / 1000000000.0f;
-		String timeString = String.format(Locale.ENGLISH, "%.3f",  timeInSeconds);		 //$NON-NLS-1$
-				
-		//String dimString = (int) video.getDimension().getWidth() + "x" + (int) video.getDimension().getHeight();
-		String cmd = ffmpeg + " -ss " + timeString + " -i \"" + inputFilename + "\"" + " -vframes 1 -f mjpeg " + outputFilename; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		String timeString = String.format(Locale.ENGLISH, "%.3f",  timeInSeconds); //$NON-NLS-1$
+		String cmd = ffmpeg + " -y -ss " + timeString + " -i \"" + inputFilename //$NON-NLS-1$ //$NON-NLS-2$
+				+ "\" -vframes 1 -f mjpeg \"" + outputFilename + "\""; //$NON-NLS-1$ //$NON-NLS-2$
 		
 		// holen und Ausführen der Runtime
 		Runtime rt = Runtime.getRuntime();

@@ -35,7 +35,7 @@ public class MediaPlayerWidget {
 	private int height = 240;
 
 	// der MediaPlayer
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	// das Composite für die Darstellung
 	private Composite container;
@@ -48,7 +48,7 @@ public class MediaPlayerWidget {
 
 	private SivaSlider slider;
 
-	public MediaPlayerWidget(Composite parent, int style, I_MediaPlayer mp,
+	public MediaPlayerWidget(Composite parent, int style, MediaPlayer mp,
 			boolean showControls, boolean supportMarkPoints) {
 		this.mp = mp;
 		this.showControls = showControls;
@@ -56,7 +56,7 @@ public class MediaPlayerWidget {
 		initMediaPlayerWidget(parent, style);
 	}
 
-	public MediaPlayerWidget(Composite parent, int style, I_MediaPlayer mp,
+	public MediaPlayerWidget(Composite parent, int style, MediaPlayer mp,
 			int height, boolean showControls, boolean supportMarkPoints) {
 		this.mp = mp;
 		this.height = height;
@@ -86,7 +86,7 @@ public class MediaPlayerWidget {
 			adjustAspect();
 			mp.createVisualPart(container, 0, 0, width, height);
 		}
-
+		
 		// erstelle die Video Controls Play Button etc.
 		if (showControls) {
 			createMediaControl();
@@ -365,7 +365,7 @@ public class MediaPlayerWidget {
 								Icons.MEDIAPLAYER_PAUSE);
 					}
 				}
-
+				
 				slider.setSashes(event);
 
 				// setze die markierten Punkte

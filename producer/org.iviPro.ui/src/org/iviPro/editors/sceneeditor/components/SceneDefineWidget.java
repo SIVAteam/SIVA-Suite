@@ -2,6 +2,8 @@ package org.iviPro.editors.sceneeditor.components;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
@@ -10,6 +12,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -18,18 +22,24 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.iviPro.actions.nondestructive.ProjectSaveAction;
 import org.iviPro.application.Application;
+import org.iviPro.editors.PreviewComponent;
+import org.iviPro.editors.TimeSelector;
+import org.iviPro.editors.annotationeditor.AnnotationEditor;
 import org.iviPro.editors.common.BeanNameGenerator;
 import org.iviPro.editors.common.EditTime;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.editors.sceneeditor.DefineScenesEditor;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.editors.sceneeditor.SceneEditor;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.player.controls.SivaScale;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.operations.IAbstractOperation;
@@ -39,12 +49,15 @@ import org.iviPro.theme.Icons;
 import org.iviPro.utils.ImageHelper;
 import org.iviPro.utils.SivaTime;
 
-public class SceneDefineWidget extends Composite {
+public class SceneDefineWidget extends Composite implements SivaEventConsumerI, PropertyChangeListener {
 
 	private static Logger logger = Logger.getLogger(SceneDefineWidget.class);
+	
+	private static final int MAX_PREVIEW_WIDTH = 640;
+	private static final int MAX_PREVIEW_HEIGHT = 360;
 
 	// der MediaPlayer
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	// die zum SceneDefineWidget gehörende Scene
 	private final Scene scene;
@@ -64,28 +77,35 @@ public class SceneDefineWidget extends Composite {
 
 	// Eingabefeld für Keywords
 	private Text tmpKeywords;
+	
+	/**
+	 * Absolute time of the video frame which is used as thumbnail for the currently 
+	 * edited scene.
+	 */
+	private long tmpThumbTime;
 
 	// der Szeneneditor (wird für das neu anlegen einer Szene benötigt
-	private final DefineScenesEditor editor;
-
-	private final Composite parent;
+	private final SceneEditor editor;
+	
+	private PreviewComponent thumbPreview;
 
 	public SceneDefineWidget(Composite parent, int style, CTabItem item,
-			final Scene scene, final I_MediaPlayer mp, DefineScenesEditor editor) {
+			final Scene scene, final MediaPlayer mp, SceneEditor editor) {
 
 		super(parent, style);
-		this.parent = parent;
 
 		// setze den Movieplayer
 		this.mp = mp;
 		this.item = item;
 		this.scene = scene;
+		this.scene.addPropertyChangeListener(this);
 		this.editor = editor;
 
 		tmpStart = new SivaTime(scene.getStart() - mp.getStartTime().getNano());
 		tmpStart.setFrame(mp.getFrameForNanos(scene.getStart() - mp.getStartTime().getNano()));
 		tmpEnd = new SivaTime(scene.getEnd() - mp.getStartTime().getNano());
 		tmpEnd.setFrame(mp.getFrameForTime(tmpEnd));
+		tmpThumbTime = scene.getThumbnail().getTime();
 
 		// setze das Layout und den Inhalt
 		// das sdWidget soll so weit oben wie möglich und Centered sein
@@ -93,9 +113,6 @@ public class SceneDefineWidget extends Composite {
 		scwGrid.widthHint = 620;
 		setLayoutData(scwGrid);
 
-		// setze 3-spaltiges GridLayout für die SceneDefine Komponenten
-		GridLayout sdWLayout = new GridLayout(3, false);
-		setLayout(sdWLayout);
 		createContent();
 	}
 
@@ -103,9 +120,11 @@ public class SceneDefineWidget extends Composite {
 	 * erstellt den Content
 	 */
 	private void createContent() {
+		this.setLayout(new GridLayout(2, false));
+		
 		Composite scaleComp = new Composite(this, SWT.CENTER);
 		GridData scaleCompGD = new GridData(SWT.FILL, SWT.FILL, true, false);
-		scaleCompGD.horizontalSpan = 3;
+		scaleCompGD.horizontalSpan = 2;
 		scaleComp.setLayoutData(scaleCompGD);
 
 		GridLayout scaleCompGL = new GridLayout(2, false);
@@ -114,7 +133,7 @@ public class SceneDefineWidget extends Composite {
 
 		// Skala erstellen, jede Szene besitzt eine eigene Skala
 		final SivaScale scale = new SivaScale(scaleComp, mp.getDuration()
-				.getNano(), 538, 40, true, true, true);
+				.getNano(), 520, 40, true, true, true);
 		scale.setToolTip(Messages.SceneDefineWidgetScaleTooltip);
 
 		// Container für die Buttons
@@ -181,21 +200,17 @@ public class SceneDefineWidget extends Composite {
 			}
 		});
 
-		Composite defineComp = new Composite(this, SWT.LEFT | SWT.BORDER);
-		GridLayout layoutdefineComp = new GridLayout(2, true);
+		// Component for scene settings (title, keywords..)
+		Composite defineComp = new Composite(this, SWT.BORDER);
+		GridLayout layoutdefineComp = new GridLayout(1, false);
 		defineComp.setLayout(layoutdefineComp);
+		defineComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
-		Composite nameComposite = new Composite(defineComp, SWT.CENTER);
-		GridLayout nameCompositeGL = new GridLayout(1, false);
-		nameCompositeGL.marginWidth = 0;
-		nameComposite.setLayout(nameCompositeGL);
-
-		Group groupName = new Group(nameComposite, SWT.CENTER);
+		Group groupName = new Group(defineComp, SWT.NONE);
+		groupName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		groupName.setLayout(new GridLayout(1, false));
 		groupName.setText(Messages.SceneDefineWidget_Label_SceneName);
-		GridData groupNameGD = new GridData();
-		groupNameGD.horizontalSpan = 1;
-		groupName.setLayoutData(groupNameGD);
+		
 		tmpTitle = new Text(groupName, SWT.SINGLE | SWT.BORDER);
 		tmpTitle.setText(scene.getTitle());
 		GridData tmpTitleGD = new GridData();
@@ -212,37 +227,38 @@ public class SceneDefineWidget extends Composite {
 			}
 		});
 
-	
-
 		// erstelle das Composite zum Editieren der Zeit
 		// der EditTime Editor arbeitet mit der relativen Zeit zur Szene
 		// => die Startzeit der Szene muss noch abgezogen werden
 		Group editTimeGroup = new Group(defineComp, SWT.NONE);
 		editTimeGroup.setLayout(new GridLayout(1, false));
+		editTimeGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		editTimeGroup.setText(Messages.SceneDefineWidget_PositionInput_inTime);
 		
 		final EditTime editTime = new EditTime(editTimeGroup, SWT.CENTER,
 				tmpStart, tmpEnd, mp.getDuration().getNano());		
 		GridData editTimeGD = new GridData(225,70);
 		editTime.setLayoutData(editTimeGD);
-
 		
+		Group editFrameGroup = new Group(defineComp, SWT.NONE);
+		editFrameGroup.setLayout(new GridLayout(1, false));
+		editFrameGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		editFrameGroup.setText(Messages.SceneDefineWidget_PositionInput_InFrames);
+		final FrameCutWidget frameCut = new FrameCutWidget(editFrameGroup,
+				SWT.None, tmpStart, tmpEnd, mp);
+		GridData editFrameGd = new GridData(225,55);
+		frameCut.setLayoutData(editFrameGd);
 		
 		// Eingabefeld für die Keywords
-		Composite keywordsComposite = new Composite(defineComp, SWT.CENTER);
-		GridLayout keywordsCompositeGL = new GridLayout(1, false);
-		keywordsCompositeGL.marginWidth = 0;
-		keywordsComposite.setLayout(keywordsCompositeGL);
-		GridData keywordsCompositeGD = new GridData();
-		keywordsCompositeGD.verticalAlignment = SWT.TOP;
-		keywordsComposite.setLayoutData(keywordsCompositeGD);
-		Group kwGroup = new Group(keywordsComposite, SWT.CENTER);
+		Group kwGroup = new Group(defineComp, SWT.NONE);
 		kwGroup.setLayout(new GridLayout(1, false));
+		kwGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		kwGroup.setText(Messages.SceneDefineWidget_Label_Keywords);
 		kwGroup.setToolTipText(Messages.SceneDefineWidget_Label_KeywordsTooltip);
 		tmpKeywords = new Text(kwGroup, SWT.V_SCROLL | SWT.MULTI | SWT.WRAP
 				| SWT.BORDER);
-		GridData tmpKeywordsGD = new GridData(180, 50);
+		GridData tmpKeywordsGD = new GridData(SWT.FILL, SWT.FILL, true, false);
+		tmpKeywordsGD.heightHint = 50;
 		tmpKeywords.setLayoutData(tmpKeywordsGD);
 		tmpKeywords.setText(scene.getKeywords());
 		tmpKeywords.addKeyListener(new KeyAdapter() {
@@ -255,14 +271,38 @@ public class SceneDefineWidget extends Composite {
 			}
 		});
 		
-		Group editFrameGroup = new Group(defineComp, SWT.NONE);
-		editFrameGroup.setLayout(new GridLayout(1, false));
-		editFrameGroup.setText(Messages.SceneDefineWidget_PositionInput_InFrames);
-		final FrameCutWidget frameCut = new FrameCutWidget(editFrameGroup,
-				SWT.None, tmpStart, tmpEnd, mp);
-		GridData editFrameGd = new GridData(225,55);
-		frameCut.setLayoutData(editFrameGd);
-
+		// Thumbnail editor
+		Composite thumbEditor = new Composite(this, SWT.NONE);
+		thumbEditor.setLayout(new GridLayout(1, false));
+		GridData editorGD = new GridData(SWT.CENTER, SWT.CENTER, true, true);
+		thumbEditor.setLayoutData(editorGD);
+						
+		thumbPreview = new PreviewComponent(thumbEditor, SWT.NONE,
+				MAX_PREVIEW_WIDTH, MAX_PREVIEW_HEIGHT);
+		thumbPreview.setLabel(Messages.SceneDefineWidget_Label_Preview);
+		thumbPreview.setPreview(scene, tmpThumbTime);		
+		
+		thumbPreview.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseUp(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseDown(MouseEvent e) {
+				TimeSelector selector = new TimeSelector(scene.getVideo(), 
+						MAX_PREVIEW_WIDTH, MAX_PREVIEW_HEIGHT,
+						tmpStart.getNano(), tmpEnd.getNano());
+				selector.addSivaEventConsumer(SceneDefineWidget.this);
+			}
+			
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+			}
+		});
+		
+					
+		// Add component listeners
 		cutStart.addListener(SWT.MouseDown, new Listener() {
 			public void handleEvent(Event e) {
 				currentMediaTime = mp.getMediaTime();
@@ -275,6 +315,11 @@ public class SceneDefineWidget extends Composite {
 									org.iviPro.editors.sceneeditor.components.Messages.SceneDefineWidget_Start);
 				} else {
 					tmpStart = mp.getMediaTime();
+					if (tmpStart.getNano() > tmpThumbTime) {
+						tmpThumbTime = tmpStart.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
+					tmpStart.setFrame(mp.getFrameForTime(tmpStart));
 					SivaEvent event = new SivaEvent(null,
 							SivaEventType.STARTTIME_CHANGED, mp.getMediaTime());
 					scale.setSashes(event);
@@ -301,13 +346,17 @@ public class SceneDefineWidget extends Composite {
 									org.iviPro.editors.sceneeditor.components.Messages.SceneDefineWidget_End);
 				} else {
 					tmpEnd = mp.getMediaTime();
+					if (tmpEnd.getNano() < tmpThumbTime) {
+						tmpThumbTime = tmpEnd.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					SivaEvent event = new SivaEvent(null,
 							SivaEventType.ENDTIME_CHANGED, mp.getMediaTime());
 					scale.setSashes(event);
 					editTime.setValue(event);
 					frameCut.setValue(event);
 					SivaEvent forwardEvent = new SivaEvent(null,
-							SivaEventType.MARK_POINT_START, mp.getMediaTime());
+							SivaEventType.MARK_POINT_END, mp.getMediaTime());
 					mp.forwardEvent(forwardEvent);
 				}
 			}
@@ -320,6 +369,10 @@ public class SceneDefineWidget extends Composite {
 				if (event.getEventType()
 						.equals(SivaEventType.STARTTIME_CHANGED)) {
 					tmpStart = event.getTime();
+					if (tmpStart.getNano() > tmpThumbTime) {
+						tmpThumbTime = tmpStart.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					tmpStart.setFrame(mp.getFrameForTime(tmpStart));
 					mp.setMediaTime(event);
 					scale.setSashes(event);
@@ -327,6 +380,10 @@ public class SceneDefineWidget extends Composite {
 				} else if (event.getEventType().equals(
 						SivaEventType.ENDTIME_CHANGED)) {
 					tmpEnd = event.getTime();
+					if (tmpEnd.getNano() < tmpThumbTime) {
+						tmpThumbTime = tmpEnd.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					mp.setMediaTime(event);
 					scale.setSashes(event);
 					frameCut.setValue(event);
@@ -343,6 +400,10 @@ public class SceneDefineWidget extends Composite {
 				if (event.getEventType()
 						.equals(SivaEventType.STARTTIME_CHANGED)) {
 					tmpStart = event.getTime();
+					if (tmpStart.getNano() > tmpThumbTime) {
+						tmpThumbTime = tmpStart.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					tmpStart.setFrame(mp.getFrameForTime(tmpStart));
 					mp.setMediaTime(event);
 					scale.setSashes(event);
@@ -350,6 +411,10 @@ public class SceneDefineWidget extends Composite {
 				} else if (event.getEventType().equals(
 						SivaEventType.ENDTIME_CHANGED)) {
 					tmpEnd = event.getTime();
+					if (tmpEnd.getNano() < tmpThumbTime) {
+						tmpThumbTime = tmpEnd.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					mp.setMediaTime(event);
 					scale.setSashes(event);
 					editTime.setValue(event);
@@ -369,6 +434,10 @@ public class SceneDefineWidget extends Composite {
 				if (event.getEventType()
 						.equals(SivaEventType.STARTTIME_CHANGED)) {
 					tmpStart = event.getTime();
+					if (tmpStart.getNano() > tmpThumbTime) {
+						tmpThumbTime = tmpStart.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					tmpStart.setFrame(mp.getFrameForTime(tmpStart));
 					forwardEvent = new SivaEvent(null,
 							SivaEventType.MARK_POINT_START, event.getTime());
@@ -377,6 +446,10 @@ public class SceneDefineWidget extends Composite {
 				} else if (event.getEventType().equals(
 						SivaEventType.ENDTIME_CHANGED)) {
 					tmpEnd = event.getTime();
+					if (tmpEnd.getNano() < tmpThumbTime) {
+						tmpThumbTime = tmpEnd.getNano();
+						thumbPreview.setPreview(scene, tmpThumbTime);
+					}
 					forwardEvent = new SivaEvent(null,
 							SivaEventType.MARK_POINT_END, event.getTime());
 					editTime.setValue(event);
@@ -417,6 +490,7 @@ public class SceneDefineWidget extends Composite {
 					tmpTitle.setText(scene.getTitle());
 					tmpStart = new SivaTime(scene.getStart()
 							- mp.getStartTime().getNano());
+					tmpThumbTime = scene.getThumbnail().getTime();
 					tmpStart.setFrame(mp.getFrameForTime(tmpStart));
 					tmpEnd = new SivaTime(scene.getEnd()
 							- mp.getStartTime().getNano());
@@ -437,12 +511,13 @@ public class SceneDefineWidget extends Composite {
 
 		SivaEvent startEvent = new SivaEvent(null,
 				SivaEventType.STARTTIME_CHANGED, tmpStart);
-		scale.setSashes(startEvent);
 		SivaEvent endEvent = new SivaEvent(null, SivaEventType.ENDTIME_CHANGED,
 				tmpEnd);
+		// Need to set end sash first. Otherwise start time would be later than
+		// end time which would be ignored by setSash().
 		scale.setSashes(endEvent);
+		scale.setSashes(startEvent);
 		scale.addMarkPoint(tmpStart.getNano(), ""); //$NON-NLS-1$
-
 		markDirty();
 	}
 
@@ -454,7 +529,7 @@ public class SceneDefineWidget extends Composite {
 	public Scene getScene() {
 		return this.scene;
 	}
-
+	
 	/*
 	 * aktualisiert den Tabnamen wird bei jeder Änderungsaktion im Editor
 	 * aufgerufen
@@ -498,6 +573,9 @@ public class SceneDefineWidget extends Composite {
 		if (!scene.getKeywords().equals(tmpKeywords.getText())) {
 			return true;
 		}
+		if (scene.getThumbnail().getTime() != tmpThumbTime) {
+			return true;
+		}
 		return false;
 	}
 
@@ -505,8 +583,45 @@ public class SceneDefineWidget extends Composite {
 	 * speichert die Szene ab
 	 */
 	public void saveScene() {
+		
+		/* If timings of the scene changed, close any related open annotation 
+		 * editors first to avoid updating all of the annotation editor gui 
+		 * elements. This is a workaround which may be substituted by proper 
+		 * gui updating someday. */
+		if (!scene.getStart().equals(tmpStart.addTime(mp.getStartTime()))
+				|| !scene.getEnd().equals(tmpEnd.addTime(mp.getStartTime()))) {
+			List<IEditorPart> openEditors = new ArrayList<IEditorPart>();
+			for (IEditorReference editorRef : PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().getEditorReferences()) {
+				IEditorPart editor = editorRef.getEditor(false);
+				if (editor instanceof AnnotationEditor) {
+					if (scene == ((AnnotationEditor)editor).getScene()) {
+						openEditors.add(editor);
+					}
+				}
+			}	
+			if (!openEditors.isEmpty()) {
+				MessageBox messageBox = new MessageBox(Display.getCurrent()
+						.getActiveShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				messageBox.setMessage(Messages.SceneDefineWidget_MessageBox_CloseAnnoEditors);
+				if (messageBox.open() == SWT.OK) {
+					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+					if (window != null) {
+						for (IEditorPart editor : openEditors) {
+							window.getActivePage().activate(editor);
+							if (!window.getActivePage().closeEditor(editor, true)) {
+								return;
+							}
+						}
+					}
+				} else {
+					return;
+				}
+			}
+		}
+		
 		logger.debug("Creating/Changing scene: " + tmpTitle.getText()); //$NON-NLS-1$
-
+		
 		BeanNameGenerator nameGen = new BeanNameGenerator(tmpTitle.getText(),
 				scene, scene.getVideo().getScenes(), ""); //$NON-NLS-1$
 		String newTitle = nameGen.generate();
@@ -518,7 +633,7 @@ public class SceneDefineWidget extends Composite {
 						newTitle, new SivaTime(tmpStart.addTime(mp
 								.getStartTime())), new SivaTime(
 								tmpEnd.addTime(mp.getStartTime())),
-						tmpKeywords.getText());
+								tmpKeywords.getText(), tmpThumbTime);
 				try {
 					OperationHistory.execute(op);
 				} catch (ExecutionException e) {
@@ -526,6 +641,32 @@ public class SceneDefineWidget extends Composite {
 				}
 				tmpTitle.setText(scene.getTitle());
 				item.setText(scene.getTitle());
+			}
+		}
+	}
+	
+	@Override
+	public void handleEvent(SivaEvent event) {
+		// React on choosing a new thumbnail time in ThumbnailSelector
+		if (!isDisposed()) {
+			if (event.getEventType() == SivaEventType.TIME_SELECTION) {
+				tmpThumbTime = (Long)event.getValue();
+				thumbPreview.setPreview(scene, tmpThumbTime);
+				markDirty();
+				this.layout();
+			}
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// React on changes to the scene thumbnail time
+		// (Undo/Redo, changes triggered by other editors)
+		if (!isDisposed()) {
+			if (evt.getPropertyName().equals(Scene.PROP_THUMB)) {
+				tmpThumbTime = (Long) evt.getNewValue();
+				thumbPreview.setPreview(scene, tmpThumbTime);
+				this.layout();
 			}
 		}
 	}

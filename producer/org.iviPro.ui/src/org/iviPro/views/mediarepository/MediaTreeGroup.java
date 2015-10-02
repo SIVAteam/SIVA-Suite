@@ -60,21 +60,6 @@ public class MediaTreeGroup implements MediaTreeNode {
 	 */
 	public void addElement(Object toAdd) {
 		this.entries.add(toAdd);
-		// sortiert die in der liste enthaltenen Nodes nach name
-		Collections.sort(this.entries, new Comparator<Object>() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				if (o1.getClass().equals(o2.getClass())
-						&& o1 instanceof MediaTreeNode) {
-					// wenn beides Instanzen von MediaTreeNode sind, dann
-					// compare() anhand des namens
-					return ((MediaTreeNode) o1).getName().compareTo(
-							((MediaTreeNode) o2).getName());
-				} else {
-					return -1;
-				}
-			}
-		});
 	}
 
 	/**

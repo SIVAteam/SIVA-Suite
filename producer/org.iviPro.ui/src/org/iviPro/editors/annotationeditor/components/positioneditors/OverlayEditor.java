@@ -50,7 +50,7 @@ import org.iviPro.editors.annotationeditor.components.positioneditors.OverlayFac
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.player.PlayerFactory;
 import org.iviPro.mediaaccess.player.controls.SivaScale;
 import org.iviPro.model.IAbstractBean;
@@ -113,7 +113,7 @@ public class OverlayEditor {
 	private SivaTime endTimeInScene;
 
 	// der Media Player
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	// das Canvas zum Zeichnen der Figures
 	private OverlayCanvas canvas;
@@ -184,7 +184,7 @@ public class OverlayEditor {
 	/**
 	 * Media Player für den Content von Video Annotationen
 	 */
-	private I_MediaPlayer mpVSO;
+	private MediaPlayer mpVSO;
 
 	private Image scaledContImage;
 

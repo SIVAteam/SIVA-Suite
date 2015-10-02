@@ -2,6 +2,7 @@ package org.iviPro.newExport.descriptor.xml.resources;
 
 import org.iviPro.model.LocalizedElement;
 import org.iviPro.model.LocalizedFile;
+import org.iviPro.model.resources.Scene;
 import org.iviPro.model.resources.Video;
 import org.iviPro.newExport.ExportException;
 import org.w3c.dom.Element;
@@ -13,19 +14,21 @@ public class XMLResourceExporterVideo extends IXMLResourceExporter {
 	private long end;
 	
 	public XMLResourceExporterVideo(Video video) {
-		this(video, 0L, video.getDuration());
-	}
-	
-	public XMLResourceExporterVideo(Video video, long start, long end) {
 		super(video);
 		this.video = video;
+		this.start = 0;
+		this.end = video.getDuration();
+	}
+	
+	public XMLResourceExporterVideo(Scene scene, long start, long end) {
+		super(scene);
+		this.video = scene.getVideo();
 		this.start = start;
 		this.end = end;
 	}
 	
 	@Override
-	protected void setAdditionalRessourceAttributes(Element resElement)
-			throws ExportException {
+	protected void setAdditionalRessourceAttributes(Element resElement) {
 		if (idManager.getProfile().getGeneral().isExportVideoExtensions()
 				&& idManager.getProfile().getVideo().getVideoVariants().size() == 1
 				&& idManager.getProfile().getVideo().getVideoVariants().get(0)

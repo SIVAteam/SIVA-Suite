@@ -7,6 +7,7 @@ import org.iviPro.model.Project;
 import org.iviPro.model.graph.NodeEnd;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -20,7 +21,7 @@ class XMLExporterNodeEnd extends IXMLExporter {
 	}
 
 	@Override
-	protected void exportObjectImpl(Object exportObj, Document doc,
+	protected void exportObjectImpl(IAbstractBean exportObj, Document doc,
 			IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 				
@@ -28,7 +29,8 @@ class XMLExporterNodeEnd extends IXMLExporter {
 		endSiva.setAttribute(ATTR_ACTIONID, idManager.getEndActionID());
 		endSiva.setIdAttribute(ATTR_ACTIONID, true);
 		
-		String labelID = createTitleLabels(end, doc, idManager);
+		String labelID = createLabel(end, doc, idManager, 
+				end.getTitles(), LabelType.TITLE);
 		endSiva.setAttribute(ATTR_REF_RES_ID, labelID);
 		
 		Element actions = getActions(doc);

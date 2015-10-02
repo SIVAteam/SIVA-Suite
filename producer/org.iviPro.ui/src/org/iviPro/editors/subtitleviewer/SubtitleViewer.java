@@ -17,8 +17,7 @@ import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.resources.Subtitle;
 import org.iviPro.theme.Icons;
 
-public class SubtitleViewer extends IAbstractEditor implements
-		PropertyChangeListener {
+public class SubtitleViewer extends IAbstractEditor {
 
 	public static final String ID = SubtitleViewer.class.getName();
 
@@ -42,8 +41,8 @@ public class SubtitleViewer extends IAbstractEditor implements
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
+		
 		subtitle = ((SubtitleViewerInput) input).getSubtitle();
 		subtitle.addPropertyChangeListener(IAbstractBean.PROP_TITLE, this);
 		setPartName(subtitle.getTitle());		
@@ -78,7 +77,8 @@ public class SubtitleViewer extends IAbstractEditor implements
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -86,5 +86,10 @@ public class SubtitleViewer extends IAbstractEditor implements
 				setPartName(subtitle.getTitle());
 			}
 		});
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return subtitle;
 	}
 }

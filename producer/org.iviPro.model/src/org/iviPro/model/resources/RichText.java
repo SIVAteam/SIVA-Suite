@@ -32,6 +32,7 @@ import org.iviPro.model.DummyFile;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.IMediaObject;
 import org.iviPro.model.LocalizedElement;
+import org.iviPro.model.LocalizedFile;
 import org.iviPro.model.Project;
 
 /**
@@ -84,11 +85,18 @@ public class RichText extends IMediaObject implements IResource {
 	 */
 	public RichText(RichText toCopy) {
 		this(toCopy.getTitle(), toCopy.getProject());
-		setFile(toCopy.getFile());
-		this.setContent(toCopy.getContent());
+		
+		for (LocalizedFile file : toCopy.getFiles()) {
+			setFile(file);
+		}
 		for (String picId : toCopy.getPictureIds()) {
 			pictureIds.add(picId);
-		}		
+		}
+		/* Copy the current document (Richtext may not be backed by a file yet)
+		 *  TODO: No localization for content yet
+		 */
+		this.setContent(toCopy.getContent());
+			
 	}
 	
 	/**
@@ -321,5 +329,10 @@ public class RichText extends IMediaObject implements IResource {
 	@Override
 	public List<LocalizedElement> getLocalizedContents() {
 		return new ArrayList<LocalizedElement>(getFiles());
+	}
+	
+	@Override
+	public String getBeanTag() {
+		return "Richtext";
 	}
 }

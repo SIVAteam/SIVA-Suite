@@ -13,8 +13,6 @@ public class Messages extends NLS {
 	public static String AnnotationDeleteAction_Label;
 	public static String AnnotationDeleteAction_Tooltip;
 
-	public static String AnnotationDeleteAction_UndoLabel;
-
 	// MediaDeleteAction
 	public static String MediaDeleteAction_0;
 	public static String MediaDeleteAction_Label;
@@ -31,11 +29,11 @@ public class Messages extends NLS {
 	public static String MediaLoadAction_LoadMedia;
 	public static String MediaLoadAction_LoadMediaToolTip;
 	public static String MediaLoadAction_ErrorTitle;
-	public static String MediaLoadAction_NameMsg;
-	public static String MediaLoadAction_TypeMsg;
+	public static String MediaLoadAction_ErrorMsg_Common;
+
 	public static String MediaLoadAction_ErrorMsg_DuplicateFile;
-	public static String MediaLoadAction_ErrorMsg_TheFollowingErrorOccured;
-	public static String MediaLoadAction_1;
+
+	public static String MediaLoadAction_ErrorMsg_Type;
 
 	// Change TitleAction
 	public static String ChangeTitleAction_Label;
@@ -50,18 +48,9 @@ public class Messages extends NLS {
 	public static String FolderRenameAction_Title;
 
 	// SceneDetectionAction
-	public static String OpenSceneDetectionEditorAction_MsgFinishPlural;
-	public static String OpenSceneDetectionEditorAction_MsgFinishPlural2;
-	public static String OpenSceneDetectionEditorAction_MsgFinishSingular;
-	public static String OpenSceneDetectionEditorAction_MsgFinishSingular2;
-	public static String OpenSceneDetectionEditorAction_MsgFinishTitle;
 	public static String OpenSceneDetectionEditorAction_SceneTitlePrefix;
 	public static String OpenSceneDetectionEditorAction_Text;
 	public static String OpenSceneDetectionEditorAction_Tooltip;
-
-	public static String SceneDetectionAction_InfoNoScenesFound_Msg;
-
-	public static String SceneDetectionAction_InfoNoScenesFound_Title;
 
 	public static String SceneDetectionAction_UndoLabel;
 

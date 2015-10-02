@@ -15,18 +15,22 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.iviPro.application.Application;
+import org.iviPro.editors.IAbstractEditor;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationContentType;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationFactory;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationType;
+import org.iviPro.editors.annotationeditor.components.contenteditors.ContentEditor;
 import org.iviPro.editors.annotationeditor.components.contenteditors.DragAndDropEditor;
+import org.iviPro.editors.annotationeditor.components.contenteditors.PdfEditor;
 import org.iviPro.editors.annotationeditor.components.contenteditors.PictureEditor;
 import org.iviPro.editors.annotationeditor.components.contenteditors.SubtitleEditor;
-import org.iviPro.editors.annotationeditor.components.contenteditors.TextEditor;
 import org.iviPro.editors.annotationeditor.components.contenteditors.VideoEditor;
 import org.iviPro.editors.annotationeditor.components.contenteditors.richtext.RichHTMLEditor;
 import org.iviPro.editors.common.ScreenAreaSelector;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
+import org.iviPro.editors.events.SivaEventType;
+import org.iviPro.model.BeanList;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.PictureGallery;
 import org.iviPro.model.ProjectSettings;
@@ -41,6 +45,7 @@ import org.iviPro.model.graph.NodeAnnotationVideo;
 import org.iviPro.model.graph.ScreenArea;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
+import org.iviPro.model.resources.IVideoResource;
 import org.iviPro.model.resources.PdfDocument;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.model.resources.RichText;
@@ -57,6 +62,11 @@ import org.iviPro.model.resources.Video;
  */
 public abstract class AbstractAnnotationDefineWidget extends Composite
 		implements PropertyChangeListener, SivaEventConsumerI {
+	
+	/**
+	 * The editor in which this widget is used.
+	 */
+	private IAbstractEditor editor;
 
 	// die aktuelle Annotation
 	// kann entweder eine neue Annotation oder eine
@@ -80,16 +90,23 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 
 	// die Editoren für den eigentlichen Inhalt (rechte Seite: Bild, Text,
 	// Video, Subtitle...)	
-	// Partially refactored by using a common DragAndDropEditor. However, structure
-	// could be simplified by using a single editor variable relying on an abstract
-	// class and factory. Got no time for that now.
-	protected RichHTMLEditor tmpRichtext = null;
-	protected TextEditor tmpText = null;
-	protected SubtitleEditor tmpSubtitle = null;
-	protected PictureEditor tmpPicture = null;
-	protected DragAndDropEditor tmpAudio = null;
-	protected DragAndDropEditor tmpVideo = null;
-	protected DragAndDropEditor tmpPdf = null;
+	// Partially refactored by using a common DragAndDropEditor and a ContentEditor 
+	// interface. However, structure could be simplified by using a single editor 
+	// variable relying on an abstract class and factory. Got no time for that now.
+	protected ContentEditor contentEditor = null;
+			
+	/**
+	 * Time of the thumbnail which can be altered in video or scene annotations.
+	 * I'm really sorry for adding more of this non polymorphic b..s.. but time is 
+	 * too scarce and this class is too f.. up to refactor everything to a 
+	 * polymorphic solution. May the Lord forgive me.
+	 */
+	protected long tmpThumbnailTime;
+	
+	/**
+	 * Description of content (used for e.g. PDF documents) 
+	 */
+	protected String tmpContentDescription = null;
 
 	// die aktuelle ScreenPosition
 	protected ScreenArea tmpScreenArea;
@@ -108,8 +125,6 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 	// Composite für den Inhalts-Editor
 	protected Composite contentEditorComposite = null;
 
-	// Composite für den allgemeinen Editor Teil
-	protected Composite editorComposite = null;
 
 	// Annotationstyp, z.B. um festzustellen, welchen Content Editor man
 	// benötigt.
@@ -122,15 +137,27 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 
 	public AbstractAnnotationDefineWidget(Composite parent, int style,
 			INodeAnnotation annotation, AnnotationType annotationType,
-			CTabItem it) {
+			CTabItem it, IAbstractEditor editor) {
 		super(parent, style);
 		this.tmpOpItems = new LinkedList<OverlayPathItem>();
 		this.tabItem = it;
 		this.annotationType = annotationType;
 		this.annotation = annotation;
+		this.editor = editor;
 
 		Application.getCurrentProject().getSettings()
 				.addPropertyChangeListener(this);
+		Application.getCurrentProject().getMediaObjects()
+				.addPropertyChangeListener(this);
+	}
+	
+	@Override
+	public void dispose() {
+		Application.getCurrentProject().getSettings()
+				.removePropertyChangeListener(this);
+		Application.getCurrentProject().getMediaObjects()
+				.removePropertyChangeListener(this);
+		super.dispose();
 	}
 
 	/**
@@ -153,10 +180,10 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 		INodeAnnotation contentAnnotation = AnnotationFactory
 				.getContentAnnotation(annotation);
 		AnnotationContentType contentType = annotationType.getContentType();
-
+		
+		// Update content and editor
+		boolean editorExists = (contentEditor != null);
 		switch (contentType) {
-
-		// Audio Annotation wird angelegt
 		case AUDIO:
 			NodeAnnotationAudio audAnno = (NodeAnnotationAudio) contentAnnotation;
 			if (audAnno.getContentType() == NodeAnnotationAudio.CONTENT_AUDIO) {
@@ -167,29 +194,12 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 						.getAudioPart();
 			}
 
-			if (tmpAudio == null) {
-				tmpAudio = new DragAndDropEditor(contentEditorComposite, SWT.NONE,
+			if (!editorExists) {
+				contentEditor = new DragAndDropEditor(contentEditorComposite, SWT.NONE,
 						editorContent, new Class[] {Audio.class, AudioPart.class});
-				
-				AbstractAnnotationDefineWidget.this.layout(true);
-				
-				tmpAudio.addSivaEventConsumer(this);
-				// Remove listener when AnnotationDefineWidget is disposed
-				addListener(SWT.Dispose, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						if (tmpAudio != null) {
-							tmpAudio.removeSivaEventConsumer(
-									AbstractAnnotationDefineWidget.this);
-						}
-					}
-				});
-			} else {
-				tmpAudio.setContent(editorContent);
 			}
 			break;
 
-		// Video Annotation wird angelegt
 		case VIDEO:
 			if (((NodeAnnotationVideo) contentAnnotation).getContentType() == NodeAnnotationVideo.CONTENT_SCENE) {
 				editorContent = ((NodeAnnotationVideo) contentAnnotation)
@@ -198,193 +208,132 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				editorContent = ((NodeAnnotationVideo) contentAnnotation)
 						.getVideo();
 			}
-
-			if (tmpVideo == null) {
-				tmpVideo = new VideoEditor(contentEditorComposite, SWT.NONE,
-						editorContent);
-				AbstractAnnotationDefineWidget.this.layout(true);
-				
-				tmpVideo.addSivaEventConsumer(this);			
-				// Remove listener when AnnotationDefineWidget is disposed
-				addListener(SWT.Dispose, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						if (tmpVideo != null) {
-							tmpVideo.removeSivaEventConsumer(
-									AbstractAnnotationDefineWidget.this);
-						}
-					}
-				});
-			} else {
-				tmpVideo.setContent(editorContent);
+			
+			if (editorContent != null) {
+				tmpThumbnailTime = ((IVideoResource)editorContent).getThumbnail().getTime();
 			}
+
+			if (!editorExists) {
+				contentEditor = new VideoEditor(contentEditorComposite, SWT.NONE,
+						editorContent);
+			}			
 			break;
 
-		// Subtitle Annotation wird angelegt
 		case SUBTITLE:
 			editorContent = ((NodeAnnotationSubtitle) contentAnnotation)
 					.getSubtitle();
 			
-			if (tmpSubtitle == null) {
-				tmpSubtitle = new SubtitleEditor(contentEditorComposite,
+			if (!editorExists) {
+				contentEditor = new SubtitleEditor(contentEditorComposite,
 						SWT.NONE, (Subtitle) editorContent);
-				AbstractAnnotationDefineWidget.this.layout(true);
-				
-				tmpSubtitle.addSivaEventConsumer(this);
-				// Remove listener when AnnotationDefineWidget is disposed
-				addListener(SWT.Dispose, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						if (tmpSubtitle != null) {
-							tmpSubtitle.removeSivaEventConsumer(
-									AbstractAnnotationDefineWidget.this);
-						}
-					}
-				});
-			} else {
-				tmpSubtitle.setSubtitle((Subtitle) editorContent);
 			}
 			break;
 
-		// falls Richtext-Annotation
 		case RICHTEXT:
 			editorContent = ((NodeAnnotationRichtext) contentAnnotation)
 						.getRichtext();
 			
-			if (tmpRichtext == null) {
-				tmpRichtext = new RichHTMLEditor(contentEditorComposite,
+			if (!editorExists) {
+				contentEditor = new RichHTMLEditor(contentEditorComposite,
 						SWT.NONE, (RichText) editorContent);
-				AbstractAnnotationDefineWidget.this.layout(true);
-				
-				tmpRichtext.addSivaEventConsumer(this);
-				// Remove listener when AnnotationDefineWidget is disposed
-				addListener(SWT.Dispose, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						if (tmpRichtext != null) {
-							tmpRichtext
-									.removeSivaEventConsumer(
-											AbstractAnnotationDefineWidget.this);
-						}
-					}
-				});
-			} else {
-				tmpRichtext.setHTML(((RichText)editorContent).getContent(), false);
 			}
 			break;
-		// Picture Annotation
-		case PICTURE:
-			int pictureAnnotationType = ((NodeAnnotationPicture) contentAnnotation)
-					.getContentType();
-			// Bild / Bildergallerie
-			switch (pictureAnnotationType) {
-			case NodeAnnotationPicture.CONTENT_PICTURE:
-				editorContent = ((NodeAnnotationPicture) contentAnnotation)
-				.getPicture();
-				break;
-			case NodeAnnotationPicture.CONTENT_PICTUREGALLERY:
-				editorContent = ((NodeAnnotationPicture) contentAnnotation)
-				.getPictureGallery();
-				break;
-			}
 
-			if (tmpPicture == null) {
-				switch (pictureAnnotationType) {
-				case NodeAnnotationPicture.CONTENT_PICTURE:
-					tmpPicture = new PictureEditor(contentEditorComposite,
+		case PICTURE:
+			NodeAnnotationPicture pictureAnno = (NodeAnnotationPicture) contentAnnotation;
+			int pictureAnnotationType = pictureAnno.getContentType();
+			
+			boolean isGallery = (pictureAnnotationType == NodeAnnotationPicture.CONTENT_PICTUREGALLERY);
+			picButton.setSelection(!isGallery);
+			galButton.setSelection(isGallery);
+			
+			editorContent = (isGallery ? pictureAnno.getPictureGallery()
+					: pictureAnno.getPicture());		
+
+			if (!editorExists) {
+				if (isGallery) {
+					contentEditor = new PictureEditor(contentEditorComposite,
+							SWT.NONE, (PictureGallery) editorContent);
+				} else {
+					contentEditor = new PictureEditor(contentEditorComposite,
 							SWT.NONE, (Picture) editorContent);
-					picButton.setSelection(true);
-					galButton.setSelection(false);
-					break;
-				case NodeAnnotationPicture.CONTENT_PICTUREGALLERY:
-					tmpPicture = new PictureEditor(contentEditorComposite,
-							SWT.NONE, (PictureGallery) editorContent,
-							((PictureGallery) editorContent).getNumberColumns());
-					picButton.setSelection(false);
-					galButton.setSelection(true);
-					if (annotation != null) {
-						pictureAnnoColumnField
-								.setText("" //$NON-NLS-1$
-										+ ((NodeAnnotationPicture) contentAnnotation)
-												.getPictureGallery()
-												.getNumberColumns());
-					} else {
-						pictureAnnoColumnField.setText("" //$NON-NLS-1$
-								+ PictureGallery.PICGAL_COLS_STD);
-					}
-					break;					
 				}
-				AbstractAnnotationDefineWidget.this.layout(true);
-				
-				tmpPicture.addSivaEventConsumer(this);				
-				// Remove listener when AnnotationDefineWidget is disposed
-				addListener(SWT.Dispose, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						if (tmpPicture != null) {
-							tmpPicture
-									.removeSivaEventConsumer(AbstractAnnotationDefineWidget.this);
-						}
-					}
-				});
-			} else {
-				switch (pictureAnnotationType) {
-				case NodeAnnotationPicture.CONTENT_PICTURE:
-					if (editorContent instanceof Picture) {
-						tmpPicture.setPicture((Picture) editorContent);
-						picButton.setSelection(true);
-						galButton.setSelection(false);
-					}
-					break;
-				case NodeAnnotationPicture.CONTENT_PICTUREGALLERY:
-					if (editorContent instanceof PictureGallery) {
-						tmpPicture.setPictureGallery(
-								(PictureGallery) editorContent,
-								((PictureGallery) editorContent)
-										.getNumberColumns());
-						if (annotation != null) {
-							pictureAnnoColumnField
-									.setText("" //$NON-NLS-1$
-											+ ((NodeAnnotationPicture) contentAnnotation)
-													.getPictureGallery()
-													.getNumberColumns());
-						} else {
-							pictureAnnoColumnField.setText("" //$NON-NLS-1$
-									+ PictureGallery.PICGAL_COLS_STD);
-						}
-						picButton.setSelection(false);
-						galButton.setSelection(true);
-					}
-					break;
+			}
+			
+			if (isGallery) {
+				if (editorContent != null) {
+					pictureAnnoColumnField
+					.setText("" //$NON-NLS-1$
+							+ ((PictureGallery)editorContent)
+							.getNumberColumns());
+				} else {
+					pictureAnnoColumnField.setText("" //$NON-NLS-1$
+							+ PictureGallery.PICGAL_COLS_STD);
 				}
 			}
 			break;
 		
 		case PDF:
 			editorContent = ((NodeAnnotationPdf) contentAnnotation).getPdf();
-			if (tmpPdf == null) {
-				tmpPdf = new DragAndDropEditor(contentEditorComposite, SWT.NONE,
-						editorContent, new Class[] {PdfDocument.class});
-				AbstractAnnotationDefineWidget.this.layout(true);
-				
-				tmpPdf.addSivaEventConsumer(this);
-				// Remove listener when AnnotationDefineWidget is disposed
-				addListener(SWT.Dispose, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						if (tmpPicture != null) {
-							tmpPicture.removeSivaEventConsumer(
-											AbstractAnnotationDefineWidget.this);
-						}
-					}
-				});
-			} else {
-				tmpPdf.setContent(editorContent);
+			if (editorContent != null) {
+				tmpContentDescription = ((PdfDocument)editorContent).getSummary();
+			}
+			if (!editorExists) {
+				contentEditor = new PdfEditor(contentEditorComposite, SWT.NONE,
+						(PdfDocument)editorContent);
 			}
 			break;
 		}
-	}
+		
+		if (editorExists) {
+			contentEditor.setContent(editorContent);
+		} else {
+			AbstractAnnotationDefineWidget.this.layout(true);				
+			contentEditor.addSivaEventConsumer(this);
+		}
+		
+		// Listen for changes on the content
+		if (editorContent != null) {
+			editorContent.addPropertyChangeListener(this);
+		}
+		
+		// Need to listen for deletion of an AudioPart/Scene on the related media 
+		// object; they are not part of the projects' media objects list themselves
+		if (editorContent instanceof AudioPart) {
+			((AudioPart)editorContent).getAudio().getAudioParts()
+					.addPropertyChangeListener(this);
+		} else if (editorContent instanceof Scene) {
+			((Scene)editorContent).getVideo().getScenes()
+					.addPropertyChangeListener(this);
+		}
+		
+		// Remove listener on disposal
+		addListener(SWT.Dispose, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (contentEditor != null) {
+					contentEditor.removeSivaEventConsumer(
+							AbstractAnnotationDefineWidget.this);
+				}
 
+				if (editorContent != null) {
+					editorContent.removePropertyChangeListener(
+							AbstractAnnotationDefineWidget.this);
+				}
+							
+				// Remove listeners monitoring deletion of the AudioPart/Scene
+				if (editorContent instanceof AudioPart) {
+					((AudioPart)editorContent).getAudio().getAudioParts()
+							.removePropertyChangeListener(
+									AbstractAnnotationDefineWidget.this);
+				} else if (editorContent instanceof Scene) {
+					((Scene) editorContent).getVideo().getScenes()
+							.removePropertyChangeListener(
+									AbstractAnnotationDefineWidget.this);
+				}			
+			}
+		});
+	}	
 	/*
 	 * aktualisiert den Tabnamen wird bei jeder Änderungsaktion im Editor
 	 * aufgerufen
@@ -415,6 +364,7 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				tabItem.setText(tmpTitle.getText());
 			}
 		}
+		editor.updateDirtyStatus();
 	}
 
 	/**
@@ -464,15 +414,13 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 		// prüfe ob sich ein Text geändert hat
 		case SUBTITLE:
 			Subtitle subtitle = null; //$NON-NLS-1$
-			if (tmpSubtitle != null) {
-				if (editorContent instanceof Subtitle) {
-					subtitle = (Subtitle) editorContent;
-					Subtitle savedSub = ((NodeAnnotationSubtitle) contentAnnotation)
-							.getSubtitle();
-					if (!(subtitle.getTitle().equals(savedSub.getTitle()) && subtitle
-							.getDescription().equals(savedSub.getDescription()))) {
-						return true;
-					}
+			if (editorContent instanceof Subtitle) {
+				subtitle = (Subtitle) editorContent;
+				Subtitle savedSub = ((NodeAnnotationSubtitle) contentAnnotation)
+						.getSubtitle();
+				if (!(subtitle.getTitle().equals(savedSub.getTitle()) && subtitle
+						.getDescription().equals(savedSub.getDescription()))) {
+					return true;
 				}
 			}
 			break;
@@ -483,8 +431,8 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 			NodeAnnotationPicture picAnnotation = (NodeAnnotationPicture) contentAnnotation;
 			// der aktuell eingestellte ContentType
 			int currentAnnoContentType = NodeAnnotationPicture.CONTENT_PICTURE;
-			if (this.tmpPicture != null) {
-				currentAnnoContentType = this.tmpPicture
+			if (contentEditor != null) {
+				currentAnnoContentType = ((PictureEditor)contentEditor)
 						.getPicAnnoContentType();
 			}
 			// der gespeicherte Content Type
@@ -598,9 +546,6 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				editorScene = (Scene) editorContent;
 			}
 
-			if (videoAnnotation.getContentType() == NodeAnnotationVideo.CONTENT_NONE) {
-				return true;
-			}
 			if (videoAnnotation.getContentType() == NodeAnnotationVideo.CONTENT_VIDEO) {
 				if (savedVideo == null && editorVideo == null) {
 					return false;
@@ -608,10 +553,11 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				if (savedVideo == null || editorVideo == null) {
 					return true;
 				}
-				if (savedVideo != null && editorVideo != null) {
-					if (!savedVideo.getFile().equals(editorVideo.getFile())) {
+				if (!savedVideo.getFile().equals(editorVideo.getFile())) {
 						return true;
-					}
+				}
+				if (savedVideo.getThumbnail().getTime() != tmpThumbnailTime) {
+					return true;
 				}
 			} else if (videoAnnotation.getContentType() == NodeAnnotationVideo.CONTENT_SCENE) {
 				if (savedScene == null && editorScene == null) {
@@ -620,16 +566,16 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				if (savedScene == null || editorScene == null) {
 					return true;
 				}
-				if (savedScene != null && editorScene != null) {
-					if (!savedScene.getVideo().getFile()
-							.equals(editorScene.getVideo().getFile())) {
-						return true;
-					} else {
-						if (!(savedScene.getStart() == editorScene.getStart() && savedScene
+				if (!savedScene.getVideo().getFile()
+						.equals(editorScene.getVideo().getFile())) {
+					return true;
+				} 
+				if (!(savedScene.getStart() == editorScene.getStart() && savedScene
 								.getEnd() == editorScene.getEnd())) {
-							return true;
-						}
-					}
+						return true;
+				}
+				if (savedScene.getThumbnail().getTime() != tmpThumbnailTime) {
+					return true;
 				}
 			}
 			break;
@@ -643,6 +589,20 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				return true;
 			}
 			break;
+		case PDF:
+			NodeAnnotationPdf pdfAnnotation = (NodeAnnotationPdf) contentAnnotation;
+			PdfDocument savedPdf = pdfAnnotation.getPdf();
+			if (savedPdf != (PdfDocument) editorContent) {
+				return true;
+			}
+			if (savedPdf.getSummary() == null && tmpContentDescription != null) {
+				return true;
+			} else if (savedPdf.getSummary() != null 
+					&& !savedPdf.getSummary().equals(tmpContentDescription)) {
+				return true;
+			}
+			
+			
 		default:
 			return false;
 		}
@@ -754,21 +714,107 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 
 	@Override
 	public void handleEvent(SivaEvent event) {
-		editorContent = (IAbstractBean) event.getValue();
+		// Listen to events triggered by the content editors
+		if (event.getEventType() == SivaEventType.CONTENT_CHANGED) {
+			// Remove listener on old content
+			if (editorContent != null) {
+				editorContent.removePropertyChangeListener(this);
+			}
+			// Remove listeners monitoring deletion of the AudioPart/Scene
+			if (editorContent instanceof AudioPart) {
+				((AudioPart)editorContent).getAudio().getAudioParts()
+						.removePropertyChangeListener(this);
+			} else if (editorContent instanceof Scene) {
+				((Scene) editorContent).getVideo().getScenes()
+						.removePropertyChangeListener(this);
+			}
+			
+			// Set new content
+			editorContent = (IAbstractBean) event.getValue();			
+			// Need to listen for deletion of an AudioPart/Scene on the related media 
+			// object; they are not part of the projects' media objects list themselves
+			if (editorContent instanceof AudioPart) {
+				((AudioPart)editorContent).getAudio().getAudioParts()
+						.addPropertyChangeListener(this);
+			} else if (editorContent instanceof Scene) {
+				((Scene)editorContent).getVideo().getScenes()
+						.addPropertyChangeListener(this);
+			}
+			
+			if (editorContent instanceof Video
+					|| editorContent instanceof Scene) {
+				tmpThumbnailTime = ((IVideoResource)editorContent).getThumbnail()
+						.getTime();
+			}
+			if (editorContent instanceof PdfDocument) {
+				tmpContentDescription = ((PdfDocument)editorContent).getSummary();
+			}
+			// Listen to changes of new content
+			if (editorContent != null) {
+				editorContent.addPropertyChangeListener(this);
+			}
+		} else if (event.getEventType() == SivaEventType.TIME_SELECTION) {
+			tmpThumbnailTime = (Long) event.getValue();
+		} else if (event.getEventType() == SivaEventType.DESCRIPTION_CHANGED) {
+			tmpContentDescription = (String)event.getValue();
+		}
 		updateDirty();
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (!evt.getPropertyName()
-				.equals(ProjectSettings.PROP_DIMENSION)
-				&& !isDisposed()) {
-			if (!ScreenAreaSelector
-					.checkScreenArea(tmpScreenArea)) {
-				tmpScreenArea = ScreenAreaSelector
-						.getAnnotationScreenArea();
-				areaSelector.setScreenArea(tmpScreenArea);
-				updateDirty();
+	public void propertyChange(PropertyChangeEvent event) {
+		if (isDisposed()) {
+			return;
+		}
+		// Media object or AudioPart/Scene used as content or the respective
+		// parent object has been deleted
+		if (event.getPropertyName().equals(BeanList.PROP_ITEM_REMOVED)) {
+			Object deleted = event.getNewValue();
+			if (deleted != null && (editorContent == deleted
+				|| (editorContent instanceof AudioPart
+					&& ((AudioPart)editorContent).getAudio() == deleted)
+				|| (editorContent instanceof Scene
+					&& ((Scene)editorContent).getVideo() == deleted))) {
+				contentEditor.setContent(null);
+			}
+		}		
+
+		
+		// Video dimension has been changed. Adapt screen area.
+		if (event.getSource() == Application.getCurrentProject().getSettings()) {
+			if (event.getPropertyName()
+					.equals(ProjectSettings.PROP_DIMENSION)) {
+				if (tmpScreenArea != null && !ScreenAreaSelector
+						.checkScreenArea(tmpScreenArea)) {
+					tmpScreenArea = ScreenAreaSelector
+							.getAnnotationScreenArea();
+					areaSelector.setScreenArea(tmpScreenArea);
+					updateDirty();
+				}
+			}
+		}
+
+		if (event.getSource() == editorContent) {	
+			// Thumbnail has been changed in other editor (e.g. scene editor)
+			if (event.getPropertyName().equals(Scene.PROP_THUMB) 
+					|| event.getPropertyName().equals(Video.PROP_THUMB)) {
+				if (editorContent instanceof IVideoResource) {
+					contentEditor.setContent(editorContent);
+					tmpThumbnailTime = ((IVideoResource)editorContent)
+							.getThumbnail().getTime();
+					this.layout();
+				}
+
+			}
+			// PDF description changed
+			if (event.getPropertyName().equals(PdfDocument.PROP_PDFDESCRIPTION)) {
+				if (editorContent instanceof PdfDocument) {
+					contentEditor.setContent(editorContent);
+					tmpContentDescription = ((PdfDocument)editorContent)
+							.getSummary();
+					this.layout();
+				}
+
 			}
 		}
 	}

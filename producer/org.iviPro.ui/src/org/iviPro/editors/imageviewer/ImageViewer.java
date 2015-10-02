@@ -1,7 +1,6 @@
 package org.iviPro.editors.imageviewer;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -21,7 +20,6 @@ import org.iviPro.application.Application;
 import org.iviPro.editors.IAbstractEditor;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.PictureGallery;
-import org.iviPro.model.imageeditor.ImageObject;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.theme.Colors;
 import org.iviPro.theme.Icons;
@@ -33,7 +31,7 @@ import org.iviPro.theme.Icons;
  * @author juhoffma
  *
  */
-public class ImageViewer extends IAbstractEditor implements PropertyChangeListener {
+public class ImageViewer extends IAbstractEditor {
 
 	public static final String ID = ImageViewer.class.getName();
 	public static final String PREFIX_IMAGEEDITOR = Messages.PREFIX_IMAGEEDITOR; //$NON-NLS-1$
@@ -58,8 +56,8 @@ public class ImageViewer extends IAbstractEditor implements PropertyChangeListen
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		setSite(site);
-		setInput(input);
+		super.init(site, input);
+		
 		viewerInput = ((ImageWidgetInput) input).getInput();
 		viewerInput.addPropertyChangeListener(this);
 		setPartName(PREFIX_IMAGEEDITOR + viewerInput.getTitle(Application.getCurrentLanguage()));	
@@ -112,13 +110,9 @@ public class ImageViewer extends IAbstractEditor implements PropertyChangeListen
 		}
 		imageComposite.setLayoutData(gd);
 		final Image scaledImage = new Image(Display.getCurrent(), img.getImageData().scaledTo(gd.widthHint, gd.heightHint));
-		GC gc = new GC(scaledImage);
-		for (ImageObject imgObj : picture.getObjects()) {
-			org.iviPro.editors.imageeditor.ImageEditWidget.drawObject(gc, imgObj, scaledImage);
-		}			
 		imageComposite.setBackgroundImage(scaledImage);
 		// das Bild wird nicht mehr gebraucht
-		img.dispose();	
+		img.dispose();
 		
 		imageComposite.addDisposeListener(new DisposeListener() {
 
@@ -141,7 +135,8 @@ public class ImageViewer extends IAbstractEditor implements PropertyChangeListen
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -149,5 +144,10 @@ public class ImageViewer extends IAbstractEditor implements PropertyChangeListen
 						+ viewerInput.getTitle(Application.getCurrentLanguage()));
 			}
 		});
+	}
+
+	@Override
+	protected IAbstractBean getKeyObject() {
+		return viewerInput;
 	}
 }

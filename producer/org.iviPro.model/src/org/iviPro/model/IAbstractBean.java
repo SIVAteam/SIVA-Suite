@@ -138,6 +138,16 @@ public abstract class IAbstractBean implements Serializable {
 				"[" + (project != null && getTitle() != null //$NON-NLS-1$
 				? getTitle() : "") + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
+	
+	/**
+	 * Returns a tag which can be used to identify the bean. However, the tag needs 
+	 * not to be unique. Standard implementation returns the simple name of the
+	 * beans class. 
+	 * @return tag used to identify the bean
+	 */
+	public String getBeanTag() {
+		return this.getClass().getSimpleName();
+	}
 
 	/**
 	 * Dieses Objekt wird benutzt um die PropertyChangeListener zu verwalten und
@@ -388,7 +398,7 @@ public abstract class IAbstractBean implements Serializable {
 			oldValue = descrMap.put(description.getLanguage(), 
 					description);
 		}
-		firePropertyChange(PROP_TITLE, oldValue, description);
+		firePropertyChange(PROP_DESCRIPTION, oldValue, description);
 
 	}
 
@@ -530,16 +540,5 @@ public abstract class IAbstractBean implements Serializable {
 			}
 		}
 		*/
-	}
-	
-	public void setData(String key, Object o) {
-		if (dataMap == null) {
-			dataMap = new HashMap<String, Object>();
-		}
-		this.dataMap.put(key, o);
-	}
-	
-	public Object getData(String key) {
-		return this.dataMap.get(key);
 	}
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Inhalt" topic="help/html/toc.html">
+   <topic href="nl/de/help/html/tutorial/overview.html" label="Tutorial">
+      <topic href="nl/de/help/html/tutorial/createNewProject.html" label="Anlegen eines Videoprojekts">
+      </topic>
+      <topic href="nl/de/help/html/tutorial/loadMedium.html" label="Hinzufügen von Mediendateien">
+      </topic>
+      <topic href="nl/de/help/html/tutorial/cutVideo.html" label="Schneiden von Videos">
+      </topic>
+      <topic href="nl/de/help/html/tutorial/addSceneToScenegrapheditor.html" label="Zusammenstellen eines Szenengraphen">
+      </topic>
+      <topic href="nl/de/help/html/tutorial/addAnnotation.html" label="Hinzufügen von Szenenannotationen">
+      </topic>
+      <topic href="nl/de/help/html/tutorial/saveAndExport.html" label="Exportieren eines Videoprojekts">
+      </topic>
+   </topic>
+   <topic href="nl/de/help/html/components/overview.html" label="Komponenten">
+      <topic href="nl/de/help/html/components/overview.html" label="Überblick">
+      </topic>
+      <topic href="nl/de/help/html/components/menu.html" label="Menü">
+      </topic>
+      <topic label="Editoren">
+         <topic href="nl/de/help/html/components/editors/bildeditor.html" label="Bildeditor">
+         </topic>
+         <topic href="nl/de/help/html/components/editors/sceneneditor.html" label="Szeneneditor">
+         </topic>
+         <topic href="nl/de/help/html/components/editors/annotationeditor.html" label="Annotationseditor">
+         </topic>
+         <topic href="nl/de/help/html/components/editors/scenegrapheditor.html" label="Szenengrapheditor">
+         </topic>
+         <topic href="nl/de/help/html/components/editors/contenteditor.html" label="Inhaltsverzeichniseditor">
+         </topic>
+      </topic>
+      <topic label="Views">
+         <topic href="nl/de/help/html/components/views/views.html" label="Arten von Views">
+         </topic>
+         <topic href="nl/de/help/html/components/views/viewsEdit.html" label="Views editieren">
+         </topic>
+      </topic>
+   </topic>
+</toc>

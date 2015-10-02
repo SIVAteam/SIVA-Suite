@@ -58,6 +58,9 @@ public class Messages extends NLS {
 	public static String GlobalAnnotationPrefix;
 	public static String AnnotationPrefix;
 	public static String AbstractAnnotationDefineWidget_NoContent_Message;
+
+
+	public static String AbstractAnnotationDefineWidget_NoPDFDescriptionMsg;
 	public static String AnnotationDefineWidget_NoContent_Message;
 
 

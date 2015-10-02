@@ -38,6 +38,7 @@ public class PathHelper {
 	 * <b>Note:</b><br>
 	 * Changes to this value have to be carried over to 
 	 * <code>org.iviPro.newExport.PathHelper</code> as well.
+	 * Additionally the logger uses this property to store the log file.
 	 */
 	public static final String SYSPROP_SIVADIR = "user.siva"; //$NON-NLS-1$
 
@@ -244,6 +245,10 @@ public class PathHelper {
 	public static File getPathToFFProbeExe() {
 		String libDir = System.getProperty(SYSPROP_LIBDIR);
 		return new File(libDir + File.separatorChar + "ffprobe.exe"); //$NON-NLS-1$
+	}
+	
+	public static File getPathToImageCache() {
+		return new File(getSivaDir() + File.separatorChar + "ImageCache"); //$NON-NLS-1$
 	}
 
 	/* Speichert das App-Data Directory, wo wir unsere Arbeitsdaten ablegen */

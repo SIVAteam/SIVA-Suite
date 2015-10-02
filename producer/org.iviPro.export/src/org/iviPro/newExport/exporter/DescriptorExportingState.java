@@ -46,7 +46,7 @@ public class DescriptorExportingState extends ExporterState implements
 			checkCanceled(monitor);
 			monitor.subTask(TaskSettings.DESCRIPTOR_XML.getName());
 			if (exportProfile.getProfile().getGeneral().isExportXml()) {
-				exportXml(projectResources);
+				exportXmlJson(projectResources);
 			}
 			monitor.worked(TaskSettings.DESCRIPTOR_XML.getDuration());
 
@@ -59,6 +59,13 @@ public class DescriptorExportingState extends ExporterState implements
 		} catch (InterruptedException e) {
 			exporter.switchState(new CleanupState(exportProfile,
 					exportDirectories));
+			// End export chain.
+			return;
+		} catch (NullPointerException e) {
+			/* Re-throw NullpointerException as ExportException.
+			 * Otherwise NullPointerException might be suppressed by Eclipse
+			 * framework */
+			throw new ExportException("Nullpointer exception occurred during descriptor export.", e);
 		} finally {
 			monitor.done();
 		}
@@ -67,7 +74,7 @@ public class DescriptorExportingState extends ExporterState implements
 				exportDirectories, projectResources));
 	}
 
-	private void exportXml(ProjectResources projectResources)
+	private void exportXmlJson(ProjectResources projectResources)
 			throws ExportException {
 		logger.debug(String.format(LOG_EXPORT_DESCRIPTOR_XML, loggerPrefix));
 

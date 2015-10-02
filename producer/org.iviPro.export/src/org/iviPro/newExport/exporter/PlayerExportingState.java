@@ -68,6 +68,8 @@ public class PlayerExportingState extends ExporterState {
 		} catch (InterruptedException e) {
 			exporter.switchState(new CleanupState(exportProfile,
 					exportDirectories));
+			// End export chain.
+			return;
 		} finally {
 			monitor.done();
 		}

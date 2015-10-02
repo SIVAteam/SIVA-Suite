@@ -3,13 +3,9 @@
  */
 package org.iviPro.model.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
-import org.iviPro.model.resources.IResource;
 import org.iviPro.model.resources.Picture;
 
 /**

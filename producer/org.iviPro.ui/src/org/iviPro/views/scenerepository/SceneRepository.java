@@ -109,9 +109,10 @@ public class SceneRepository extends IAbstractRepositoryView implements
 	protected MenuManager createContextMenu(TreeViewer treeViewer) {
 		IWorkbenchWindow window = this.getSite().getWorkbenchWindow();
 		MenuManager menuManager = new MenuManager();
+		menuManager.add(new OpenEditorAction(window));
 		final SceneDeleteAction delScene = new SceneDeleteAction(window);
 		menuManager.add(delScene);
-		menuManager.add(new OpenEditorAction(window));
+		menuManager.add(new Separator());
 		OpenSceneGraphAction osga = new OpenSceneGraphAction(window);
 		osga.setImageDescriptor(Icons.ACTION_EDITOR_SCENEGRAPH.getImageDescriptor());		
 		osga.setDisabledImageDescriptor(Icons.ACTION_EDITOR_SCENEGRAPH
@@ -134,8 +135,8 @@ public class SceneRepository extends IAbstractRepositoryView implements
 		});
 
 		// Actions in die Toolbar einfügen
-		toolBarManager.add(new SceneDeleteAction(window));
 		toolBarManager.add(new OpenEditorAction(window));
+		toolBarManager.add(new SceneDeleteAction(window));
 		toolBarManager.add(new Separator());
 		toolBarManager.add(osga);
 		toolBarManager.update(true);

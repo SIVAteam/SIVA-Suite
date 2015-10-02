@@ -1,6 +1,6 @@
 package org.iviPro.mediaaccess.videograb.framegraber;
 
-import org.iviPro.mediaaccess.videograb.interfaces.I_FrameGrabber;
+import org.iviPro.mediaaccess.videograb.interfaces.FrameGrabber;
 
 public class FrameGraberFactory {
 	
@@ -8,7 +8,7 @@ public class FrameGraberFactory {
 	
 	private static FacType type = FacType.FFMPEG;
 
-	public static I_FrameGrabber getFrameGrabber() {			
+	public static FrameGrabber getFrameGrabber() {			
 		switch (type) {
 			case FFMPEG: return new FFMpegVideoGrabber();
 		}

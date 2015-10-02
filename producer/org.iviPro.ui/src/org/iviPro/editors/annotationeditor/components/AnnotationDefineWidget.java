@@ -9,7 +9,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
@@ -42,6 +41,7 @@ import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationContentTy
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationFactory;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationGroup;
 import org.iviPro.editors.annotationeditor.annotationfactory.AnnotationType;
+import org.iviPro.editors.annotationeditor.components.contenteditors.PictureEditor;
 import org.iviPro.editors.annotationeditor.components.positioneditors.OverlayEditor;
 import org.iviPro.editors.common.BeanNameGenerator;
 import org.iviPro.editors.common.EditTime;
@@ -49,7 +49,7 @@ import org.iviPro.editors.common.ScreenAreaSelector;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.player.controls.SivaScale;
 import org.iviPro.model.BeanList;
 import org.iviPro.model.PictureGallery;
@@ -73,7 +73,7 @@ import org.iviPro.utils.SivaTime;
 public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 	
 	// der MediaPlayer
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
 	// Start und Endzeit, wird für die Eingabefelder verwendet
 	// diese Variablen entsprechen dem temporären Inhalt der
@@ -126,9 +126,9 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 
 	public AnnotationDefineWidget(Composite parent, int style,
 			final INodeAnnotation annotation, AnnotationType annotationType,
-			I_MediaPlayer mp, CTabItem it, NodeScene nodeS,
+			MediaPlayer mp, CTabItem it, NodeScene nodeS,
 			AnnotationEditor editor) {
-		super(parent, style, annotation, annotationType, it);
+		super(parent, style, annotation, annotationType, it, editor);
 		contentAnnotation = AnnotationFactory
 				.getContentAnnotation(annotation);
 		this.mp = mp;
@@ -165,23 +165,22 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 		this.setLayout(new GridLayout(2, false));
 		
 		TopComponent top = new TopComponent(this, SWT.NONE);
-		LeftComponent left = new LeftComponent(this, SWT.BORDER | SWT.V_SCROLL 
-				| SWT.H_SCROLL);
+		LeftComponent left = new LeftComponent(this, SWT.BORDER);
 		contentEditorComposite = new RightComponent(this, SWT.NONE);
 		
 		addListeners(top, left);
 
 		SivaEvent startEvent = new SivaEvent(null,
 				SivaEventType.STARTTIME_CHANGED, tmpStart);
-		top.scale.setSashes(startEvent);
-
 		SivaEvent endEvent = new SivaEvent(null, SivaEventType.ENDTIME_CHANGED,
 				tmpEnd);
+		
+		// Need to set end sash first. Otherwise start time would be later than
+		// end time which would be ignored by setSash().
 		top.scale.setSashes(endEvent);
-
+		top.scale.setSashes(startEvent);		
 		// setze den Markierungspunkt
 		top.scale.addMarkPoint(tmpStart.getNano(), ""); //$NON-NLS-1$
-
 		// initialisiere die konkrete Annotation
 		initContentEditors();
 	}
@@ -444,12 +443,11 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 				// ein Event feuern (in der entspr. Modelklasse) z.B.
 				// INodeAnnotation
 				if (annotation != null) {
-					tmpTitle.setText(annotation.getTitle());
 					tmpStart = new SivaTime(annotation.getStart()
-							- mp.getStartTime().getNano());
+							- nodeScene.getScene().getStart());
 					tmpEnd = new SivaTime(annotation.getEnd()
-							- mp.getStartTime().getNano());
-					
+							- nodeScene.getScene().getStart());
+									
 					SivaEvent eventStart = new SivaEvent(null,
 							SivaEventType.STARTTIME_CHANGED, tmpStart);
 					SivaEvent eventEnd = new SivaEvent(null,
@@ -688,10 +686,11 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 				}
 							
 				IAbstractOperation op = new AnnotationSaveOperation(annotation,
-						annotationType, nodeScene, tmpTitle.getText(), description, start, end, keywords, 
-						disableable, pause, mute, markType, markShapes,
-						tmpMarkDuration, buttonLabel, editorContent,
-						tmpScreenArea, tmpOpItems);
+						annotationType, nodeScene, tmpTitle.getText(), description, 
+						start, end, keywords, disableable, pause, mute, markType, 
+						markShapes,	tmpMarkDuration, buttonLabel, editorContent, 
+						tmpContentDescription, tmpThumbnailTime, tmpScreenArea, 
+						tmpOpItems);
 				try {
 					OperationHistory.execute(op);
 				} catch (ExecutionException e) {
@@ -702,6 +701,7 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 		} else {
 			return false;
 		}
+		updateDirty();
 		return true;
 	}
 
@@ -937,7 +937,7 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 	 * or shape of marks.
 	 * @author John
 	 */
-	private class LeftComponent extends ScrolledComposite {
+	private class LeftComponent extends Composite {
 		
 		/**
 		 * Component containing textfields for start and end time selection
@@ -959,38 +959,27 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 		
 		LeftComponent(Composite parent, int style) {
 			super(parent, style);
+			this.setLayout(new GridLayout(1, false));
 			this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-			this.getVerticalBar().setIncrement(10);
-						
-			// Composite für die linke Seite == Definitionsbereich
-			editorComposite = new Composite(this, SWT.NONE);
-			this.setContent(editorComposite);
-			GridLayout leftLayout = new GridLayout(1, false);
-			editorComposite.setLayout(leftLayout);
-			GridData leftGD = new GridData(SWT.FILL, SWT.FILL, false, false);
-			editorComposite.setLayoutData(leftGD);
-
-			addTitleComp(editorComposite);			
-			addDescriptionComp(editorComposite);
+			
+			addTitleComp(this);			
+			addDescriptionComp(this);
 			
 			if (annotationType.getContentType().equals(
 					AnnotationContentType.PICTURE)) {
-				addPictureAnnotationComp(editorComposite);
+				addPictureAnnotationComp(this);
 			}
 			
-			addTimingComp(editorComposite);
+			addTimingComp(this);
 			
 			if (!(annotationType.getContentType()
 							.equals(AnnotationContentType.SUBTITLE))) {
-				addPositionEditor(editorComposite);
+				addPositionEditor(this);
 			}
 
-			addKeywordComp(editorComposite);
+			addKeywordComp(this);
 			
-			addToggleComp(editorComposite);
-			// mandatory (see ScrolledComposite's javadoc)
-			editorComposite.setSize(editorComposite.computeSize(
-					SWT.DEFAULT, SWT.DEFAULT));			
+			addToggleComp(this);
 		}
 		
 		/**
@@ -1109,11 +1098,12 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 			pictureAnnoColumnField.addModifyListener(new ModifyListener() {
 				@Override
 				public void modifyText(ModifyEvent arg0) {
-					if (tmpPicture != null && pictureAnnoColumnField != null) {
+					PictureEditor picEditor = ((PictureEditor)contentEditor);
+					if (picEditor != null && pictureAnnoColumnField != null) {
 						if (pictureAnnoColumnField.getText().length() > 0) {
 							Integer cols = Integer
 									.parseInt(pictureAnnoColumnField.getText());
-							tmpPicture.setColumns(cols);
+							picEditor.setColumns(cols);
 							updateDirty();
 						}
 					}
@@ -1142,7 +1132,9 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 							Display.getCurrent().asyncExec(new Runnable() {
 								@Override
 								public void run() {
-									tmpPicture.setPicture(null);
+									PictureEditor picEditor = ((PictureEditor)contentEditor);
+									picEditor.setPicAnnoContentType(NodeAnnotationPicture.CONTENT_PICTURE);
+									picEditor.setContent(null);
 									updateDirty();
 								}
 							});
@@ -1181,8 +1173,9 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 							Display.getCurrent().asyncExec(new Runnable() {
 								@Override
 								public void run() {
-									tmpPicture.setPictureGallery(null,
-											PictureGallery.PICGAL_COLS_STD);
+									PictureEditor picEditor = ((PictureEditor)contentEditor);
+									picEditor.setPicAnnoContentType(NodeAnnotationPicture.CONTENT_PICTUREGALLERY);
+									picEditor.setContent(null);
 									updateDirty();
 								}
 							});

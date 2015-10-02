@@ -75,7 +75,7 @@ public class FfmpegTranscoder implements Transcoder {
 
 	@Override
 	public void transcodeAudio(AudioDescriptor descriptor)
-			throws TranscodingException {
+			throws TranscodingException, InterruptedException {
 		descriptor.validateFiles();
 		ProcessExecutor processExecutor = new ProcessExecutor(
 				buildAudioCommand(descriptor));
@@ -159,7 +159,7 @@ public class FfmpegTranscoder implements Transcoder {
 
 	@Override
 	public void transcodeVideo(VideoDescriptor descriptor)
-			throws TranscodingException {
+			throws TranscodingException, InterruptedException {
 		descriptor.validateFiles();
 		ProcessExecutor processExecutor = new ProcessExecutor(
 				buildVideoCommand(descriptor));
@@ -245,7 +245,7 @@ public class FfmpegTranscoder implements Transcoder {
 	}
 
 	private void transcode(ProcessExecutor processExecutor, File input,
-			File output) throws TranscodingException {
+			File output) throws TranscodingException, InterruptedException {
 		int exitCode = -1;
 		try {
 			exitCode = processExecutor.execute();
@@ -255,8 +255,7 @@ public class FfmpegTranscoder implements Transcoder {
 					processExecutor.getCommand());
 		} catch (InterruptedException e) {
 			processExecutor.destroy();
-			transcodingFailed(input, processExecutor.getErrorOutput(),
-					processExecutor.getCommand());
+			throw e;
 		}
 		if (exitCode != 0) {
 			transcodingFailed(input, processExecutor.getErrorOutput(),

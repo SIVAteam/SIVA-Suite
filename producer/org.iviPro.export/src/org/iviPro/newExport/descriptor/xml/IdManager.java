@@ -1,23 +1,14 @@
 package org.iviPro.newExport.descriptor.xml;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.graph.AbstractNodeSelection;
-import org.iviPro.model.graph.AbstractNodeSelectionControl;
 import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.graph.INodeAnnotation;
 import org.iviPro.model.graph.INodeAnnotationLeaf;
-import org.iviPro.model.graph.NodeAnnotationAudio;
-import org.iviPro.model.graph.NodeAnnotationPicture;
-import org.iviPro.model.graph.NodeAnnotationRichtext;
-import org.iviPro.model.graph.NodeAnnotationSubtitle;
-import org.iviPro.model.graph.NodeAnnotationText;
-import org.iviPro.model.graph.NodeAnnotationVideo;
 import org.iviPro.model.graph.NodeEnd;
 import org.iviPro.model.graph.NodeMark;
 import org.iviPro.model.graph.NodeQuiz;
@@ -34,6 +25,7 @@ import org.iviPro.newExport.resources.ProjectResources;
 import org.iviPro.newExport.resources.ResourceDescriptor;
 import org.iviPro.newExport.resources.TimedResourceDescriptor;
 import org.iviPro.newExport.resources.VideoResourceDescriptor;
+import org.iviPro.newExport.resources.VideoThumbnailDescriptor;
 
 /**
  * ID-Manager fuer den Export. Generiert die IDs fuer das XML-File und gibt die
@@ -44,6 +36,20 @@ import org.iviPro.newExport.resources.VideoResourceDescriptor;
  * 
  */
 public class IdManager implements IdDefinition {
+	/**
+	 * Enum used to determine the type of a label.
+	 * @author John
+	 *
+	 */
+	public enum LabelType {
+		TITLE,
+		DESCRIPTION,
+		SUMMARY,
+		BUTTON
+	}
+	
+	private final String THUMBNAIL_SUFFIX = "_thumb";
+	private final String THUMBNAIL_EXTENSION = ".jpg";
 
 	private final Profile profile;
 
@@ -137,6 +143,17 @@ public class IdManager implements IdDefinition {
 		}
 	}
 
+	public String getVideoThumbnailName(String id, Locale locale, Video video, 
+			long time) {
+		String target = id + THUMBNAIL_SUFFIX + ID_SEPARATOR + locale;
+		
+		projectResources.getVideoThumbnails().add(
+				new VideoThumbnailDescriptor(target + THUMBNAIL_EXTENSION,
+						video, time));
+		return profile.getGeneral().getImageDirectory() + File.separator
+				+ target + THUMBNAIL_EXTENSION;
+	}
+	
 	public String getImageFileName(String id, File sourceFile, Locale locale,
 			Picture picture) throws ExportException {
 		String target = id + ID_SEPARATOR + locale;
@@ -255,17 +272,6 @@ public class IdManager implements IdDefinition {
 	}
 
 	/**
-	 * Gibt die ID fuer das Label des Titles eines bestimmten Model-Objekts
-	 * zurueck
-	 * 
-	 * @param node
-	 * @return
-	 */
-	public String getTitleLabelID(IAbstractBean obj) {
-		return PREFIX_RES_LABEL_TITLE + getID(obj);
-	}
-
-	/**
 	 * Gibt die ID fuer die Button-Image-Ressource eines Selection-Controls
 	 * zurueck oder null, falls das Control kein Button-Image hat.
 	 * 
@@ -282,16 +288,15 @@ public class IdManager implements IdDefinition {
 	}
 
 	/**
-	 * Gibt die ID fuer das Label der Description eines bestimmten Model-Objekts
-	 * zurueck
-	 * 
-	 * @param node
-	 * @return
+	 * Returns the ID for a label used in the context of the given object.
+	 * @param type of the label
+	 * @param obj context object 
+	 * @return ID of the label containing a prefix, the type, and the context object
 	 */
-	public String getDescriptionLabelID(IAbstractBean obj) {
-		return PREFIX_RES_LABEL_DESCRIPTION + getID(obj);
+	public String getLabelId(LabelType type, IAbstractBean obj) {
+		return type.name().toLowerCase() + "_" + getID(obj);
 	}
-
+	
 	/**
 	 * Gibt die ID der endSiva Action zurueck.
 	 * 

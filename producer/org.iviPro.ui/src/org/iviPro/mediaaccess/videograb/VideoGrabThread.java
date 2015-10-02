@@ -3,13 +3,13 @@ package org.iviPro.mediaaccess.videograb;
 import java.awt.image.BufferedImage;
 
 import org.iviPro.mediaaccess.videograb.framegraber.FrameGraberFactory;
-import org.iviPro.mediaaccess.videograb.interfaces.I_FrameGrabber;
+import org.iviPro.mediaaccess.videograb.interfaces.FrameGrabber;
 
 public class VideoGrabThread implements Runnable {
 	
 	private FrameGrabingJob job;
 	
-	private I_FrameGrabber frameGraber;
+	private FrameGrabber frameGraber;
 		
 	private Cache cache;
 	private VideoFrameConsumer consumer;

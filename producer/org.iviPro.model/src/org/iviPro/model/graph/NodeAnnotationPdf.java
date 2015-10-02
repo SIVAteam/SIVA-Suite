@@ -12,7 +12,7 @@ import org.iviPro.model.resources.PdfDocument;
 public class NodeAnnotationPdf extends INodeAnnotationLeaf {
 	
 	private PdfDocument pdfDoc;
-
+	
 	public NodeAnnotationPdf(LocalizedString title, Project project) {
 		super(title, project);
 	}
@@ -50,5 +50,10 @@ public class NodeAnnotationPdf extends INodeAnnotationLeaf {
 	 */
 	public PdfDocument getPdf() {
 		return pdfDoc;
+	}
+
+	@Override
+	public String getBeanTag() {
+		return "Pdf annotation";
 	}
 }

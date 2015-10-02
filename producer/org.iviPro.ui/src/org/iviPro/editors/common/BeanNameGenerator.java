@@ -1,6 +1,8 @@
 package org.iviPro.editors.common;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
@@ -111,11 +113,32 @@ public class BeanNameGenerator {
 					messageLabel.setText(Messages.BeanComparator_ShellMessage);
 					GridData messageLabelGD = new GridData(380, 50);
 					messageLabel.setLayoutData(messageLabelGD);
-					
 					new Label(shell, SWT.NONE).setText(Messages.BeanNameGenerator_GeneratedNameLabel);
 					final Text message = new Text(shell, SWT.BORDER);
 					message.setText(newTitle);
 					message.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+					message.addFocusListener(new FocusListener() {			
+						@Override
+						public void focusLost(FocusEvent e) {
+						}			
+						@Override
+						public void focusGained(FocusEvent e) {
+							/* For some reason FocusEvent is called before MouseDownEvent.
+							 * A selectAll during the FocusEvent will therefore be revoked
+							 * by the later invocation of MouseDown. Using asyncExec for 
+							 * selectAll ensures, that selection is executed after the queued 
+							 * events (Focus and MouseDown) are finished.
+							 */
+							Display.getCurrent().asyncExec(new Runnable() {
+								@Override
+								public void run() {
+									if (!message.isDisposed()) {
+										message.selectAll();
+									}
+								}
+							});	
+						}
+					});
 					Composite buttonComp = new Composite(shell, SWT.CENTER);
 					GridLayout buttonCompGL = new GridLayout(2, false);
 					buttonComp.setLayout(buttonCompGL);

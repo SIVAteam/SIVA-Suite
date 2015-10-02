@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 
 import javax.swing.JButton;
@@ -45,12 +46,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.iviPro.editors.annotationeditor.components.contenteditors.ContentEditor;
 import org.iviPro.editors.annotationeditor.components.contenteditors.richtext.dialog.InsertImageDialog;
 import org.iviPro.editors.annotationeditor.components.contenteditors.richtext.dialog.InsertLinkDialog;
-import org.iviPro.editors.annotationeditor.components.contenteditors.richtext.dialog.ResizeImageDialog;
-import org.iviPro.editors.common.SivaComposite;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventType;
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.model.resources.RichText;
 import org.iviPro.theme.Icons;
@@ -60,7 +61,7 @@ import org.iviPro.theme.Icons;
  * 
  * @author niederhuber
  */
-public class RichHTMLEditor extends SivaComposite {
+public class RichHTMLEditor extends ContentEditor {
 
 	private static final Integer[] FONT_SIZE = { 6, 8, 10, 12, 14, 16, 18, 20,
 			22, 24, 26, 28, 30, 32, 34, 48, 56, 64 };
@@ -75,7 +76,6 @@ public class RichHTMLEditor extends SivaComposite {
 	private JPanel rootPane;
 	private HTMLDocument document = null;
 	private JEditorPane editor;
-	private boolean notify;
 	private Element currentElement;
 	private RichText richtext;
 	
@@ -86,8 +86,8 @@ public class RichHTMLEditor extends SivaComposite {
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		setLayout(new GridLayout(1, false));
 		// Create a working copy of the original Richtext
-		this.richtext = new RichText(richtext);
-		createContent(this.richtext.getContent());
+		createContentView();
+		setContent(new RichText(richtext));		
 	}
 
 	/**
@@ -96,51 +96,35 @@ public class RichHTMLEditor extends SivaComposite {
 	 * @param html
 	 *            Content als HTML-Code
 	 */
-	public void createContent(final String html) {
+	public void createContentView() {
 		// bridge zu awt
 		frame = SWT_AWT.new_Frame(this);
-		rootPane = new JPanel();
-		rootPane.setLayout(new GridBagLayout());
-		JRootPane rp = new JRootPane();
-		rp.getContentPane().add(rootPane);
-		rp.validate();
-		frame.add(rp);
-		frame.validate();
-		
+					
 		// Componenten im AWT user interface thread erzeugen (deadlock
 		// prevention)
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				initializeLookAndFeel();
-				// content erstellen
-				initializeToolbar();
-				initializeHTMLEditor();
-				setHTML(html, false);
-			}
-		});
+		try {
+			EventQueue.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					rootPane = new JPanel();
+					rootPane.setLayout(new GridBagLayout());
+					JRootPane rp = new JRootPane();
+					rp.getContentPane().add(rootPane);
+					
+					initializeLookAndFeel();
+					// content erstellen
+					initializeToolbar();
+					initializeHTMLEditor();
 
-		rootPane.repaint();
-		rootPane.validate();
-	}
-
-	/**
-	 * Setzt den Inhalt des editors.
-	 * 
-	 * @param html
-	 *            Content als HTML-Code
-	 * @param notify
-	 *            Wenn true wird das Dokument als Dirty markiert, sonst nicht.
-	 */
-	public void setHTML(String html, boolean notify) {
-		if (html == null) {
-			html = "";
+					frame.add(rp);
+					frame.validate();
+				}
+			});
+		} catch (InvocationTargetException e) {
+			logger.error("Could not init richtext editor.", e);
+		} catch (InterruptedException e) {
+			logger.error("Could not init richtext editor.", e);
 		}
-		// document change listener wuerde das dokument sonst als dirty
-		// markieren und das ist nicht immer gewollt
-		this.notify = notify;
-		editor.setText(html);
-		this.notify = true;
 	}
 
 	/**
@@ -347,8 +331,7 @@ public class RichHTMLEditor extends SivaComposite {
 				String id = selectedPic.getId();
 				String title = selectedPic.getTitle();
 				URI src = selectedPic.getFile().getValue().toURI();
-				int width = imageDialog.getOptionSize().width;
-				int height = imageDialog.getOptionSize().height;
+				
 				/*
 				 * file:/// gibt HTML an, dass das Bild sich auf einem lokalen
 				 * Medium befident. Falls man UNC oder HTTP Pfade angeben
@@ -357,7 +340,6 @@ public class RichHTMLEditor extends SivaComposite {
 
 				new HTMLEditorKit.InsertHTMLTextAction(null, "<img id=\"" + id
 						+ "\" title=\"" + title + "\" " + "src=\"" + src
-						+ "\" width=\"" + width + "\" height=\"" + height
 						+ "\">", HTML.Tag.BODY, HTML.Tag.IMG).actionPerformed(e);
 				richtext.getPictureIds().add(id);
 			}
@@ -417,6 +399,8 @@ public class RichHTMLEditor extends SivaComposite {
 	private void initializeHTMLEditor() {
 
 		editor = new JEditorPane();
+		// content type auf text/html für richtige ausgabe
+		editor.setContentType("text/html");		
 
 		// popup menu when right clicking an image in richtext editor
 		final JPopupMenu pMenu = new JPopupMenu();
@@ -429,15 +413,6 @@ public class RichHTMLEditor extends SivaComposite {
 				removeElement(currentElement);
 				String id = (String)currentElement.getAttributes().getAttribute(HTML.Attribute.ID);
 				richtext.getPictureIds().remove(id);
-			}
-		});
-		pMenu.add(mItem);
-
-		// menu item resize
-		mItem = new JMenuItem(Messages.RichHTMLEditor_Image_Resize);
-		mItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showImgResizeDialogue(currentElement);
 			}
 		});
 		pMenu.add(mItem);
@@ -478,40 +453,6 @@ public class RichHTMLEditor extends SivaComposite {
 		});
 	
 		JScrollPane scrollPane = new JScrollPane(editor);
-		// content type auf text/html für richtige ausgabe
-		editor.setContentType("text/html");
-		document = (HTMLDocument) editor.getDocument();
-		document.setDocumentFilter(new DocumentFilter() {
-			@Override
-			public void remove(FilterBypass fb, int offset, int length)
-					throws BadLocationException {
-				Element elem = document.getCharacterElement(offset);
-				if (elem.getName().equals(HTML.Tag.IMG.toString())) {
-					String id = (String)elem.getAttributes().getAttribute(HTML.Attribute.ID);
-					richtext.getPictureIds().remove(id);				
-				}
-				super.remove(fb, offset, length);
-			}
-		});
-		// bei aenderungen am content swt componenten benachrichtigen
-		document.addDocumentListener(new DocumentListener() {
-			@Override
-			public void changedUpdate(DocumentEvent arg0) {
-				notifyContentChanged();
-			}
-
-			@Override
-			public void insertUpdate(DocumentEvent arg0) {
-				notifyContentChanged();
-			}
-			
-			@Override
-			public void removeUpdate(DocumentEvent arg0) {
-				notifyContentChanged();
-			}
-		});
-		this.richtext.setDocument(document);
-
 		// verhalten im container festlegen
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -523,45 +464,6 @@ public class RichHTMLEditor extends SivaComposite {
 		wrapperPane.setLayout(new java.awt.GridLayout(1, 1));
 		wrapperPane.add(scrollPane);
 		rootPane.add(wrapperPane, c);
-	}
-
-	private void showImgResizeDialogue(final Element currentElement) {
-		final ResizeImageDialog rid = new ResizeImageDialog(frame,
-				currentElement);
-
-		rid.addResizeListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				e.setSource(editor);
-
-				String id = currentElement
-						.getAttributes()
-						.getAttribute(
-								javax.swing.text.html.HTML.Attribute.ID)
-						.toString();
-				String title = currentElement
-						.getAttributes()
-						.getAttribute(
-								javax.swing.text.html.HTML.Attribute.TITLE)
-						.toString();
-				String src = currentElement.getAttributes()
-						.getAttribute(javax.swing.text.html.HTML.Attribute.SRC)
-						.toString();
-				int width = rid.getWidth();
-				int height = rid.getHeight();
-
-				removeElement(currentElement);
-
-				new HTMLEditorKit.InsertHTMLTextAction(null, "<img id=\"" + id
-						+ "\" title=\"" + title + "\" " + "src=\"" + src
-						+ "\" width=\"" + width + "\" height=\"" + height
-						+ "\">", HTML.Tag.BODY, HTML.Tag.IMG)
-						.actionPerformed(e);
-			}
-		});
-		// document.setCharacterAttributes(currentElement.getStartOffset(),
-		// currentElement.getEndOffset()-currentElement.getStartOffset(), true);
-
 	}
 
 	/**
@@ -608,15 +510,63 @@ public class RichHTMLEditor extends SivaComposite {
 		// komponente nicht zugreifen. die bridge SWT->AWT verhindert dies.
 		// daher dieser workaround bei dem der user-interface-thread angefordert
 		// wird
-		if (notify) {
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					SivaEvent edEvent = new SivaEvent(RichHTMLEditor.this,
-							SivaEventType.EDITOR_CHANGED, richtext);
-					notifySivaEventConsumers(edEvent);
-				}
-			});
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				SivaEvent edEvent = new SivaEvent(RichHTMLEditor.this,
+						SivaEventType.CONTENT_CHANGED, richtext);
+				notifySivaEventConsumers(edEvent);
+			}
+		});
+	}
+
+	@Override
+	public void setContent(IAbstractBean newContent) {
+		if (newContent == null) {
+			throw new IllegalArgumentException("Richtext editor always needs a valid"
+					+ " richtext as content.");
+		} else {
+			this.richtext = new RichText((RichText)newContent);
+			setDocument(richtext.getDocument());
 		}
+	}
+	
+	private void setDocument(HTMLDocument newDocument) {
+		if (newDocument == null) {
+			throw new IllegalArgumentException("Richtext editor always needs a valid"
+					+ " document to work with.");
+		} 
+		document = newDocument;		
+		document.setDocumentFilter(new DocumentFilter() {
+			@Override
+			public void remove(FilterBypass fb, int offset, int length)
+					throws BadLocationException {
+				Element elem = document.getCharacterElement(offset);
+				if (elem.getName().equals(HTML.Tag.IMG.toString())) {
+					String id = (String)elem.getAttributes().getAttribute(HTML.Attribute.ID);
+					richtext.getPictureIds().remove(id);				
+				}
+				super.remove(fb, offset, length);
+			}
+		});
+		// bei aenderungen am content swt componenten benachrichtigen
+		document.addDocumentListener(new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent arg0) {
+				notifyContentChanged();
+			}
+
+			@Override
+			public void insertUpdate(DocumentEvent arg0) {
+				notifyContentChanged();
+			}
+			
+			@Override
+			public void removeUpdate(DocumentEvent arg0) {
+				notifyContentChanged();
+			}
+		});
+		editor.setDocument(document);
+		return;
 	}
 }

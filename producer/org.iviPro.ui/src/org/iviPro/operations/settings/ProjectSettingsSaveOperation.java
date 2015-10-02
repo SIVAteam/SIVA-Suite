@@ -19,6 +19,7 @@ public class ProjectSettingsSaveOperation extends IAbstractOperation {
 	public static final String PROP_ANNO_ADDED = "settingsAdded";
 	
 	// Die Variablen zum Speichern der Operations-Daten
+	private ProjectSettings usedSettings;
 	private ProjectSettings newSettings;
 	private ProjectSettings oldSettings;
 		
@@ -32,7 +33,8 @@ public class ProjectSettingsSaveOperation extends IAbstractOperation {
 		if (newSettings == null || oldSettings == null) {
 			throw new IllegalArgumentException(
 					"None of the parameters may be null."); //$NON-NLS-1$
-		}				
+		}			
+		usedSettings = Application.getCurrentProject().getSettings();
 		this.newSettings = newSettings;
 		this.oldSettings = oldSettings;
 	}
@@ -56,14 +58,52 @@ public class ProjectSettingsSaveOperation extends IAbstractOperation {
 	@Override
 	public IStatus redo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
-		Application.getCurrentProject().setSettings(this.newSettings);
+		// Resolution
+		usedSettings.setResolutionWidth(newSettings.getResolutionWidth());
+		usedSettings.setResolutionHeight(newSettings.getResolutionHeight());
+		// Sidebars
+		usedSettings.setAnnobarVisibility(newSettings.getAnnobarVisibility());
+		usedSettings.setAnnobarOverlay(newSettings.isAnnobarOverlayEnabled());
+		usedSettings.setNavigationBarWidth(newSettings.getNavigationBarWidth());
+		usedSettings.setAnnotationBarWidth(newSettings.getAnnotationBarWidth());
+		// Colors
+		usedSettings.setPrimaryColor(newSettings.getPrimaryColor());
+		usedSettings.setSecondaryColor(newSettings.getSecondaryColor());
+		// Video settings
+		usedSettings.setVideoTitle(newSettings.getVideoTitle());
+		usedSettings.setAutoStart(newSettings.isAutostartEnabled());
+		// Player functions
+		usedSettings.setUserDiary(newSettings.isUserDiaryEnabled());
+		usedSettings.setCollaboration(newSettings.isCollaborationEnabled());
+		usedSettings.setLogging(newSettings.isLoggingEnabled());
+		usedSettings.setLoggingServerUrl(newSettings.getLoggingServerUrl());
+		
 		return Status.OK_STATUS;
 	}
 
 	@Override
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
-		Application.getCurrentProject().setSettings(this.oldSettings);
+		// Resolution
+		usedSettings.setResolutionWidth(oldSettings.getResolutionWidth());
+		usedSettings.setResolutionHeight(oldSettings.getResolutionHeight());
+		// Sidebars
+		usedSettings.setAnnobarVisibility(oldSettings.getAnnobarVisibility());
+		usedSettings.setAnnobarOverlay(oldSettings.isAnnobarOverlayEnabled());
+		usedSettings.setNavigationBarWidth(oldSettings.getNavigationBarWidth());
+		usedSettings.setAnnotationBarWidth(oldSettings.getAnnotationBarWidth());
+		// Colors
+		usedSettings.setPrimaryColor(oldSettings.getPrimaryColor());
+		usedSettings.setSecondaryColor(oldSettings.getSecondaryColor());
+		// Video settings
+		usedSettings.setVideoTitle(oldSettings.getVideoTitle());
+		usedSettings.setAutoStart(oldSettings.isAutostartEnabled());
+		// Player functions
+		usedSettings.setUserDiary(oldSettings.isUserDiaryEnabled());
+		usedSettings.setCollaboration(oldSettings.isCollaborationEnabled());
+		usedSettings.setLogging(oldSettings.isLoggingEnabled());
+		usedSettings.setLoggingServerUrl(oldSettings.getLoggingServerUrl());
+		
 		return Status.OK_STATUS;
 	}
 

@@ -35,4 +35,9 @@ public class NodeAnnotationText extends INodeAnnotationLeaf {
 		return null;
 	}
 
+	@Override
+	public String getBeanTag() {
+		return "Text annotation";
+	}
+
 }

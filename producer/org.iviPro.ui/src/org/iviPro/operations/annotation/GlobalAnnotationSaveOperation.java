@@ -16,6 +16,7 @@ import org.iviPro.model.annotation.OverlayPathItem;
 import org.iviPro.model.graph.INodeAnnotation;
 import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.ScreenArea;
+import org.iviPro.model.resources.IVideoResource;
 import org.iviPro.operations.CompoundOperation;
 import org.iviPro.operations.IAbstractOperation;
 import org.iviPro.operations.global.ChangeKeywordsOperation;
@@ -46,7 +47,8 @@ public class GlobalAnnotationSaveOperation extends IAbstractOperation {
 	public GlobalAnnotationSaveOperation(INodeAnnotation annotation,
 			AnnotationType annotationType, String title, String description,
 			String keywords, boolean mute, IAbstractBean editorContent, 
-			ScreenArea screenArea, List<OverlayPathItem> opItems) {
+			String contentDescription, long thumbnailTime, ScreenArea screenArea,
+			List<OverlayPathItem> opItems) {
 		
 		super(Messages.AnnotationSaveOperation_UndoLabel);
 		Project project = Application.getCurrentProject();
@@ -69,7 +71,8 @@ public class GlobalAnnotationSaveOperation extends IAbstractOperation {
 
 		changeAnnotation.addOperation(new ChangeMuteOperation(annotation, mute));
 		
-		changeAnnotation.addOperation(new ChangeContentOperation(annotation, editorContent));
+		changeAnnotation.addOperation(new ChangeContentOperation(annotation, editorContent, 
+				contentDescription, thumbnailTime));
 
 		List<INodeAnnotationLeaf> globalAnnotations = Application.getCurrentProject().getGlobalAnnotations();
 		if (!globalAnnotations.contains(annotation)) {

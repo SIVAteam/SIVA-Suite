@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="../../../../help.css" CHARSET="ISO-8859-1" TYPE="text/css">
+
+<title>Erstellen von Annotationen</title>
+</head>
+
+<body>
+<h1>Erstellen von Annotationen</h1>
+<p align="justify">
+Der SIVA Producer unterstützt das Erstellen verschiedener Annotationstypen. Dies sind
+Audio, Bild, Richtext, Video und PDF.
+<br><br>
+
+Will man eine Szene direkt aus dem Szenengraph annotieren so wird im Szenengraph in der Szene, der man eine 
+Annotation hinzufügen will, auf den Annoationsbutton 
+<img src="../../../../images/graph-annotations-existent.PNG" alt="Annotation vorhanden">
+(bereits Annotationen an Szene angehängt) bzw. 
+<img src="../../../../images/graph-annotations-nonexistent.PNG" alt="keine Annotation vorhanden">
+(noch keine Annotationen an Szene angehängt) geklickt.<br><br>
+<p align="center">
+<img alt="Overlay Position" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-open-in-scenegraph.jpg" width=50%><br><br>
+</p>
+
+Es öffnet sich ein neues Fenster, indem Annotationen hinzugefügt und bearbeitet werden können:<br> 
+<p align="center">
+<img alt="Annotationsfenster" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-annotation-editing-window.jpg" width=60%><br><br>
+</p>
+
+<h2>Neue Annotation hinzufügen</h2>
+Um eine neue Annotation zu erstellen, muss man auf 
+<img alt="Annotation hinzufügen" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-add-new-annotation.jpg" width="3%">
+klicken. Danach hat man die Wahl zwischen den <b>Standard-Annotationen</b> und <b>Markierungs-Annotationen</b>.<br> 
+Die <b>Standard-Annotationen</b> werden im Projekt automatisch zu dem Zeitpunkt an dem sie gesetzt wurden, angezeigt und abgespielt.
+Wurde eine <b>Markierungs-Annotation</b> erstellt, so erscheint zunächst ein Symbol, welches vom Benutzer angeklickt werden kann, 
+damit die Annotation angezeigt und abgespielt wird.<br>
+
+<p align="center">
+<img alt="Annotationsarten" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-types-of-annotations.jpg" width=60%><br><br>
+</p>
+
+Nun kann man die verschiedenen <b>Annotationstypen</b> hinzufügen:<br>
+<ul class="NavList">
+	<li><a href="createannotationsaudio.html">Erstellen von Audio-Annotationen</a></li>
+	<li><a href="createannotationsimage.html">Erstellen von Bild-Annotationen</a></li>
+	<li><a href="createannotationsrichtext.html">Erstellen von Richtext-Annotationen</a></li>
+	<li><a href="createannotationssubtitle.html">Erstellen von Untertitel-Annotationen</a></li>
+	<li><a href="createannotationsvideo.html">Erstellen von Video-Annotationen</a></li>
+	<li><a href="createannotationspdf.html">Erstellen von PDF-Annotationen</a></li>
+</ul><br>
+
+Bei den <b>Markierungs-Annotationen</b> kann man nur auswählen zwischen:
+<ul>
+	<li>Audio-Annotation</li>
+	<li>Picture-Annotation</li>
+	<li>Richtext-Annotation</li>
+	<li>Video-Annotation</li>
+	<li>PDF-Annotation</li>
+</ul>  
+
+Eine Annotation besteht immer aus einem Inhalt, einer Dauer und einem Namen. Je nach Art
+der Annotation kann der Inhalt im Programm verändert werden. Der <b>Name</b> der Annotation kann
+durch den Benutzer angegeben werden. Wird kein Name eingegeben, wird dieser automatisch vom
+Programm vergeben. 
+
+<h2>Start- und Endzeit festlegen</h2>
+Bei jeder Annotation müssen <b>Start- und Endzeitpunkt</b> festgelegt werden. 
+Dies kann auf verschiedene Arten erfolgen: 
+<ul>
+	<li>Eingabe von Start- und Endzeit in die entsprechenden Felder</li>
+	<li>Verschieben des Start- und Endzeitpunktes auf der Zeitleiste</li>
+	<li>Festlegen durch Klicks auf die Zeitleiste: Zum Festlegen des Startzeitpunktes wird
+		der Mauszeiger auf dem gewünschten Zeitpunkt auf der Zeitleiste positioniert und mit der 
+		linken Maustaste geklickt. Das Festlegen des Endzeitpunktes wird auf die gleiche Art und 
+		Weise durchgeführt, nur wird hier mit der rechen Maustaste geklickt.</li>
+</ul>
+
+<h2>Anzeigebereich der Annotation</h2>
+Außerdem kann die <b>Position</b> geändert werden, an der die Annotation angezeigt werden soll. 
+Dies kann in einem der Randbereiche oder in einem eigenen Fenster sein. 
+Mittels Doppelklick auf den Anzeigebereich öffnet sich ein neues Fenster indem man die Position und die Größe der 
+Videoanntoation bestimmen kann. <br>
+<p align="center">
+<img alt="Positionierung" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-position.jpg" width=60%><br><br>
+</p>
+<br><br>
+
+<h2>Speichern der Annotation</h2>
+Sind alle Einstellungen vorgenommen, wird die Annotation durch einen Klick auf den 
+<b>Speichern-Button</b> gespeichert. Ab sofort wird die Annotation im Zeitleistenbereich des oberen 
+Fensters angezeigt. Wollen Sie die Annotation speichern und gleich darauf eine weitere erstellen, so klicken Sie auf 
+"<b>Annotation speichern und eine Neue erstellen</b>".<br><br>
+<p align="center">
+<img alt="Speichern" src="../../../../html/components/editors/annotationeditor/images/annotationeditor-safe.jpg" width=60%><br><br>
+</p>
+
+
+</body>
+</html>

@@ -2,6 +2,7 @@ package org.iviPro.newExport.descriptor.xml.objects;
 
 import java.util.Set;
 
+import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.Project;
 import org.iviPro.model.graph.INodeAnnotation;
 import org.iviPro.model.graph.INodeAnnotationLeaf;
@@ -11,6 +12,7 @@ import org.iviPro.model.resources.IResource;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.iviPro.newExport.descriptor.xml.resources.IXMLResourceExporter;
 import org.iviPro.newExport.descriptor.xml.resources.ResourceExporterFactory;
 import org.iviPro.newExport.util.SivaTime;
@@ -63,7 +65,7 @@ public abstract class IXMLExporterNodeAnnotationLeaf extends IXMLExporter {
 	}
 	
 	@Override
-	protected final void exportObjectImpl(Object exportObj,
+	protected final void exportObjectImpl(IAbstractBean exportObj,
 			Document doc, IdManager idManager, Project project,
 			Set<Object> alreadyExported) throws ExportException {
 		
@@ -125,7 +127,9 @@ public abstract class IXMLExporterNodeAnnotationLeaf extends IXMLExporter {
 	protected abstract boolean requiresPositionInfo();
 
 	/**
-	 * Erstellt ein Trigger-Element fuer eine Annotation
+	 * Creates a trigger for the annotation.
+	 * <p/><b>Note:</b> This method may only be used for annotations which are neither global
+	 * nor trigger annotations.
 	 * 
 	 * @param doc
 	 * @param annotation
@@ -141,6 +145,10 @@ public abstract class IXMLExporterNodeAnnotationLeaf extends IXMLExporter {
 		// Vater-Szene holen um die Start-Zeiten relativ zum Szenen-Beginn
 		// berechnen zu koennen
 		Scene scene = annotation.getParentScene().getScene();
+		long sceneStartTime = 0L;
+		if (scene != null) {
+			sceneStartTime = scene.getStart();
+		}
 
 		// IDs des Triggers und der getriggerten Action holen
 		String actionID = idManager.getActionID(annotation);
@@ -152,13 +160,13 @@ public abstract class IXMLExporterNodeAnnotationLeaf extends IXMLExporter {
 		trigger.setAttribute(ATTR_REF_ACTION_ID, actionID);
 		// Falls der Trigger Start- und Endzeiten besitzt, ergaenzen wir diese
 		if (annotation.getStart() != null) {
-			long convertedStartTime = annotation.getStart() - scene.getStart();
-			String startTime = SivaTime.getSivaXMLTime(convertedStartTime);
+			String startTime = SivaTime.getSivaXMLTime(annotation.getStart() 
+					- sceneStartTime);
 			trigger.setAttribute(ATTR_TRIGGER_STARTTIME, startTime);
 		}
 		if (annotation.getEnd() != null) {
-			long convertedEndTime = annotation.getEnd() - scene.getStart();
-			String endTime = SivaTime.getSivaXMLTime(convertedEndTime);
+			String endTime = SivaTime.getSivaXMLTime(annotation.getEnd() 
+					- sceneStartTime);
 			trigger.setAttribute(ATTR_TRIGGER_ENDTIME, endTime);
 		}
 		return trigger;
@@ -184,7 +192,8 @@ public abstract class IXMLExporterNodeAnnotationLeaf extends IXMLExporter {
 		Element action = doc.createElement(tagNameAction);
 		
 		// Add description
-		String labelID = createDescriptionLabels(annotation, doc, idManager);
+		String labelID = createLabel(annotation, doc, idManager, 
+				annotation.getDescriptions(), LabelType.DESCRIPTION);
 		action.setAttribute(ATTR_REFresIDtitle, labelID);
 		
 		action.setAttribute(ATTR_ACTIONID, actionID);
@@ -261,5 +270,5 @@ public abstract class IXMLExporterNodeAnnotationLeaf extends IXMLExporter {
 	protected abstract IResource getReferencedResource();
 	
 	protected abstract void setAdditionalActionElements(Element action,
-			IdManager idManager, Document doc);
+			IdManager idManager, Document doc) throws ExportException;
 }

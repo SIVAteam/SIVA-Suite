@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
 import org.iviPro.editors.events.SivaEvent;
 import org.iviPro.editors.events.SivaEventConsumerI;
 import org.iviPro.editors.events.SivaEventType;
-import org.iviPro.mediaaccess.player.I_MediaPlayer;
+import org.iviPro.mediaaccess.player.MediaPlayer;
 import org.iviPro.mediaaccess.videograb.FrameGrabingJob;
 import org.iviPro.mediaaccess.videograb.VideoFrameConsumer;
 import org.iviPro.mediaaccess.videograb.VideoGrabSystem;
@@ -37,9 +37,9 @@ public class VideoTimelineWidget extends Composite {
 	// die Timeline
 	Timeline timeline = null;
 
-	private I_MediaPlayer mp;
+	private MediaPlayer mp;
 
-	public VideoTimelineWidget(Composite parent, int style, final I_MediaPlayer mp) {
+	public VideoTimelineWidget(Composite parent, int style, final MediaPlayer mp) {
 		super(parent, style);
 
 		// setze den Movieplayer
@@ -167,7 +167,7 @@ public class VideoTimelineWidget extends Composite {
 		 * @param style
 		 *            SWT Styles fuer die Timeline
 		 */
-		public Timeline(Composite parent, int style, final I_MediaPlayer mp) {
+		public Timeline(Composite parent, int style, final MediaPlayer mp) {
 			super(parent, style);
 
 			// Videolänge in Nanosekunden

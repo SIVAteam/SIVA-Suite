@@ -19,14 +19,11 @@ import org.eclipse.swt.widgets.Display;
 import org.iviPro.model.IPixelBasedObject;
 import org.iviPro.model.LocalizedElement;
 import org.iviPro.model.Project;
-import org.iviPro.model.imageeditor.ImageObject;
 
 /**
  * @author dellwo
  */
 public class Picture extends IPixelBasedObject implements IResource {
-
-	private LinkedList<ImageObject> objects;
 	
 	// für Bilder werden an versch. Stellen Vorschaubildchen verwendet
 	// z.B. Popup im Med.Rep oder direkt im Med.Rep
@@ -46,7 +43,6 @@ public class Picture extends IPixelBasedObject implements IResource {
 
 	public Picture(File file, Project project) {
 		super(file, null, project);
-		objects = new LinkedList<ImageObject>();
 		createThumbnails();
 	}
 	
@@ -194,26 +190,6 @@ public class Picture extends IPixelBasedObject implements IResource {
 			return des.getImageData();
 		}
 		return null;	
-	}
-
-	/**
-	 * Gibt die Liste mit ImageObjects zurueck, die auf dieses Bild gezeichnet
-	 * werden sollen (Kreis, Text, etc).
-	 * 
-	 * @return
-	 */
-	public LinkedList<ImageObject> getObjects() {
-		return objects;
-	}
-
-	/**
-	 * Setzt die Liste der ImageObjects, die auf dieses Bild gezeichnet werden
-	 * sollen (Kreis, Text, etc).
-	 * 
-	 * @param objects
-	 */
-	public void setObjects(LinkedList<ImageObject> objects) {
-		this.objects = objects;
 	}
 
 	@Override

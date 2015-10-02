@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.swt;bundle-version="3.4.2",
 Export-Package: org.iviPro.model,
  org.iviPro.model.annotation,
  org.iviPro.model.graph,
- org.iviPro.model.imageeditor,
  org.iviPro.model.quiz,
  org.iviPro.model.resources
 Import-Package: org.eclipse.jface.resource

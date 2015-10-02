@@ -45,7 +45,6 @@ import org.iviPro.model.BeanList;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.PictureGallery;
 import org.iviPro.model.Project;
-import org.iviPro.model.imageeditor.ImageObject;
 import org.iviPro.model.resources.Audio;
 import org.iviPro.model.resources.AudioPart;
 import org.iviPro.model.resources.PdfDocument;
@@ -598,7 +597,7 @@ public class MediaRepository extends IAbstractRepositoryView {
 
 				for (Object obj2 : mtg.getEntries()) {
 					MediaTreeLeaf ml = (MediaTreeLeaf) obj2;
-					if (ml.getMediaObject().getTitle().equals(bean.getTitle())) {
+					if (ml.getMediaObject() == bean) {
 						getTreeViewer().setSelection(
 								new StructuredSelection(ml));
 						break;
@@ -610,7 +609,6 @@ public class MediaRepository extends IAbstractRepositoryView {
 
 	private class PreviewPopup {
 		private Shell shell;
-		private Picture picture;
 		private Image image;
 		private int shellWidth = 150;
 		private int shellHeight;
@@ -623,10 +621,6 @@ public class MediaRepository extends IAbstractRepositoryView {
 				public void paintControl(PaintEvent pe) {
 					if (image != null) {
 						pe.gc.drawImage(image, 0, 0);
-						for (ImageObject imgObj : picture.getObjects()) {
-							org.iviPro.editors.imageeditor.ImageEditWidget
-									.drawObject(pe.gc, imgObj, image);
-						}
 						pe.gc.dispose();
 					}
 				}
@@ -642,7 +636,6 @@ public class MediaRepository extends IAbstractRepositoryView {
 		}
 
 		public void show(Picture picture, Point p) {
-			this.picture = picture;
 			if (treeViewer.getTree().isDisposed()) {
 				return;
 			}

@@ -4,13 +4,6 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.iviPro.operations.media.messages"; //$NON-NLS-1$
-	public static String MediaAddOperation_ErrorMsg;
-	public static String MediaAddOperation_LabelAudio;
-	public static String MediaAddOperation_LabelGeneralMediaObject;
-	public static String MediaAddOperation_LabelPdf;
-	public static String MediaAddOperation_LabelPicture;
-	public static String MediaAddOperation_LabelRichtext;
-	public static String MediaAddOperation_LabelVideo;
 	public static String MediaDeleteOperation_ErrorMsg;
 	public static String MediaDeleteOperation_LabelAudio;
 	public static String MediaDeleteOperation_LabelGeneralObject;

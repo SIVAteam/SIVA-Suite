@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
@@ -27,8 +30,6 @@ import org.iviPro.model.resources.PdfDocument;
 import org.iviPro.model.resources.Picture;
 import org.iviPro.model.resources.RichText;
 import org.iviPro.model.resources.Video;
-import org.iviPro.operations.OperationHistory;
-import org.iviPro.operations.media.MediaAddOperation;
 import org.iviPro.theme.Icons;
 import org.iviPro.views.mediarepository.MediaRepository;
 
@@ -125,12 +126,20 @@ public class MediaLoadAction extends Action implements IWorkbenchAction,
 
 		// Medien-Objekte hinzufuegen
 		boolean added = false;
-		for (String filename : filenames) {
-			// Der Benutzer hat eine Datei gewaehlt
-			addMediaObject(filename);
-			added = true;
+		final StringBuilder errorMsgs = new StringBuilder();
+		for (final String filename : filenames) {
+			if (addMediaObject(filename, errorMsgs)) {
+				added = true;
+			}
 		}
-
+		if (errorMsgs.length() != 0) {
+			errorMsgs.insert(0, "\n\n").insert(0, Messages.MediaLoadAction_ErrorMsg_Common);
+			Shell errorShell = new Shell(Display.getDefault());
+			MessageDialog.openInformation(errorShell,
+					Messages.MediaLoadAction_ErrorTitle,
+					errorMsgs.toString());
+		}
+		
 		// Zeige das Media-Repository an, wenn ein Medium hinzugefuegt wurde.
 		if (added) {
 			IViewPart mediaRepository = Application.getDefault().getView(
@@ -189,7 +198,7 @@ public class MediaLoadAction extends Action implements IWorkbenchAction,
 		String extsText = processMediaType(SUPPORTED_TEXT_FILES,
 				filterExtensions, arrayPos);
 		filterExtensions[4] = extsText;
-		allExtensions += extsText + "; ";
+		allExtensions += extsText + "; "; //$NON-NLS-1$
 		arrayPos += SUPPORTED_TEXT_FILES.size();
 		logger.debug("Supported text files: " + extsText); //$NON-NLS-1$
 		
@@ -255,57 +264,39 @@ public class MediaLoadAction extends Action implements IWorkbenchAction,
 	}
 
 	/**
+	 * Tries to add the media object represented by the given pathname to the media 
+	 * repository. Returns true if the object has successfully been added. If the
+	 * object could not be added, an error message is appended to the given
+	 * StringBuilder. 
 	 * 
-	 * fügt ein Medienobjekt anhand dem Pfad in ein Projekt ein
-	 * 
-	 * @param path
+	 * @param path path name of a file representing a media object
+	 * @return true if the object could be added successfully - false otherwise
 	 */
-	public void addMediaObject(String path) {
+	public boolean addMediaObject(String path, StringBuilder errorMsgs) {
 
 		File file = new File(path);
 
-		// Dateien werden nur hinzugefügt falls ein Projekt geöffnet ist
-		if (Application.getDefault().isProjectOpen()) {
-
-			// Ist eine zugehörige Gruppe gefunden worden?
-			IMediaObject mediaObj = createMediaObject(file);
-			if (mediaObj != null) {
-				BeanList<IAbstractBean> mediaObjects = Application
-						.getCurrentProject().getMediaObjects();
-				// Uses equals of IFileBasedObject
-				if (!mediaObjects.contains(mediaObj)) {
-					try {
-						OperationHistory
-								.execute(new MediaAddOperation(mediaObj));
-					} catch (Exception e) {
-						Shell errorShell = new Shell(Display.getDefault());
-						MessageDialog
-								.openInformation(
-										errorShell,
-										Messages.MediaLoadAction_ErrorTitle,
-										Messages.MediaLoadAction_ErrorMsg_TheFollowingErrorOccured
-												+ e.getMessage());
-					}
-				} else {
-					Shell errorShell = new Shell(Display.getDefault());
-					MessageDialog.openInformation(errorShell,
-							Messages.MediaLoadAction_ErrorTitle,
-							Messages.MediaLoadAction_ErrorMsg_DuplicateFile
-									+ Messages.MediaLoadAction_1 + path);
-
-				}
+		// Ist eine zugehörige Gruppe gefunden worden?
+		IMediaObject mediaObj = createMediaObject(file);
+		if (mediaObj != null) {
+			BeanList<IAbstractBean> mediaObjects = Application
+					.getCurrentProject().getMediaObjects();
+			// Uses equals of IFileBasedObject
+			if (!mediaObjects.contains(mediaObj)) {	
+				Application.getCurrentProject().getMediaObjects().add(mediaObj);
+				//TODO check if the MediaMetaSystem correctly added meta data 
+				return true;
 			} else {
-				Shell errorShell = new Shell(Display.getDefault());
-				MessageDialog.openInformation(errorShell,
-						Messages.MediaLoadAction_ErrorTitle,
-						Messages.MediaLoadAction_TypeMsg);
+				errorMsgs.append(path).append(" - ");  //$NON-NLS-1$
+				errorMsgs.append(Messages.MediaLoadAction_ErrorMsg_DuplicateFile);
+				errorMsgs.append("\n\n"); //$NON-NLS-1$
 			}
 		} else {
-			Shell errorShell = new Shell(Display.getDefault());
-			MessageDialog.openInformation(errorShell,
-					Messages.MediaLoadAction_ErrorTitle,
-					Messages.MediaLoadAction_NameMsg);
+			errorMsgs.append(path).append(" - "); //$NON-NLS-1$
+			errorMsgs.append(Messages.MediaLoadAction_ErrorMsg_Type);
+			errorMsgs.append("\n\n"); //$NON-NLS-1$
 		}
+		return false;
 	}
 
 	@Override

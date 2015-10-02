@@ -5,6 +5,7 @@ import org.iviPro.model.graph.NodeAnnotationPdf;
 import org.iviPro.model.resources.IResource;
 import org.iviPro.newExport.ExportException;
 import org.iviPro.newExport.descriptor.xml.IdManager;
+import org.iviPro.newExport.descriptor.xml.IdManager.LabelType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,7 +41,11 @@ public class XMLExporterNodeAnnotationPdf extends
 
 	@Override
 	protected void setAdditionalActionElements(Element action,
-			IdManager idManager, Document doc) {
+			IdManager idManager, Document doc) throws ExportException {
+		// Create label for PDF summary
+		String summaryLabel = createLabel(pdfAnnotation, doc, idManager,
+				pdfAnnotation.getPdf().getSummaries(), LabelType.SUMMARY);
+		action.setAttribute(ATTR_REFresIDdescription, summaryLabel);
 	}
 
 	@Override

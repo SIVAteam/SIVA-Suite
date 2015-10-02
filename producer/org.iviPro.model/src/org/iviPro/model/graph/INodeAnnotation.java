@@ -3,6 +3,7 @@
  */
 package org.iviPro.model.graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,7 +14,6 @@ import org.eclipse.draw2d.geometry.Point;
 import org.iviPro.model.LocalizedString;
 import org.iviPro.model.Project;
 import org.iviPro.model.annotation.OverlayPathItem;
-import org.iviPro.model.resources.IResource;
 
 /**
  * @author dellwo
@@ -304,35 +304,33 @@ public abstract class INodeAnnotation extends IGraphNode {
 	}
 
 	/**
-	 * Gibt den Szenen-Knoten zurueck, der dieser Annotation zugeordnet ist.
-	 * 
-	 * @return
+	 * Retrieves the parent <code>NodeScene</code> of this annotation or 
+	 * <code>null</code> if this annotation has no associated parent
+	 * <code>NodeScene</code> (e.g. is a global annotation, selection node etc.).
+	 * The retrieval in this method is implemented by following incoming
+	 * {@link DependentConnection}s.
+	 *  
+	 * @return parent <code>NodeScene</code> if available - <code>null</code> 
+	 * otherwise
 	 */
 	public NodeScene getParentScene() {
-		Collection<IGraphNode> directParents = getParents();
-		Queue<IGraphNode> workingQueue = new LinkedList<IGraphNode>();
-		workingQueue.addAll(directParents);
-
-		HashSet<IGraphNode> visited = new HashSet<IGraphNode>();
-
-		while (!workingQueue.isEmpty()) {
-			IGraphNode current = workingQueue.poll();
-			// Nur unbesuchte Knoten bearbeiten
-			if (!visited.contains(current)) {
-				visited.add(current);
-				if (current instanceof NodeScene) {
-					// Knoten ist ein Szenen-Knoten => Hurra
-					return (NodeScene) current;
-				//TODO Das sieht nach nem Bug aus ... der elseif fall wird nie erreicht!
-				} else if (!visited.contains(current)) {
-					// Kein NodeScene => In Arbeitsschlange einfuegen
-					workingQueue.addAll(current.getParents());
+		Graph graph = this.getGraph();
+		if (graph != null) {
+			Queue<IConnection> parentConns = 
+					new LinkedList<IConnection>(graph.getConnectionsByTarget(this));
+			while (!parentConns.isEmpty()) {
+				IConnection conn = parentConns.remove();
+				if (conn instanceof DependentConnection) {
+					IGraphNode source = conn.getSource();
+					if (source instanceof NodeScene) {
+						return (NodeScene)source;
+					} else {
+						parentConns.addAll(graph.getConnectionsByTarget(source));
+					}
 				}
 			}
 		}
-		// Kein NodeScene als Vorgaenger gefunden...
 		return null;
-
 	}
 	
 	public void adjustTimeToScene(NodeScene nodeScene) {
