@@ -8,7 +8,7 @@ The SIVA Producer is released as a single setup file. The installation follows t
 
 The SIVA Producer is licensed under the terms of the [Eclipse Public License v1](https://www.eclipse.org/legal/epl-v10.html). More details on its license can be found [here](./producer/about.html). The SIVA Player as well as the SIVA Server are licensed under the [GNU General Public License v3](http://www.gnu.org/copyleft/gpl.html).
 
-The SIVA Producer and the SIVA Server offer help functions which provide basic documentation. The SIVA Player uses known control concepts and offers a highly intuitive interface. Therefore, at the moment, no separate documenation is available.
+The SIVA Producer and the SIVA Server offer help functions which provide basic documentation. Additionally, an architectural overview of the producer can be found in the respective [subdirectory](./producer/ARCHITECTURE/). The SIVA Player uses known control concepts and offers a highly intuitive interface. Therefore, at the moment, no separate documentation is available.
 
 
 ## How to build SIVA Producer
