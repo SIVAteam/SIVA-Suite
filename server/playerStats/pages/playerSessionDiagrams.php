@@ -8,7 +8,7 @@ if(!in_array($_POST['chart'], array('sankey', 'sunburst', 'treemap'))){
  <div class="col border">
   <div class="row">
    <label>&nbsp;</label>
-   <input type="submit" name="submit" value="&lt;&lt;&lt; back to listing" />
+   <input type="submit" name="apply" value="&lt;&lt;&lt; back to listing" />
   </div>
  </div>
 </form>

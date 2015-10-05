@@ -8,15 +8,17 @@ establishDatabaseConnection();
 ?>
 <h1>Database Update</h1>
 <?php
+@pg_query('TRUNCATE TABLE "sivaPlayerCorrectedLog"') or throwMessage(pg_last_error());
+
 foreach((array)$reportConfig as $video => $value){
-	$value['excluded_sessions'] = explode(',', $value['excluded_sessions']);
+        $reportConfig[$video]['excluded_sessions'] = explode(',', $value['excluded_sessions']);
 }
 
 $userSessions = array();
 function writeLogEntries($id, $entries){
 	global $sessionRewriting, $userSessions, $reportConfig;
 	$userSessions[($entries[0]['user'])]++;
-	if(!in_array($entries[0]['user'], (array)$reportConfig[($entries[0]['video'])]['excluded_users']) and !in_array($userSessions[($entries[0]['user'])], (array)$reportConfig[($entries[0]['video'])]['excluded_sessions'])){
+	if(!in_array($entries[0]['user'], (array)$reportConfig[($entries[0]['video'])]['excluded_users']) and !in_array($entries[0]['user'].'-'.$userSessions[($entries[0]['user'])], (array)$reportConfig[($entries[0]['video'])]['excluded_sessions'])){
 		$cols = array('entry', 'user', 'video', 'videoVersion', 'sceneTimeOffset', 'clientTime');
 		foreach($entries as $row){
 			foreach($cols as $col){

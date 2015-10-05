@@ -13,7 +13,7 @@ $whereCols = array(
 	'videoId' => 's."video"',
 	'userId' => 's."user"',
 	'sessionId' => 'l."session"',
-	'eventType' => 'l."type"',
+	'eventType' => 'l."event"',
 	'id' => 'l."id"'
 );
 if(!isset($_GET['sort'])){
@@ -22,7 +22,7 @@ if(!isset($_GET['sort'])){
 $contains_log_table = true;
 include(dirname(__FILE__).'/includes/dataTableQueryStrings.php');
 			
-$query = str_replace('s.', 'l.', 'select l."entry" as "entryId", l."session" as "sessionId", l."user" as "userId", l."video" as "videoId", l."videoVersion", l."scene", l."event" as "eventType", l."element" as "eventElement", l."additionalInformation" as "eventExtraInfo", l."sceneTimeOffset" as "sceneTime", l."time" as "eventTime" from "sivaPlayerCorrectedLog" l '.$where.' group by l."entry", s."session", s."user", s."video", s."videoVersion", l."scene", l."event", l."element", l."additionalInformation", l."sceneTimeOffset", l."time" '.$orderBy.((isset($_POST['csv'])) ? '' : ' OFFSET '.$offset.' LIMIT '.$limit));
+$query = str_replace('s.', 'l.', 'select l."entry" as "entryId", l."session" as "sessionId", l."user" as "userId", l."video" as "videoId", l."videoVersion", l."scene", l."event" as "eventType", l."element" as "eventElement", l."additionalInformation" as "eventExtraInfo", l."sceneTimeOffset" as "sceneTime", l."clientTime" as "eventTime" from "sivaPlayerCorrectedLog" l '.$where.' group by l."entry", s."session", s."user", s."video", s."videoVersion", l."scene", l."event", l."element", l."additionalInformation", l."sceneTimeOffset", l."clientTime" '.$orderBy.((isset($_POST['csv'])) ? '' : ' OFFSET '.$offset.' LIMIT '.$limit));
 $query_amount = str_replace('s.', 'l.', 'select count(l."entry") as "amount" from "sivaPlayerCorrectedLog" l '.$where);
 
 if(isset($_POST['csv'])){
@@ -108,7 +108,11 @@ unset($tmp['limit']);
  <div class="col">
   <div class="row">
    <label>&nbsp;</label>
-   <input type="submit" name="submit" value="Apply" />
+   <input type="hidden" id="from" name="from" value="<?=$_GET['from']?>" />
+   <input type="hidden" id="to" name="to" value="<?=$_GET['to']?>" />
+   <input type="hidden" id="offset" name="offset" value="0" />
+   <input type="hidden" id="limit" name="limit" value="<?=$_GET['limit']?>" />
+   <input type="submit" name="apply" value="Apply" />
   </div>
  </div>
  <script type="text/javascript">
@@ -149,7 +153,7 @@ unset($tmp['limit']);
   <div class="row">
    <label>&nbsp;</label>
    <input type="hidden" name="where[sessionId]" value="<?=$_GET['where']['sessionId']?>" />
-   <input type="submit" name="submit" value="Apply" />
+   <input type="submit" name="apply" value="Apply" />
    <input type="submit" name="allSessions" value="Show All Sessions" />
   </div>
  </div>

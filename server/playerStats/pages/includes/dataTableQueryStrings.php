@@ -56,11 +56,18 @@ foreach((array)$_GET['where'] as $col => $value){
 foreach(array('from', 'to') as $param){
 	preg_replace('!([^0-9-]+)!i', '', $_GET[$param]);
 	if($_GET[$param] != '' and count(explode('-', $_GET[$param])) == 3){
-		$where[] = 'l."time" '.(($param == 'from') ? '>=' : '<=').' '.pg_escape_literal($_GET[$param].' '.(($param == 'from') ? '00:00:00' : '23:59:59'));
+		$t = $_GET[$param].' '.(($param == 'from') ? '00:00:00' : '23:59:59');
+		if($page != 'playerSessions.php'){
+			$t = strtotime($t) * 1000;
+		}
+		else{
+			$t = pg_escape_literal($t);
+		}
+		$where[] = ''.(($page == 'playerSessions.php') ? 's."time"' : 'l."clientTime"').' '.(($param == 'from') ? '>=' : '<=').' '.$t;
 	}
 }
 $tmp = array();
-foreach((array)$reportConfig as $video => $value){
+/*foreach((array)$reportConfig as $video => $value){
 	if(count($value['excluded_users']) > 0){
 		$where[] = '(s."video" != '.$video.' OR s."user" NOT IN ('.implode(',', $value['excluded_users']).'))';
 	}
@@ -72,7 +79,7 @@ foreach((array)$reportConfig as $video => $value){
 	if($value['excluded_sessions'] != ''){
 		$where[] = '(s."video" != '.$video.' OR s."staticSessionId" NOT IN ('.$value['excluded_sessions'].'))';
 	}
-}
+}*/
 $where = implode(' and ', $where);
 if($where != ''){
 	$where = 'where '.$where;

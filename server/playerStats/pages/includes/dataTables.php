@@ -57,6 +57,9 @@
 		if(isset($linked_cols[$col])){
 			$value = '<a href="'.str_replace(urlencode('{value}'), urlencode($value), str_replace('{value}', urlencode($value), $linked_cols[$col])).'">'.$value.'</a>';
 		}
+		if($col == 'eventTime'){
+			$value = date('Y-m-d H:i:s', $value / 1000);
+		}
 		?>
 		<td><?=$value?></td>
 		<?php

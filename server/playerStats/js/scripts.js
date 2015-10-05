@@ -38,54 +38,24 @@ function initDataTables(){
 	});
 	
 	$('table.dataTable:not(.settingTable) tr.header .order').change(function(){
-		var queryString = getParameterMap();
-		queryString['offset'] = 0;
-		if($(this).val() == ''){
-			delete queryString[$(this).attr('name')];
-		}
-		else{
-			queryString[$(this).attr('name')] = $(this).val();
-		}
-		window.location.href = '?' + generateDataTableQueryString(queryString);
+		var form = $('form')[0];
+		$.each($('select.order'), function(){
+			if($(this).val() != ''){
+				var tmp = '<input type="hidden" />';
+				$(form).append($(tmp).attr('name', $(this).attr('name')).val($(this).val()));
+			}
+		});
+		form.submit();
 	});
 	
 	$('.dataTablePagination .restriction .limit').change(function(){
-		var queryString = getParameterMap();
-		queryString['offset'] = 0;
-		queryString['limit'] = $(this).val();
-		window.location.href = '?' + generateDataTableQueryString(queryString);
+		$('#limit').val($(this).val());
+		$('form')[0].submit();
 	});
 	
 	$('input.date').datepicker({'dateFormat': 'yy-mm-dd'})
 	.change(function(){
-		var queryString = getParameterMap();
-		queryString['offset'] = 0;
-		if($(this).val() == ''){
-			delete queryString[$(this).attr('name')];
-		}
-		else{
-			queryString[$(this).attr('name')] = $(this).val();
-		}
-		window.location.href = '?' + generateDataTableQueryString(queryString);
+		$('#' + $(this).attr('name')).val($(this).val());
+		$('form')[0].submit();
 	});
-}
-
-function getParameterMap(){
-    var map = {};
-	var params = window.location.search.replace(/^\?/, '').split('&');
-	for(var i = 0; i < params.length; i++){
-		if(params[i].length > 0){
-			var param = params[i].split('=');
-			map[decodeURIComponent(param[0])] = decodeURIComponent(param[1]);
-		}
-	}
-	return map;
-}
-
-function generateDataTableQueryString(params){
-	var queryString = [];
-	for(var key in params){
-		queryString.push(params[key] = encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
-	}
-	return queryString.join('&');
 }

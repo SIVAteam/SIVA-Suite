@@ -83,7 +83,11 @@ unset($tmp['limit']);
  <div class="col">
   <div class="row">
    <label>&nbsp;</label>
-   <input type="submit" name="submit" value="Apply" />
+   <input type="hidden" id="from" name="from" value="<?=$_GET['from']?>" />
+   <input type="hidden" id="to" name="to" value="<?=$_GET['to']?>" />
+   <input type="hidden" id="offset" name="offset" value="0" />
+   <input type="hidden" id="limit" name="limit" value="<?=$_GET['limit']?>" />
+   <input type="submit" name="apply" value="Apply" />
   </div>
  </div>
 </form>
