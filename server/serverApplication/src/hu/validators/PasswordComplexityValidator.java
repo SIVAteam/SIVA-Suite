@@ -10,7 +10,7 @@ import javax.faces.validator.ValidatorException;
  * This class implements a {@link Validator} to test, if the provided password
  * is complex enough to be considered secure. The given password is complex
  * enough if it has reached a minimum length. It has to include three different
- * parts of charsets, chosen from numbers, lower case, upper case and special
+ * parts of character sets, chosen from numbers, lower case, upper case and special
  * characters. E.g the password is long enough and consists lower case, upper
  * case and numbers or upper case, numbers and special characters.
  * 

@@ -171,6 +171,7 @@ public class VideoListBean {
         private boolean startButtonAvailable;
         private boolean stopButtonAvailable;
         private boolean editButtonAvailable;
+        private boolean embeddButtonAvailable;
         private boolean deleteButtonAvailable;
         
         /**
@@ -374,6 +375,24 @@ public class VideoListBean {
          */
         public void setEditButtonAvailable(boolean availablility) {
             this.editButtonAvailable = availablility;
+        }
+        
+        /**
+         * 
+         * @return the availability of the embedd button.
+         */
+        public boolean isEmbeddButtonAvailable() {
+            return this.embeddButtonAvailable;
+        }
+
+        /**
+         * Set the the availability of the embedd button.
+         * 
+         * @param availability
+         *            to set.
+         */
+        public void setEmbeddButtonAvailable(boolean availablility) {
+            this.embeddButtonAvailable = availablility;
         }
         
         /**

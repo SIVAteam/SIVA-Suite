@@ -45,7 +45,7 @@ function focusFirstFormField(){
 	
 	fields = document.getElementById('content').getElementsByTagName('textarea');
 	if(fields.length > 0) {
-		if(focusField == undefined || fields[0].offsetTop < focusField.offsetTop) {
+		if(!fields[0].readOnly && (focusField == undefined || fields[0].offsetTop < focusField.offsetTop)) {
 			focusField = fields[0];
 		}
 	}	

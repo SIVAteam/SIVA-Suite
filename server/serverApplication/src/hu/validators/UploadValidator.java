@@ -28,7 +28,7 @@ public class UploadValidator extends AValidator {
 			throws ValidatorException {
 		Part video = (Part) data;
 		Integer maxSize = readParamInt(MAX_SIZE, comp, fctx);
-        String fileTypes = readParamString(FILE_TYPES, comp, fctx);
+		String fileTypes = readParamString(FILE_TYPES, comp, fctx);
         
 		if (maxSize != null && video.getSize() > 1024 * 1024 * maxSize) {
 			throw new ValidatorException(new FacesMessage(String.format(getValidatorMessage(TOO_BIG_MSG,
@@ -39,10 +39,10 @@ public class UploadValidator extends AValidator {
 			String types[] = fileTypes.split(",");
 			boolean found = false;
 			for(String type: types){
-				if(type.equals(video.getContentType())){
-					found = true;
-					break;
-				}
+			    if(type.equals(video.getContentType())){
+				found = true;
+				break;
+			    }
 			}
 			
 			if(!found){

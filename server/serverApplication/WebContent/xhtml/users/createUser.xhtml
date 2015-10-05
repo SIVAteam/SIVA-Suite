@@ -89,40 +89,6 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col1">#{lang.user_field_gender}</div>
-					<div class="col2">
-						<h:selectOneMenu id="gender" value="#{userBean.gender}"
-							class="#{component.valid ? '' : 'error'}" required="true"
-							requiredMessage="#{lang.select_required}">
-							<f:selectItem itemValue="Male"
-								itemLabel="#{lang.user_field_gender_male}" />
-							<f:selectItem itemValue="Female"
-								itemLabel="#{lang.user_field_gender_female}" />
-						</h:selectOneMenu>
-					</div>
-					<div class="col3">
-						<h:message for="gender" />
-					</div>
-				</div>
-				<div class="row">
-					<div class="col1">#{lang.user_field_country}</div>
-					<div class="col2">
-						<h:selectOneMenu id="country" value="#{userBean.country}"
-							class="#{component.valid ? '' : 'error'}" required="true"
-							requiredMessage="#{lang.select_required}">
-							<f:selectItem itemValue="Germany"
-								itemLabel="#{lang.user_field_country_germany}" />
-							<f:selectItem itemValue="Austria"
-								itemLabel="#{lang.user_field_country_austria}" />
-							<f:selectItem itemValue="Switzerland"
-								itemLabel="#{lang.user_field_country_switzerland}" />
-						</h:selectOneMenu>
-					</div>
-					<div class="col3">
-						<h:message for="country" />
-					</div>
-				</div>
-				<div class="row">
 					<div class="col1">#{lang.user_field_role}</div>
 					<div class="col2">
 						<h:selectOneMenu id="role" value="#{userBean.userType}"

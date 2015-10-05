@@ -9,12 +9,16 @@ DROP TABLE IF EXISTS "client" CASCADE;/*eoq*/
 DROP TABLE IF EXISTS "oauthSession" CASCADE;/*eoq*/
 DROP TABLE IF EXISTS "sivaPlayerSession" CASCADE;/*eoq*/
 DROP TABLE IF EXISTS "sivaPlayerLog" CASCADE;/*eoq*/
+DROP TABLE IF EXISTS "collaborationThread" CASCADE;/*eoq*/
+DROP TABLE IF EXISTS "collaborationPost" CASCADE;/*eoq*/
+DROP TABLE IF EXISTS "collaborationMedia" CASCADE;/*eoq*/
 
 DROP TYPE IF EXISTS "enumGender" CASCADE;/*eoq*/
 DROP TYPE IF EXISTS "enumUserType" CASCADE;/*eoq*/
 DROP TYPE IF EXISTS "enumUserGroupRole" CASCADE;/*eoq*/
 DROP TYPE IF EXISTS "enumVideoRestriction" CASCADE;/*eoq*/
 DROP TYPE IF EXISTS "enumTokenType" CASCADE;/*eoq*/
+DROP TYPE IF EXISTS "enumCollaborationThreadVisibility" CASCADE;/*eoq*/
 
 DROP VIEW IF EXISTS	"sivaPlayerLogByScene" CASCADE;/*eoq*/
 

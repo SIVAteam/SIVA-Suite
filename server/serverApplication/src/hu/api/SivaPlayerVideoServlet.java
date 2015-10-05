@@ -19,6 +19,10 @@ package hu.api;
 
 import hu.model.EParticipationRestriction;
 import hu.model.Video;
+import hu.model.api.CollaborationMedia;
+import hu.model.api.CollaborationPost;
+import hu.model.api.CollaborationThread;
+import hu.model.api.ECollaborationThreadVisibility;
 import hu.model.api.SivaPlayerLogEntry;
 import hu.model.api.SivaPlayerSession;
 import hu.model.users.EUserType;
@@ -28,6 +32,9 @@ import hu.persistence.IPersistenceProvider;
 import hu.persistence.IUserStore;
 import hu.persistence.IVideoStore;
 import hu.persistence.InconsistencyException;
+import hu.util.BrandingConfiguration;
+import hu.util.CommonUtils;
+import hu.util.MailService;
 import hu.util.SecurityUtils;
 
 import java.io.Closeable;
@@ -35,7 +42,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.RandomAccessFile;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -44,12 +53,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.zip.GZIPOutputStream;
 
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -66,17 +85,33 @@ import org.json.JSONObject;
  * @link 
  *       http://balusc.blogspot.com/2009/02/fileservlet-supporting-resume-and.html
  */
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 10, maxFileSize = 1024 * 1024 * 12, maxRequestSize = 1024 * 1024 * 101)
 public class SivaPlayerVideoServlet extends AbstractServlet {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_BUFFER_SIZE = 10240; // 10KB.
     private static final long DEFAULT_EXPIRE_TIME = 86400000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
+    private static final ArrayList<String> ALLOWED_FILE_TYPES = new ArrayList<String>() {
+	
+	private static final long serialVersionUID = 1L;
+
+	{
+	    add("jpg");
+	    add("jpeg");
+	    add("png");
+	    add("gif");
+	    add("pdf");
+	}
+    };
 
     private boolean isAJAXRequest = false;
     private String videoPath;
     private SivaPlayerSession session = null;
     private IPersistenceProvider persistenceProvider;
+    private MailService mailService;
+    private BrandingConfiguration brandingConfiguration;
+    private User currentUser = null;
 
     public void init() throws ServletException {
 
@@ -111,9 +146,9 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	response.setHeader("Access-Control-Allow-Origin", "*");
 	response.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
 	response.setHeader("Access-Control-Max-Age", "1000");
-	response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-	   
-	
+	response.setHeader("Access-Control-Allow-Headers",
+		"Content-Type, Authorization, X-Requested-With");
+
 	// URL pattern: /videoId
 	// Get request parameter from URL and check if it has been set.
 	// Show 400 if less or more parameters than allowed.
@@ -127,19 +162,28 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 
 	this.persistenceProvider = (IPersistenceProvider) getServletContext().getAttribute(
 		"PersistenceProvider");
+	this.mailService = (MailService) getServletContext().getAttribute("mailService");
+	this.brandingConfiguration = (BrandingConfiguration) getServletContext().getAttribute(
+		"brandingConfiguration");
 
+	// Check if it's a watching request
+	if (request.getPathInfo().endsWith("/watch.html")) {
+	    this.providePlayer(request, response);
+	    return;
+	}
+	
 	// Check if it's a log request and perform logging if so
 	if (request.getPathInfo().endsWith("/log") && requestType.equals("POST")) {
 	    this.doLogging(request, response);
 	    return;
 	}
-	
+
 	// Check if it's a checkSession request and provide session status if so
 	if (requestedVideo.endsWith("/getStats.js")) {
 	    this.getStats(request, response);
 	    return;
 	}
-	
+
 	// Check if user requests user secret and perform login
 	if (request.getPathInfo().endsWith("/getSecret.js") && requestType.equals("POST")) {
 	    this.provideUserSecret(request, response, requestType);
@@ -150,6 +194,42 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	// video, stop further execution, if so.
 	boolean result = handleAccess(request, response, requestType);
 	if (!result) {
+	    return;
+	}
+
+	// Check if it's collaboration request and provide data
+	if (request.getPathInfo().endsWith("/getCollaboration.js")) {
+	    this.provideCollaboration(request, response);
+	    return;
+	}
+
+	// Check if it's a thread creation request
+	if (request.getPathInfo().endsWith("/createCollaborationThread.js")) {
+	    this.createCollaborationThread(request, response);
+	    return;
+	}
+
+	// Check if it's a post creation request
+	if (request.getPathInfo().endsWith("/createCollaborationPost.js")) {
+	    this.createCollaborationPost(request, response);
+	    return;
+	}
+	
+	// Check if it's a post activation request
+	if (request.getPathInfo().endsWith("/activateCollaborationPost.js")) {
+	    this.activateCollaborationPost(request, response);
+	    return;
+	}
+
+	// Check if it's a post creation request
+	if (request.getPathInfo().endsWith("/deleteCollaborationThread.js")) {
+	    this.deleteCollaborationThread(request, response);
+	    return;
+	}
+
+	// Check if it's a post creation request
+	if (request.getPathInfo().endsWith("/deleteCollaborationPost.js")) {
+	    this.deleteCollaborationPost(request, response);
 	    return;
 	}
 
@@ -490,7 +570,7 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	    // ignore
 	}
     }
-    
+
     /**
      * Perform login and return user secret to response.
      * 
@@ -503,26 +583,25 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
      * @throws IOException
      */
     private void provideUserSecret(HttpServletRequest request, HttpServletResponse response,
-	    String requestType)
-	    throws IOException {
-	
+	    String requestType) throws IOException {
+
 	// Check if it is a GET request and provide information about
 	// the access
 	// restriction form if so
 	if (!requestType.equals("POST")) {
-	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "loginRequiredError", "login");
+	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "loginRequiredError",
+		    "login");
 	    return;
 	}
-	
+
 	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
 	IUserStore userStore = this.persistenceProvider.getUserStore();
-	
+
 	// Get video from database and show 404 if video does not exist
 	String videoDirectory = request.getPathInfo().split("/")[1];
 	Video video = videoStore.findByDirectory(videoDirectory);
 	if (video == null) {
-	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND,
-		    "videoNotExistingError");
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
 	    return;
 	}
 
@@ -531,38 +610,39 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	String userName = request.getParameter("username");
 	String userPassword = request.getParameter("password");
 	if (userName == null || userPassword == null) {
-	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
-		    "userNotFoundError");
+	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "userNotFoundError");
 	    return;
 	}
-	
-	
+
 	// Check if a user with these credentials exists and if it is
 	// not banned, show 401 if so
 	User user = userStore.findByEmail(userName);
 	String passwordHash = SecurityUtils.hash(userPassword);
 	if (user == null || !passwordHash.equals(user.getPasswordHash())) {
-	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
-		    "userNotFoundError");
+	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "userNotFoundError");
 	    return;
 	} else if (user.isBanned()) {
-	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
-		    "userBannedError");
+	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "userBannedError");
 	    return;
 	}
-	
-	// Check if video is active or user is administrator or owner of the video
+
+	// Check if video is active or user is administrator or owner of the
+	// video
 	Date currentDate = new Date();
-	if ((user == null || (!user.getUserType().equals(EUserType.Administrator) && !userStore.isUserOwnerOfVideo(user.getId(), video.getId()))) && (video.getStart() == null || video.getStart().compareTo(currentDate) > 0
-			|| (video.getStop() != null && video.getStop().compareTo(currentDate) < 0))) {
+	if ((user == null || (!user.getUserType().equals(EUserType.Administrator) && !userStore
+		.isUserOwnerOfVideo(user.getId(), video.getId())))
+		&& (video.getStart() == null || video.getStart().compareTo(currentDate) > 0 || (video
+			.getStop() != null && video.getStop().compareTo(currentDate) < 0))) {
 	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotActiveError");
 	    return;
 	}
-	
+
 	// Check if user is a group attendant if the video is group
-        // restricted
+	// restricted
 	if (video.getParticipationRestriction() == EParticipationRestriction.GroupAttendants) {
-	    if (!userStore.isUserAttendantOfGroup(user.getId(), video.getId()) && !userStore.isUserOwnerOfVideo(user.getId(), video.getId()) && user.getUserType() != EUserType.Administrator) {
+	    if (!userStore.isUserAttendantOfGroup(user.getId(), video.getId())
+		    && !userStore.isUserOwnerOfVideo(user.getId(), video.getId())
+		    && user.getUserType() != EUserType.Administrator) {
 		this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "noAttendantError");
 		return;
 	    }
@@ -576,6 +656,526 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	this.isAJAXRequest = true;
 	response.setStatus(HttpServletResponse.SC_OK);
 	this.writeJSON(response, (new JSONObject(jsonMap)).toString());
+    }
+
+    /**
+     * Write collaboration information for the given video and scene as JSON.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     */
+    private void provideCollaboration(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException {
+
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+	IUserStore userStore = this.persistenceProvider.getUserStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
+	// Get scene and show 401 if no scene is given
+	String scene = request.getParameter("scene");
+	if (scene == null || scene.equals("")) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+
+	// Get threads, posts and media from database and write it to JSON
+	List<CollaborationThread> threads = apiStore.listCollaborationThreads(video.getId(), scene);
+	JSONArray json = new JSONArray();
+	CollaborationThreadLoop: for (CollaborationThread thread : threads) {
+	    JSONObject jsonThread = new JSONObject();
+	    try {
+		jsonThread.put("threadId", thread.getId());
+		jsonThread.put("title", thread.getTitle());
+		JSONArray jsonPosts = new JSONArray();
+		int i = 0;
+		List<CollaborationPost> posts = apiStore.listCollaborationPosts(thread.getId());
+		for (CollaborationPost post : posts) {
+		    boolean isOwner = userStore.isUserOwnerOfVideo(this.currentUser.getId(),
+			    video.getId());
+
+		    // Skip thread if visibility settings are not met
+		    if (i == 0
+			    && !(thread.getVisibility() == ECollaborationThreadVisibility.All
+				    || post.getUserId() == this.currentUser.getId() || (thread
+				    .getVisibility() == ECollaborationThreadVisibility.Administrator && (isOwner || this.currentUser
+				    .getUserType() == EUserType.Administrator)))) {
+			continue CollaborationThreadLoop;
+		    }
+
+		    // Skip post if not active and not post owner, video owner
+		    // or administrator
+		    if (!post.isActive() && !isOwner
+			    && this.currentUser.getUserType() != EUserType.Administrator
+			    && post.getUserId() != this.currentUser.getId()) {
+
+			// Skip whole thread if first post is not active yet
+			if (i == 0) {
+			    continue CollaborationThreadLoop;
+			}
+			continue;
+		    }
+
+		    JSONObject jsonPost = new JSONObject();
+		    jsonPost.put("id", post.getId());
+		    User user = this.persistenceProvider.getUserStore().findById(post.getUserId());
+		    if (user != null) {
+			jsonPost.put("user", ((user.getTitle() != null) ? user.getTitle() + " "
+				: "") + user.getFirstName() + " " + user.getLastName());
+		    } else {
+			jsonPost.put("user", "Anonymous");
+		    }
+		    jsonPost.put("date", post.getDate().getTime());
+		    jsonPost.put("post", post.getPost());
+		    jsonPost.put("active", (post.isActive() || (this.currentUser.getUserType() != EUserType.Administrator && !isOwner)));
+		    jsonPost.put(
+			    "manageable",
+			    ((user != null && this.currentUser.getId() == user.getId())
+				    || this.currentUser.getUserType() == EUserType.Administrator || isOwner));
+		    JSONArray jsonMedia = new JSONArray();
+		    List<CollaborationMedia> media = apiStore.listCollaborationMedia(post.getId());
+		    for (CollaborationMedia mediaFile : media) {
+			JSONObject jsonMediaFile = new JSONObject();
+			jsonMediaFile.put("id", mediaFile.getId());
+			jsonMediaFile.put("filename", "collaboration/" + mediaFile.getId() + "-"
+				+ mediaFile.getFilename());
+			jsonMedia.put(jsonMediaFile);
+		    }
+		    jsonPost.put("media", jsonMedia);
+		    jsonPosts.put(jsonPost);
+		    i++;
+		}
+		if(i == 0){
+		    continue;
+		}
+		jsonThread.put("posts", jsonPosts);
+		jsonThread.put("start", thread.getDurationFrom());
+		jsonThread.put("end", thread.getDurationTo());
+	    } catch (JSONException e) {
+		this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    }
+	    json.put(jsonThread);
+	}
+
+	this.isAJAXRequest = true;
+	response.setStatus(HttpServletResponse.SC_OK);
+	this.writeJSON(response, json.toString());
+    }
+
+    /**
+     * Create a new {@link CollaborationThread} based on the user input.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     * @throws ServletException
+     * @throws IllegalStateException
+     */
+    private void createCollaborationThread(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException, IllegalStateException, ServletException {
+
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
+	// Get scene and show 401 if no scene is given
+	String scene = request.getParameter("scene");
+	if (scene == null || scene.equals("")) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+
+	// Create and save thread based on input
+	CollaborationThread thread = new CollaborationThread(null);
+	thread.setVideoId(video.getId());
+	thread.setScene(request.getParameter("scene"));
+	thread.setTitle(new String(request.getParameter("title").getBytes("iso-8859-1"), "UTF-8"));
+	String[] durationFrom = request.getParameter("durationFrom").split(":");
+	thread.setDurationFrom((Integer.parseInt(durationFrom[0]) * 60 + Integer
+		.parseInt(durationFrom[1])));
+	String[] durationTo = request.getParameter("durationTo").split(":");
+	thread.setDurationTo((Integer.parseInt(durationTo[0]) * 60 + Integer
+		.parseInt(durationTo[01])));
+	thread.setVisibility(ECollaborationThreadVisibility.All);
+	for (ECollaborationThreadVisibility visibility : ECollaborationThreadVisibility.values()) {
+	    if (request.getParameter("visibility").equals(visibility.toString())) {
+		thread.setVisibility(visibility);
+	    }
+	}
+
+	try {
+	    thread = apiStore.createCollaborationThread(thread);
+	} catch (InconsistencyException e) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+
+	// Create post and media and delete thread if not successful
+	if (!this.savePost(thread, video, request, response)) {
+	    try {
+		apiStore.deleteCollaborationThread(thread.getId());
+	    } catch (InconsistencyException e) {
+	    }
+	}
+    }
+
+    /**
+     * Create a new {@link CollaborationThread} based on the user input.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     * @throws ServletException
+     * @throws IllegalStateException
+     */
+    private void createCollaborationPost(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException, IllegalStateException, ServletException {
+
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
+	// Get scene and show 401 if no scene is given
+	String scene = request.getParameter("scene");
+	if (scene == null || scene.equals("")) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+
+	// Get thread from database
+	if (request.getParameter("thread") == null) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+	CollaborationThread thread = apiStore.findCollaborationThreadById(Integer.parseInt(request
+		.getParameter("thread")));
+	if (thread == null) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "threadNotExisting");
+	    return;
+	}
+
+	// Create post and media
+	this.savePost(thread, video, request, response);
+    }
+
+    /**
+     * Write current session status to response.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     * @throws ServletException
+     * @throws IllegalStateException
+     */
+    private boolean savePost(CollaborationThread thread, Video video, HttpServletRequest request,
+	    HttpServletResponse response) throws IOException, IllegalStateException,
+	    ServletException {
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+	IUserStore userStore = this.persistenceProvider.getUserStore();
+
+	// Create and save post based on input
+	CollaborationPost post = new CollaborationPost(null);
+	post.setThreadId(thread.getId());
+	post.setUserId(this.currentUser.getId());
+	post.setPost(new String(request.getParameter("post").getBytes("iso-8859-1"), "UTF-8"));
+	post.setActive(userStore.isUserOwnerOfVideo(this.currentUser.getId(), video.getId())
+		|| this.currentUser.getUserType() == EUserType.Administrator
+		|| thread.getVisibility() == ECollaborationThreadVisibility.Me);
+
+	try {
+	    post = apiStore.createCollaborationPost(post);
+	} catch (InconsistencyException e) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return false;
+	}
+
+	// Create and save media based on input
+	for (Part part : request.getParts()) {
+	    if (part.getName().equals("media[]")) {
+		String filename = this.getFileName(part).replaceAll("[^a-zA-Z0-9.-]", "");
+		String[] extension = filename.split("\\.");
+		if (filename.equals("") || extension.length <= 1
+			|| !ALLOWED_FILE_TYPES.contains(extension[extension.length - 1])) {
+		    continue;
+		}
+		CollaborationMedia media = new CollaborationMedia(null);
+		media.setPostId(post.getId());
+		media.setFilename(filename);
+		try {
+		    media = apiStore.createCollaborationMedia(media);
+		} catch (InconsistencyException e) {
+		    try {
+			apiStore.deleteCollaborationPost(post.getId());
+		    } catch (InconsistencyException e1) {
+		    }
+		    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST,
+			    "malformedDataError");
+		    return false;
+		}
+		File directory = new File(this.videoPath + "/" + video.getDirectory()
+			+ "/collaboration");
+		if (!directory.exists()) {
+		    directory.mkdir();
+		}
+		part.write(this.videoPath + "/" + video.getDirectory() + "/collaboration/"
+			+ media.getId() + "-" + media.getFilename());
+	    }
+	}
+
+	// Write positive result and information about publishing state
+	Map<String, String> jsonMap = new HashMap<String, String>();
+	jsonMap.put("saved", "true");
+	if (userStore.isUserOwnerOfVideo(this.currentUser.getId(), video.getId())
+		|| this.currentUser.getUserType() == EUserType.Administrator
+		|| thread.getVisibility() == ECollaborationThreadVisibility.Me
+		|| (thread.getVisibility() == ECollaborationThreadVisibility.Administrator && this.currentUser
+			.getUserType() == EUserType.Administrator)) {
+	    jsonMap.put("message", "collaborationPublished");
+	} else {
+	    jsonMap.put("message", "collaborationActivationNeeded");
+	    int[] videoIds = { video.getId() };
+
+	    // Initialize JSF to get property files
+	    this.getFacesContext(request, response);
+
+	    Map<Integer, List<User>> owners = userStore.getUsersOwningGroupsOfVideos(videoIds);
+	    for (User owner : owners.get(video.getId())) {
+		try {
+		    this.mailService.sendMail(owner.getEmail(), String.format(
+			    this.getCommonMessage("send_mail_new_collaboration_subject"),
+			    video.getTitle()), String.format(this
+			    .getCommonMessage("send_mail_new_collaboration"), thread.getTitle(), post.getPost(),
+			    CommonUtils.buildContextPath(
+				    "/sivaPlayerVideos/" + video.getDirectory() + "/watch.html", null) + "#0="
+					    + thread.getScene() + "%2C" + thread.getDurationFrom(),
+				    this.brandingConfiguration
+				    .getBrandingText("project_name")));
+		} catch (URISyntaxException e) {}
+		catch (IllegalArgumentException e){}
+	    }
+	}
+	this.isAJAXRequest = true;
+	response.setStatus(HttpServletResponse.SC_OK);
+	this.writeJSON(response, (new JSONObject(jsonMap)).toString());
+	return true;
+    }
+    
+    /**
+     * Activate the specified {@link CollaborationPost}.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     * @throws ServletException
+     * @throws IllegalStateException
+     */
+    private void activateCollaborationPost(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException, IllegalStateException, ServletException {
+
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+	IUserStore userStore = this.persistenceProvider.getUserStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
+	// Get postId and show 401 if no scene is given
+	if (request.getParameter("postId") == null || request.getParameter("postId").equals("")) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+
+	int postId = Integer.parseInt(request.getParameter("postId"));
+	CollaborationPost post = apiStore.findCollaborationPostById(postId);
+	
+	if(post != null){
+	    post.setActive(true);
+	    if (this.currentUser.getUserType() == EUserType.Administrator
+		    || userStore.isUserOwnerOfVideo(this.currentUser.getId(), video.getId())) {
+		try {
+		    apiStore.saveCollaborationPost(post);
+		} catch (InconsistencyException e) {
+		    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			    "databaseError");
+		    return;
+		}
+	    }
+	}
+	
+	Map<String, String> jsonMap = new HashMap<String, String>();
+	jsonMap.put("saved", "true");
+	this.isAJAXRequest = true;
+	response.setStatus(HttpServletResponse.SC_OK);
+	this.writeJSON(response, (new JSONObject(jsonMap)).toString());
+    }
+
+    /**
+     * Delete the specified {@link CollaborationThread}.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     * @throws ServletException
+     * @throws IllegalStateException
+     */
+    private void deleteCollaborationThread(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException, IllegalStateException, ServletException {
+
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+	IUserStore userStore = this.persistenceProvider.getUserStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
+	// Get threadId and show 401 if no scene is given
+	if (request.getParameter("threadId") == null || request.getParameter("threadId").equals("")) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+	
+	int threadId = Integer.parseInt(request.getParameter("threadId")); 
+	List<CollaborationPost> posts = apiStore.listCollaborationPosts(threadId);
+	
+	if (posts.size() > 0) {
+	    Integer threadPosterId = posts.get(0).getUserId();
+	    if ((threadPosterId != null && this.currentUser.getId() == threadPosterId)
+		    || this.currentUser.getUserType() == EUserType.Administrator
+		    || userStore.isUserOwnerOfVideo(this.currentUser.getId(), video.getId())) {
+		try {
+		    apiStore.deleteCollaborationThread(threadId);
+		} catch (InconsistencyException e) {
+		    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			    "databaseError");
+		    return;
+		}
+	    }
+	}
+	
+	Map<String, String> jsonMap = new HashMap<String, String>();
+	jsonMap.put("saved", "true");
+	this.isAJAXRequest = true;
+	response.setStatus(HttpServletResponse.SC_OK);
+	this.writeJSON(response, (new JSONObject(jsonMap)).toString());
+    }
+    
+    /**
+     * Delete the specified {@link CollaborationPost}.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     * @throws ServletException
+     * @throws IllegalStateException
+     */
+    private void deleteCollaborationPost(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException, IllegalStateException, ServletException {
+
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IApiStore apiStore = this.persistenceProvider.getApiStore();
+	IUserStore userStore = this.persistenceProvider.getUserStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
+	// Get postId and show 401 if no scene is given
+	if (request.getParameter("postId") == null || request.getParameter("postId").equals("")) {
+	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
+	    return;
+	}
+	
+	int postId = Integer.parseInt(request.getParameter("postId")); 
+	CollaborationPost post = apiStore.findCollaborationPostById(postId);
+	
+	if(post != null){
+	    Integer posterId = post.getUserId();
+	    if ((posterId != null && this.currentUser.getId() == posterId)
+		    || this.currentUser.getUserType() == EUserType.Administrator
+		    || userStore.isUserOwnerOfVideo(this.currentUser.getId(), video.getId())) {
+		try {
+		    apiStore.deleteCollaborationPost(postId);
+		} catch (InconsistencyException e) {
+		    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			    "databaseError");
+		    return;
+		}
+	    }
+	}
+	
+	Map<String, String> jsonMap = new HashMap<String, String>();
+	jsonMap.put("saved", "true");
+	this.isAJAXRequest = true;
+	response.setStatus(HttpServletResponse.SC_OK);
+	this.writeJSON(response, (new JSONObject(jsonMap)).toString());
+    }
+
+    /**
+     * Extracts the filename from the {@link Part} header.
+     * 
+     * @param part
+     *            to parse
+     * @return the filename
+     */
+    private String getFileName(Part part) {
+	String contentDisp = part.getHeader("content-disposition");
+	String[] tokens = contentDisp.split(";");
+	for (String token : tokens) {
+	    if (token.trim().startsWith("filename")) {
+		return token.substring(token.indexOf("=") + 2, token.length() - 1);
+	    }
+	}
+	return "";
     }
 
     /**
@@ -617,39 +1217,41 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 
 	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
 	IUserStore userStore = this.persistenceProvider.getUserStore();
-	
+
 	// Get video from database and show 404 if video does not exist
 	String videoDirectory = request.getPathInfo().split("/")[1];
 	Video video = videoStore.findByDirectory(videoDirectory);
 	if (video == null) {
-	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND,
-		    "videoNotExistingError");
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
 	    return false;
 	}
-	
-	// Check if there already is a session and whether the associated user is an administrator
+
+	// Check if there already is a session and whether the associated user
+	// is an administrator
 	// or owner of the video
-	User sessionUser = null;
 	IApiStore apiStore = this.persistenceProvider.getApiStore();
 	this.session = ((request.getParameter("token") == null || request.getParameter("token")
 		.split("-").length != 2) ? null : apiStore.findSivaPlayerSessionByToken(Integer
 		.parseInt(request.getParameter("token").split("-")[0]),
 		request.getParameter("token").split("-")[1], false));
-	if(this.session != null && this.session.getId() != null){
-	    sessionUser = userStore.findById(this.session.getUserId());
+	if (this.session != null && this.session.getId() != null) {
+	    this.currentUser = userStore.findById(this.session.getUserId());
 	}
 
-	// Check if video is active or user is administrator or owner of the video
+	// Check if video is active or user is administrator or owner of the
+	// video
 	Date currentDate = new Date();
-	if ((sessionUser == null || (!sessionUser.getUserType().equals(EUserType.Administrator) && !userStore.isUserOwnerOfVideo(sessionUser.getId(), video.getId()))) && (video.getStart() == null || video.getStart().compareTo(currentDate) > 0
-		|| (video.getStop() != null && video.getStop().compareTo(currentDate) < 0))) {
+	if ((this.currentUser == null || (!this.currentUser.getUserType().equals(
+		EUserType.Administrator) && !userStore.isUserOwnerOfVideo(this.currentUser.getId(),
+		video.getId())))
+		&& (video.getStart() == null || video.getStart().compareTo(currentDate) > 0 || (video
+			.getStop() != null && video.getStop().compareTo(currentDate) < 0))) {
 	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotActiveError");
 	    return false;
 	}
 
 	// Check if there has been a SivaPlayer session token submitted and if
 	// it hasn't been expired, generate a new token otherwise
-	User user = null;
 	if (this.session == null || this.session.getId() == null) {
 
 	    // Check if user has sufficient rights for video and show 401 if not
@@ -661,12 +1263,13 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 		if (request.getParameter("token") != null) {
 		    sessionNotice = "sessionExpiredLoginError";
 		}
-		
+
 		// Check if it is a GET request and provide information about
 		// the access
 		// restriction form if so
 		if (!requestType.equals("POST")) {
-		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, sessionNotice, "login");
+		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, sessionNotice,
+			    "login");
 		    return false;
 		}
 
@@ -674,32 +1277,40 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 		// 400 if not
 		String userName = request.getParameter("username");
 		String userPassword = request.getParameter("password");
-		if (userName == null || userPassword == null) {
+		String userSecret = request.getParameter("secret");
+		if (userName == null || (userPassword == null && userSecret == null)) {
 		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
 			    "userNotFoundError");
 		    return false;
 		}
 
-		// Check if a user with these credentials exists and if it is
-		// not banned,
-		// show 401 if so
-		user = userStore.findByEmail(userName);
-		String passwordHash = SecurityUtils.hash(userPassword);
-		if (user == null || !passwordHash.equals(user.getPasswordHash())) {
+		// Check if a user with these credentials exists
+		this.currentUser = userStore.findByEmail(userName);
+		String passwordHash = ((userPassword != null) ? SecurityUtils.hash(userPassword)
+			: "");
+		if (this.currentUser == null
+			|| (!passwordHash.equals(this.currentUser.getPasswordHash()) && !userSecret
+				.equals(this.currentUser.getSecretKey()))) {
 		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
 			    "userNotFoundError");
 		    return false;
-		} else if (user.isBanned()) {
-		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
-			    "userBannedError");
+		}
+
+		// Check if user is banned and show 401 if so
+		if (this.currentUser.isBanned()) {
+		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "userBannedError");
 		    return false;
 		}
 
 		// Check if user is a group attendant if the video is group
 		// restricted
 		if (video.getParticipationRestriction() == EParticipationRestriction.GroupAttendants) {
-		    if (!userStore.isUserAttendantOfGroup(user.getId(), video.getId()) && !userStore.isUserOwnerOfVideo(user.getId(), video.getId()) && user.getUserType() != EUserType.Administrator) {
-			this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "noAttendantError");
+		    if (!userStore.isUserAttendantOfGroup(this.currentUser.getId(), video.getId())
+			    && !userStore.isUserOwnerOfVideo(this.currentUser.getId(),
+				    video.getId())
+			    && this.currentUser.getUserType() != EUserType.Administrator) {
+			this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED,
+				"noAttendantError");
 			return false;
 		    }
 		}
@@ -709,16 +1320,13 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 		String sessionNotice = "passwordRequiredError";
 		if (request.getParameter("token") != null) {
 		    sessionNotice = "sessionExpiredPasswordError";
-		}		
-		
+		}
+
 		// Check if it is a GET request and provide information about
 		// the access
 		// restriction form if so
 		if (!requestType.equals("POST")) {
-		    this.sendError(
-			    response,
-			    HttpServletResponse.SC_UNAUTHORIZED,
-			    sessionNotice,
+		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, sessionNotice,
 			    "password");
 		    return false;
 		}
@@ -738,15 +1346,12 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 		if (request.getParameter("token") != null) {
 		    sessionNotice = "sessionExpiredTokenError";
 		}
-		
+
 		// Check if it is a GET request and provide information about
 		// the access
 		// restriction form if so
 		if (!requestType.equals("POST")) {
-		    this.sendError(
-			    response,
-			    HttpServletResponse.SC_UNAUTHORIZED,
-			    sessionNotice,
+		    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, sessionNotice,
 			    "token");
 		    return false;
 		}
@@ -769,10 +1374,10 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	    }
 
 	    // Create new session and write it to database
-	    if(!this.createSession(request, response, video, user)){
+	    if (!this.createSession(request, response, video, this.currentUser)) {
 		return false;
-	    }	    
-	    
+	    }
+
 	    // Return session information as JSON output
 	    Map<String, String> jsonMap = new HashMap<String, String>();
 	    jsonMap.put("accessToken", session.getSessionToken());
@@ -783,23 +1388,27 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	}
 	return true;
     }
-    
+
     /**
      * Creates a new {@link SivaPlayerSession}.
      * 
-     * @param video of the session.
-     * @param user of the session.
+     * @param video
+     *            of the session.
+     * @param user
+     *            of the session.
      * @return true if session could be created, false otherwise.
-     * @throws IOException 
+     * @throws IOException
      */
-    private boolean createSession(HttpServletRequest request, HttpServletResponse response, Video video, User user) throws IOException{
+    private boolean createSession(HttpServletRequest request, HttpServletResponse response,
+	    Video video, User user) throws IOException {
 	IApiStore apiStore = this.persistenceProvider.getApiStore();
 	try {
-	    while(this.session == null || this.session.getId() == null){
+	    while (this.session == null || this.session.getId() == null) {
 		this.session = new SivaPlayerSession(null, SecurityUtils.randomString(70));
-		if(request.getParameter("token2") != null && request.getParameter("token2").length() == 40){
+		if (request.getParameter("token2") != null
+			&& request.getParameter("token2").length() == 40) {
 		    String ip = request.getRemoteAddr().replaceAll("\\D+", "");
-		    if(request.getHeader("X-Forwarded-For") != null){
+		    if (request.getHeader("X-Forwarded-For") != null) {
 			ip = request.getHeader("X-Forwarded-For").replaceAll("\\D+", "");
 		    }
 		    this.session.setSecondaryToken(ip + "-" + request.getParameter("token2"));
@@ -816,24 +1425,129 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 		    "sessionCreationFailedError");
 	    return false;
 	}
-	
+
 	// Log Client IP address
-	/*ArrayList<SivaPlayerLogEntry> entries = new ArrayList<SivaPlayerLogEntry>();
-	SivaPlayerLogEntry entry = new SivaPlayerLogEntry();
-	entry.setSessionId(this.session.getId());
-	entry.setType("getClientInformation");
-	entry.setElement("ip");
-	entry.setAdditionalInformation(request.getRemoteAddr());
-	entry.setTime(new Date());
-	entries.add(entry);
-	try {
-	    apiStore.createSivaPlayerLogEntries(entries);
-	} catch (InconsistencyException ignore) {
-	    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-		    "savingError");
-	    return false;
-	}*/
+	/*
+	 * ArrayList<SivaPlayerLogEntry> entries = new
+	 * ArrayList<SivaPlayerLogEntry>(); SivaPlayerLogEntry entry = new
+	 * SivaPlayerLogEntry(); entry.setSessionId(this.session.getId());
+	 * entry.setType("getClientInformation"); entry.setElement("ip");
+	 * entry.setAdditionalInformation(request.getRemoteAddr());
+	 * entry.setTime(new Date()); entries.add(entry); try {
+	 * apiStore.createSivaPlayerLogEntries(entries); } catch
+	 * (InconsistencyException ignore) { this.sendError(response,
+	 * HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "savingError"); return
+	 * false; }
+	 */
 	return true;
+    }
+    
+    /**
+     * Provide a player for playing the current video.
+     * 
+     * @param request
+     *            servlet.
+     * @param response
+     *            servlet.
+     * @throws IOException
+     */
+    private void providePlayer(HttpServletRequest request, HttpServletResponse response)
+	    throws IOException {
+	
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	IUserStore userStore = this.persistenceProvider.getUserStore();
+
+	// Get video from database and show 404 if video does not exist
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+	
+	String token = "";
+	String externUserId = request.getParameter("externUserId");
+	String code = request.getParameter("code");
+	String firstName = request.getParameter("firstName");
+	String lastName = request.getParameter("lastName");
+	if(externUserId != null && !externUserId.equals("") && code != null){
+	    String secret = SecurityUtils.hash(video.getParticipationRestriction().toString().toLowerCase() + video.getDirectory()).substring(10, 40);
+	    if(code.equals(SecurityUtils.hash(secret + externUserId))){
+		User user = userStore.findByExternUserId(externUserId);
+		if(user == null){
+		    user = new User(null);
+		    user.setFirstName(((firstName != null) ? firstName : "External User"));
+		    user.setLastName(((lastName != null) ? lastName : "Anoymous"));
+		    user.setExternUserId(externUserId);
+		    user.setUserType(EUserType.Participant);
+		    user.setPassword(SecurityUtils.randomString(20));
+		    user.setEmail(secret + externUserId + "@anonymous.org");
+		    try {
+			user = userStore.create(user);
+		    } catch (InconsistencyException e) {
+			user = null;
+		    }
+		}
+		if(user != null){
+		    	
+		    	// generate new SivaPlayerSession and provide session token for direct
+			// video access
+			token = SecurityUtils.randomString(70);
+			SivaPlayerSession session = new SivaPlayerSession(null, token);
+			session.setUserId(user.getId());
+			session.setVideoId(video.getId());
+			session.setVideoVersion(video.getVersion());
+			try {
+			    session = this.persistenceProvider.getApiStore().createSivaPlayerSession(session);
+			    token = session.getSessionToken();
+			} catch (InconsistencyException e) {
+			    token = null;
+			}
+
+			// Log Client IP address
+			ArrayList<SivaPlayerLogEntry> entries = new ArrayList<SivaPlayerLogEntry>();
+			SivaPlayerLogEntry entry = new SivaPlayerLogEntry();
+			entry.setSessionId(session.getId());
+			entry.setType("getClientInformation");
+			entry.setElement("embeddedAccess");
+			/*
+			 * entry.setElement("ip");
+			 * entry.setAdditionalInformation(((HttpServletRequest
+			 * )this.getCurrentFcInstance
+			 * ().getExternalContext().getRequest()).getRemoteAddr());
+			 */
+			entry.setTime(new Date());
+			entries.add(entry);
+			try {
+			    this.persistenceProvider.getApiStore().createSivaPlayerLogEntries(entries);
+			} catch (InconsistencyException ignore) {	    
+			}
+		}
+	    }
+	}
+		
+	PrintWriter out = response.getWriter();
+	out.print("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
+		+ "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"de\">"
+		+ "<head>"
+		+ "<title>" + video.getTitle() + "</title>"
+		+ "<meta name=\"HandheldFriendly\" content=\"True\" />"
+		+ "<meta name=\"MobileOptimized\" content=\"400\" />"
+		+ "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no\" />"
+		+ "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />"
+		+ "<style>body,html{height:100%;margin:0;padding:0;}</style>"
+		+ "</head>"
+		+ "<body>"
+		+ "<div class=\"sivaPlayer\" style=\"display:none;\">"
+		+ "<div class=\"sivaPlayer_configuration\">"
+		+ "<span class=\"common_log\">true</span>"
+		+ "<span class=\"common_useSecretLogin\">false</span>"
+		+ "</div>"
+		+ "</div>"
+		+ "<script src=\"./XML/export.js?token=" + token + "\" type=\"text/javascript\"></script>"
+		+ "<script src=\"../../resources/SivaPlayer/js/initSivaPlayer.js?lang=en,de\" type=\"text/javascript\"></script>"
+		+ "</body>"
+		+ "</html>");
     }
 
     /**
@@ -864,46 +1578,50 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	    return;
 	}
 
+	String videoDirectory = request.getPathInfo().split("/")[1];
+	IVideoStore videoStore = this.persistenceProvider.getVideoStore();
+	Video video = videoStore.findByDirectory(videoDirectory);
+	if (video == null) {
+	    this.sendError(response, HttpServletResponse.SC_NOT_FOUND, "videoNotExistingError");
+	    return;
+	}
+
 	// Create new session if no one exists get related session otherwise
 	IApiStore apiStore = this.persistenceProvider.getApiStore();
 	if (request.getParameter("token") == null || request.getParameter("token").equals("")
 		|| request.getParameter("token").equals("undefined")) {
-	    String videoDirectory = request.getPathInfo().split("/")[1];
-	    IVideoStore videoStore = this.persistenceProvider.getVideoStore();
-	    Video video = videoStore.findByDirectory(videoDirectory);
-	    if (video == null) {
-		this.sendError(response, HttpServletResponse.SC_NOT_FOUND,
-			"videoNotExistingError");
-		return;
-	    }
-	    
+
 	    // Check if there is a user specified for logging
 	    User user = null;
-	    if(request.getParameter("email") != null && !request.getParameter("email").equals("")){
-		user = this.persistenceProvider.getUserStore().findByEmail(request.getParameter("email"));
-		if(user == null || request.getParameter("secret") == null || !user.getSecretKey().equals(request.getParameter("secret"))){
+	    if (request.getParameter("email") != null && !request.getParameter("email").equals("")) {
+		user = this.persistenceProvider.getUserStore().findByEmail(
+			request.getParameter("email"));
+		if (user == null || request.getParameter("secret") == null
+			|| !user.getSecretKey().equals(request.getParameter("secret"))) {
 		    this.sendError(response, HttpServletResponse.SC_FORBIDDEN,
-				"unknownUserCredentials");
+			    "unknownUserCredentials");
 		    return;
 		}
 	    }
-	    
+
 	    // Try to find an existing session for the provided secondary token
-	    // to add the logged data to this session, create a new session otherwise
+	    // to add the logged data to this session, create a new session
+	    // otherwise
 	    String ip = request.getRemoteAddr().replaceAll("\\D+", "");
-	    if(request.getHeader("X-Forwarded-For") != null){
+	    if (request.getHeader("X-Forwarded-For") != null) {
 		ip = request.getHeader("X-Forwarded-For").replaceAll("\\D+", "");
 	    }
-	    this.session = apiStore.findSivaPlayerSessionBySecondaryToken(ip + "-" + request.getParameter("token2"));
-	    if(this.session == null || this.session.getId() == null){
-		
+	    this.session = apiStore.findSivaPlayerSessionBySecondaryToken(ip + "-"
+		    + request.getParameter("token2"));
+	    if (this.session == null || this.session.getId() == null) {
+
 		// Create new session and write it to database
-		if(!this.createSession(request, response, video, user)){
+		if (!this.createSession(request, response, video, user)) {
 		    return;
 		}
-	    }	
+	    }
 	} else {
-	    
+
 	    // Get related session and show error if session does not exist
 	    this.session = ((request.getParameter("token").split("-").length != 2) ? null
 		    : apiStore.findSivaPlayerSessionByToken(Integer.parseInt(request.getParameter(
@@ -935,22 +1653,18 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	} catch (JSONException e) {
 	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "malformedDataError");
 	    return;
-	}
-	catch (NullPointerException e) {
+	} catch (NullPointerException e) {
 	    e.printStackTrace();
-	    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-		    "savingError");
+	    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "savingError");
 	    return;
 	}
-	
-	try{
+
+	try {
 	    apiStore.createSivaPlayerLogEntries(entries);
-	}
-	catch (InconsistencyException e) {
-	    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-		    "savingError");
+	} catch (InconsistencyException e) {
+	    this.sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "savingError");
 	    return;
-	} 
+	}
 
 	// Return positive JSON output as result of the logging
 	response.setStatus(HttpServletResponse.SC_OK);
@@ -959,12 +1673,16 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 
 	Map<String, String> jsonMap = new HashMap<String, String>();
 	jsonMap.put("logged", "true");
-	//jsonMap.put("disabledTitle", "Deaktivierung der aktuellen Beckenbodentrainerversion");
-	//jsonMap.put("disabledText", "Es ist eine neue Version des Beckenbodentrainers verfügbar. Diese Version wurde deshalb deaktiviert. Bitte laden Sie die neue Version von <br /><a href=\"http://google.de\">herunter</a>");
+	// if(video.getId() == 1 || video.getId() == 2){
+	// jsonMap.put("disabledTitle",
+	// "Deaktivierung der aktuellen Beckenbodentrainerversion");
+	// jsonMap.put("disabledText",
+	// "Es ist eine neue Version des Beckenbodentrainers verfügbar. Diese Testversion wurde aus diesem Grund deaktiviert. Bitte laden Sie die neue Version hier herunter: <br /><a href=\"http://www.klinik-prof-schedel.de/bb\">http://www.klinik-prof-schedel.de/bb</a><br /><br /><b>Bitte beachten Sie,</b> dass Sie für die Nutzung der neuen Version einen Lizenschlüssel benötigen. Diesen erhalten Sie auf Anfrage von der Klinik Prof. Schedel.");
+	// }
 	this.isAJAXRequest = true;
 	this.writeJSON(response, (new JSONObject(jsonMap)).toString());
     }
-    
+
     /**
      * Return available stats for user.
      * 
@@ -977,38 +1695,39 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
     private void getStats(HttpServletRequest request, HttpServletResponse response)
 	    throws IOException {
 
-	// Check if there is a user specified for getting the stats and abort if not
+	// Check if there is a user specified for getting the stats and abort if
+	// not
 	User user = null;
 	IApiStore apiStore = this.persistenceProvider.getApiStore();
 	if (request.getParameter("token") != null && !request.getParameter("token").equals("")
 		&& !request.getParameter("token").equals("undefined")) {
-	    SivaPlayerSession session = apiStore.findSivaPlayerSessionByToken(Integer.parseInt(request.getParameter(
-		    "token").split("-")[0]), request.getParameter("token").split("-")[1],
-		    true);
-	    if(session.getUserId() == null){
+	    SivaPlayerSession session = apiStore.findSivaPlayerSessionByToken(Integer
+		    .parseInt(request.getParameter("token").split("-")[0]),
+		    request.getParameter("token").split("-")[1], true);
+	    if (session.getUserId() == null) {
 		this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "loginRequiredTitle");
 		return;
 	    }
 	    user = new User(session.getUserId());
-	}
-	else if(request.getParameter("email") == null && !request.getParameter("email").equals("")){
+	} else if (request.getParameter("email") == null
+		&& !request.getParameter("email").equals("")) {
 	    this.sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "loginRequiredTitle");
 	    return;
-	}
-	else{
-	    user = this.persistenceProvider.getUserStore().findByEmail(request.getParameter("email"));
-	    if(user == null || request.getParameter("secret") == null || !user.getSecretKey().equals(request.getParameter("secret"))){
+	} else {
+	    user = this.persistenceProvider.getUserStore().findByEmail(
+		    request.getParameter("email"));
+	    if (user == null || request.getParameter("secret") == null
+		    || !user.getSecretKey().equals(request.getParameter("secret"))) {
 		this.sendError(response, HttpServletResponse.SC_FORBIDDEN, "unknownUserCredentials");
 		return;
 	    }
 	}
-	
+
 	// Get stats and write them to HTTP response
 	HashMap<String, Integer> stats = apiStore.getSivaPlayerSessionDurationByDay(user.getId());
-	if(stats.isEmpty()){
+	if (stats.isEmpty()) {
 	    this.sendError(response, HttpServletResponse.SC_BAD_REQUEST, "notSufficentData");
-	}
-	else{
+	} else {
 	    this.isAJAXRequest = true;
 	    this.writeJSON(response, (new JSONObject(stats).toString()));
 	}
@@ -1104,6 +1823,22 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 		}
 	    }
 	}
+    }
+
+    /**
+     * Get a message from the language file by using the key of the pair of
+     * values.
+     * 
+     * @param key
+     *            to which the corresponding message should be fetched.
+     * @return the message that is defined in the language file for a certain
+     *         key.
+     */
+    private String getCommonMessage(String key) {
+	ResourceBundle bundle = ResourceBundle.getBundle("hu.configuration.CommonMessages",
+		FacesContext.getCurrentInstance().getViewRoot().getLocale());
+
+	return bundle.getString(key);
     }
 
     /**
@@ -1223,6 +1958,49 @@ public class SivaPlayerVideoServlet extends AbstractServlet {
 	    this.length = end - start + 1;
 	    this.total = total;
 	}
+    }
 
+    protected FacesContext getFacesContext(HttpServletRequest request, HttpServletResponse response) {
+	FacesContext facesContext = FacesContext.getCurrentInstance();
+	if (facesContext == null) {
+
+	    FacesContextFactory contextFactory = (FacesContextFactory) FactoryFinder
+		    .getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+	    LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
+		    .getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+	    Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
+
+	    facesContext = contextFactory.getFacesContext(request.getSession().getServletContext(),
+		    request, response, lifecycle);
+
+	    // Set using our inner class
+	    InnerFacesContext.setFacesContextAsCurrentInstance(facesContext);
+
+	    // set a new viewRoot, otherwise context.getViewRoot returns null
+	    UIViewRoot view = facesContext.getApplication().getViewHandler()
+		    .createView(facesContext, "");
+	    facesContext.setViewRoot(view);
+	}
+	return facesContext;
+    }
+
+    public void removeFacesContext() {
+	InnerFacesContext.setFacesContextAsCurrentInstance(null);
+    }
+
+    protected Application getApplication(FacesContext facesContext) {
+	return facesContext.getApplication();
+    }
+
+    @SuppressWarnings("deprecation")
+    protected Object getManagedBean(String beanName, FacesContext facesContext) {
+	return getApplication(facesContext).getVariableResolver().resolveVariable(facesContext,
+		beanName);
+    }
+
+    private abstract static class InnerFacesContext extends FacesContext {
+	protected static void setFacesContextAsCurrentInstance(FacesContext facesContext) {
+	    FacesContext.setCurrentInstance(facesContext);
+	}
     }
 }

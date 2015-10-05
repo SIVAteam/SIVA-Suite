@@ -7,28 +7,29 @@ import java.util.Date;
  * This class represents a {@link SivaPlayerSession}.
  */
 public class SivaPlayerSession {
-	private Integer id;
-	private String token;
-	private String secondaryToken;
-	private Integer clientId;
-	private Integer userId;
-	private Integer videoId;
-	private Integer videoVersion;
-	private Date start;
-	private Date end;
-	private Date expireDate;
-	
-	/**
-     * Create a {@link SivaPlayerSession} with an id.
+    private Integer id;
+    private String token;
+    private String secondaryToken;
+    private Integer clientId;
+    private Integer userId;
+    private Integer videoId;
+    private Integer videoVersion;
+    private Date start;
+    private Date end;
+    private Date expireDate;
+
+    /**
+     * Create a {@link SivaPlayerSession} with an id and token.
      * 
+     * @param id to set
      * @param token
      *            to set.
      */
     public SivaPlayerSession(Integer id, String token) {
-    	this.id = id;
-    	this.token = token;
+	this.id = id;
+	this.token = token;
     }
-    
+
     /**
      * Get the complete session token for the current {@link SivaPlayerSession}
      * consisting of the id and a security token.

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+     
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.embeddVideo_title}</ui:define>
+		<ui:define name="content">
+			<f:metadata>
+				<f:viewAction action="#{authenticationAction.prePopulateUsername}" />
+				<f:viewParam name="videoId" value="#{videoBean.id}"
+					required="true">
+					<f:convertNumber />
+				</f:viewParam>
+				<f:event type="preRenderView" listener="#{videoAction.editVideo}" />
+			</f:metadata>
+			<div class="breadcrumb"><a href="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.listVideos_title}</a> &gt;</div>
+            <h1>#{lang.embeddVideo_title}</h1>
+			<p>
+				<h:outputText value="#{lang.embeddVideo_text}" escape="false" />
+			</p>
+			<textarea class="url" readonly="readonly">#{videoAction.embeddURL}</textarea>
+			<ui:fragment rendered="#{videoBean.participationRestriction != Group}">
+				<p>
+				 <br />
+				 <h:outputText value="#{lang.embeddVideo_textSecret}" escape="false" />
+				</p>
+				<textarea class="url" readonly="readonly">#{videoAction.embeddURL}?firstName=FIRSTNAME&amp;lastName=LASTNAME&amp;externUserId=ID&amp;code=CODE</textarea>
+				<p>
+				 <br />#{lang.embeddVideo_secretKey} <input type="text" value="#{videoAction.embeddSecret}" />
+				</p>
+			</ui:fragment>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

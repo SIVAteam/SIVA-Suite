@@ -23,7 +23,7 @@ import javax.mail.internet.MimeMessage;
  * username, password and the SMTP-port.
  * Timeout for a connection to the mail server are 20 seconds.
  */
-@ManagedBean
+@ManagedBean(name = "mailService", eager = true)
 @ApplicationScoped
 public class MailService {
     @ManagedProperty("#{configuration}")
@@ -143,8 +143,7 @@ public class MailService {
      *          text for every e-mail. The pattern $input$ will be replaced
      *          by the specific value. 
      * @return true if all mails was send without Exceptions, otherwise throw
-     *         {@link MailServiceException};
-     *         
+     *         {@link MailServiceException};      
      * @throws MailServiceException 
      */
     public synchronized boolean sendMultipleMail(Map<String, String> recipientMap, String subject, String body) {

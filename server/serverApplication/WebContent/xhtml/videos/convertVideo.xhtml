@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR http://www.w3.org/TR/xhtml1/DTD/xhtml1 /xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<body>
+	<ui:composition template="../layout.xhtml">
+		<ui:define name="title">#{lang.convertVideo_title}</ui:define>
+		<ui:define name="contextHelp">
+			<h:outputLink id="contexHelp"
+				value="#{request.contextPath}/xhtml/common/help.jsf#convertVideo"
+				target="_blank">#{lang.get_help_link}</h:outputLink>
+		</ui:define>
+		<ui:define name="content">
+			<f:metadata>
+				<f:event listener="#{authenticationAction.prePopulateUsername}"
+					type="preRenderView" />
+				<f:viewParam name="videoId" value="#{videoBean.id}" required="true">
+					<f:convertNumber />
+				</f:viewParam>
+				<f:event listener="#{videoAction.convertVideo}" type="preRenderView" />
+				<f:event listener="#{videoAction.recoverId}" type="preRenderView" />
+			</f:metadata>
+			<div class="breadcrumb">
+				<a href="#{request.contextPath}/xhtml/videos/listVideos.jsf">#{lang.listVideos_title}</a>
+				&gt;
+			</div>
+			<h1 class="narrowTitle">#{lang.convertVideo_title}</h1>
+			<ul class="navigation">
+				<li><h:outputLink
+						value="#{request.contextPath}/xhtml/videos/editVideo.jsf?videoId=#{videoBean.id}">#{lang.back_to_video_link}</h:outputLink></li>
+			</ul>
+			<h:message for="createVideoForm" class="confirmMessage" />
+			<h:messages globalOnly="true" class="errorMessage" />
+			<h:form id="createVideoForm" enctype="multipart/form-data">
+				<h:inputHidden binding="#{videoBean.hiddenId}" />
+				<div class="row">
+					<div class="col1">#{lang.video_field_project_ID}</div>
+					<div class="col2">
+						<h:outputText value="#{videoBean.id}" escape="false" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_title}</div>
+					<div class="col2">
+						<h:outputText value="#{videoBean.title}" escape="false" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_number_of_videos}</div>
+					<div class="col2"></div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_size}</div>
+					<div class="col2">
+						<h:outputText value="#{videoBean.size}" escape="false" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.video_field_last_update}</div>
+					<div class="col2">
+						<h:outputText value="#{videoBean.lastUpdated}" escape="false">
+							<f:convertDateTime pattern="#{lang.time_format}" />
+						</h:outputText>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_already_converted}</div>
+					<div class="col2">
+						<h:dataTable id="alreadyConverted"
+							value="#{videoBean.alreadyConvertedList}" var="settings"
+							styleClass="list">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="#{lang.convertVideo_screen_resolution}" />
+								</f:facet>
+								<h:outputText value="#{settings.screenResolution}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="#{lang.convertVideo_video_format}" />
+								</f:facet>
+								<h:outputText value="#{settings.videoFormatSettings}" />
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+
+				<div class="separator">
+					<div></div>
+					<h3>#{lang.convertVideo_settings_subtitle}</h3>
+					<div></div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_screen_resolution}</div>
+					<div class="col2">
+						<h:selectOneMenu id="screeResolution"
+							value="#{videoBean.screenResolution}"
+							class="#{component.valid ? '' : 'error'}" required="false"
+							requiredMessage="#{lang.select_required}">
+							<f:selectItem itemValue="#{lang.standardDefinition}" />
+							<f:selectItem itemValue="#{lang.highDefinition}" />
+							<f:selectItem itemValue="#{lang.fullHD}" />
+							<f:selectItem itemValue="#{lang.smartphone}" />
+							<f:selectItem itemValue="#{lang.tablet}" />
+							<f:selectItem itemValue="#{lang.selfDefined}" />
+						</h:selectOneMenu>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_self_defined}</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_width}</div>
+					<div class="col2">
+						<h:inputText id="width" value="#{videoBean.width}"
+							class="#{component.valid ? '' : 'error'}"
+							required="#{videoBean.selfDefinedScreenResolution}"
+							requiredMessage="#{lang.field_required}"
+							validator="LengthValidator">
+							<f:attribute name="maxLengthValidator" value="50" />
+							<f:attribute name="lengthValidator_tooLong_message"
+								value="#{lang.lengthValidator_tooLong_message}" />
+						</h:inputText>
+					</div>
+					<div class="col3">
+						<h:message for="width" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_height}</div>
+					<div class="col2">
+						<h:inputText id="height" value="#{videoBean.height}"
+							class="#{component.valid ? '' : 'error'}"
+							required="#{videoBean.selfDefinedScreenResolution}"
+							requiredMessage="#{lang.field_required}"
+							validator="LengthValidator">
+							<f:attribute name="maxLengthValidator" value="50" />
+							<f:attribute name="lengthValidator_tooLong_message"
+								value="#{lang.lengthValidator_tooLong_message}" />
+						</h:inputText>
+					</div>
+					<div class="col3">
+						<h:message for="width" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_video_format}</div>
+					<div class="col2">
+						<h:selectOneMenu id="videoFormatSettings"
+							value="#{videoBean.videoFormatSettings}"
+							class="#{component.valid ? '' : 'error'}" required="false"
+							requiredMessage="#{lang.select_required}">
+							<f:selectItem itemValue="#{lang.videoFormat_iPhone}" />
+							<f:selectItem itemValue="#{lang.videoFormat_Firefox}" />
+							<f:selectItem itemValue="#{lang.selfDefined}" />
+						</h:selectOneMenu>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_self_defined}</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_video_format}</div>
+					<div class="col2">
+						<h:selectOneMenu id="videoFormat" value="#{videoBean.videoFormat}"
+							class="#{component.valid ? '' : 'error'}"
+							required="#{videoBean.selfDefinedVideoFormat}"
+							requiredMessage="#{lang.select_required}">
+							<f:selectItem itemValue="#{lang.videoFormat_mp4}" />
+							<f:selectItem itemValue="#{lang.videoFormat_webm}" />
+						</h:selectOneMenu>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_audio_format}</div>
+					<div class="col2">
+						<h:selectOneMenu id="audioFormat" value="#{videoBean.audioFormat}"
+							class="#{component.valid ? '' : 'error'}"
+							required="#{videoBean.selfDefinedVideoFormat}"
+							requiredMessage="#{lang.select_required}">
+							<f:selectItem itemValue="#{lang.audioFormat_mp3}" />
+							<f:selectItem itemValue="#{lang.audioFormat_ogg}" />
+						</h:selectOneMenu>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1 button_space"></div>
+					<div class="col2">
+						<h:inputHidden value="#{videoBean.id}" />
+						<h:commandButton action="#{videoAction.addSettings}"
+							value="#{lang.convertVideo_add}" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_saved_settings}</div>
+					<div class="col2">
+						<h:dataTable id="savedSettings" value="#{videoBean.list}"
+							var="settings" styleClass="list">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="#{lang.convertVideo_screen_resolution}" />
+								</f:facet>
+								<h:outputText value="#{settings.screenResolution}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="#{lang.convertVideo_video_format}" />
+								</f:facet>
+								<h:outputText value="#{settings.videoFormatSettings}" />
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+				<div class="separator">
+					<div></div>
+					<h3>#{lang.convertVideo_convert_subtitle}</h3>
+					<div></div>
+				</div>
+				<div class="row">
+					<div class="col1">#{lang.convertVideo_send_email}</div>
+					<div class="col2">
+						<h:selectBooleanCheckbox id="sendEmail"
+							value="#{videoBean.sendEmail}" />
+						#{lang.yes}
+					</div>
+					<div class="col3">
+						<h:message for="sendEmail" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col1 button_space"></div>
+					<div class="col2">
+						<h:commandButton action="#{videoAction.convertVideo}"
+							value="#{lang.convertVideo_convert}" />
+					</div>
+				</div>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

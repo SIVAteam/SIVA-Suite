@@ -30,6 +30,7 @@ public class User {
     private boolean visible;
     private boolean photoAvailable;
     private String secretKey;
+    private String externUserId;
     
     /**
      * Create a {@link User} with a id.
@@ -397,11 +398,29 @@ public class User {
     /**
      * Set the secret key of the {@link User}.
      * 
-     * @param website
+     * @param secret key
      *            to set.
      */
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+    
+    /**
+     * 
+     * @return the external user id of the {@link User}.
+     */
+    public String getExternUserId() {
+        return this.externUserId;
+    }
+
+    /**
+     * Set the external user id of the {@link User}.
+     * 
+     * @param external user id
+     *            to set.
+     */
+    public void setExternUserId(String externUserId) {
+        this.externUserId = externUserId;
     }
     
     /**

@@ -90,14 +90,6 @@
     <url-pattern>/branding/*</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>Video Servlet</servlet-name>
-    <servlet-class>hu.api.VideoServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Video Servlet</servlet-name>
-    <url-pattern>/videos/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>Siva Player Video Servlet</servlet-name>
     <servlet-class>hu.api.SivaPlayerVideoServlet</servlet-class>
   </servlet>

@@ -6,8 +6,8 @@ import hu.model.users.User;
 import java.util.Date;
 
 /**
- * This class represents a {@link Video}. A {@link Video}
- * belongs to an {@link Group} and may contain several {@link AQuestion}s.
+ * This class represents a {@link Video}. A {@link Video} belongs to an
+ * {@link Group} and may contain several {@link AQuestion}s.
  */
 public class Video {
     private Integer id = null;
@@ -38,7 +38,7 @@ public class Video {
      *            to set.
      */
     public Video(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     /**
@@ -46,7 +46,7 @@ public class Video {
      * @return the title of the {@link Video}.
      */
     public String getTitle() {
-        return this.title;
+	return this.title;
     }
 
     /**
@@ -56,7 +56,7 @@ public class Video {
      *            to set.
      */
     public void setTitle(String title) {
-        this.title = title;
+	this.title = title;
     }
 
     /**
@@ -64,7 +64,7 @@ public class Video {
      * @return the description of the {@link Video}.
      */
     public String getDescription() {
-        return this.description;
+	return this.description;
     }
 
     /**
@@ -74,7 +74,7 @@ public class Video {
      *            to set.
      */
     public void setDescription(String description) {
-        this.description = description;
+	this.description = description;
     }
 
     /**
@@ -82,7 +82,7 @@ public class Video {
      * @return the {@link Date} when the {@link Video} starts.
      */
     public Date getStart() {
-        return this.start;
+	return this.start;
     }
 
     /**
@@ -92,7 +92,7 @@ public class Video {
      *            to set.
      */
     public void setStart(Date start) {
-        this.start = start;
+	this.start = start;
     }
 
     /**
@@ -100,7 +100,7 @@ public class Video {
      * @return the {@link Date} when the {@link Video} stops.
      */
     public Date getStop() {
-        return this.stop;
+	return this.stop;
     }
 
     /**
@@ -110,14 +110,14 @@ public class Video {
      *            to set.
      */
     public void setStop(Date stop) {
-        this.stop = stop;
+	this.stop = stop;
     }
-    
+
     /**
      * @return true if the {@link Video} can be downloaded as zip file.
      */
     public boolean isZipDownloadEnabled() {
-        return this.zipDownloadEnabled;
+	return this.zipDownloadEnabled;
     }
 
     /**
@@ -127,15 +127,15 @@ public class Video {
      *            to set.
      */
     public void setZipDownloadEnabled(boolean zipDownloadEnabled) {
-        this.zipDownloadEnabled = zipDownloadEnabled;
+	this.zipDownloadEnabled = zipDownloadEnabled;
     }
-    
+
     /**
      * 
      * @return the ChromeApp URL for the {@link Video}.
      */
     public String getChromeAppURL() {
-        return this.chromeAppURL;
+	return this.chromeAppURL;
     }
 
     /**
@@ -145,30 +145,29 @@ public class Video {
      *            to set.
      */
     public void setChromeAppURL(String chromeAppURL) {
-        this.chromeAppURL = chromeAppURL;
+	this.chromeAppURL = chromeAppURL;
     }
 
     /**
      * 
-     * @return true if the {@link Video} is published for all user
-     *         groups, false otherwise.
+     * @return true if the {@link Video} is published for all user groups, false
+     *         otherwise.
      */
     public boolean isPublished() {
-        return this.published;
+	return this.published;
     }
 
     /**
-     * Set the flag if the {@link Video} is published for all user
-     * groups.
+     * Set the flag if the {@link Video} is published for all user groups.
      * 
      * @param published
-     *            is true if the {@link Video} is published for all user
-     *            groups, false if the {@link Video} is only visible for
-     *            {@link User}s with {@link EUserType#Administrator}
-     *            "Administrator" and owner of the {@link Video}.
+     *            is true if the {@link Video} is published for all user groups,
+     *            false if the {@link Video} is only visible for {@link User}s
+     *            with {@link EUserType#Administrator} "Administrator" and owner
+     *            of the {@link Video}.
      */
     public void setPublished(boolean published) {
-        this.published = published;
+	this.published = published;
     }
 
     /**
@@ -176,7 +175,7 @@ public class Video {
      * @return the password of the {@link Video}.
      */
     public String getPassword() {
-        return this.password;
+	return this.password;
     }
 
     /**
@@ -186,15 +185,15 @@ public class Video {
      *            to set.
      */
     public void setPassword(String password) {
-        this.password = password;
+	this.password = password;
     }
-    
+
     /**
      * 
      * @return the directory of the {@link Video}.
      */
     public String getDirectory() {
-        return this.directory;
+	return this.directory;
     }
 
     /**
@@ -204,33 +203,33 @@ public class Video {
      *            to set.
      */
     public void setDirectory(String directory) {
-        this.directory = directory;
+	this.directory = directory;
     }
-    
+
     /**
      * 
      * @return rating points of the {@link Video}.
      */
     public Integer getRatingPoints() {
-        return this.ratingPoints;
+	return this.ratingPoints;
     }
 
     /**
      * Set rating points of the {@link Video}.
      * 
-     * @param rating points
-     *            to set.
+     * @param rating
+     *            points to set.
      */
     public void setRatingPoints(Integer ratingPoints) {
-        this.ratingPoints = ratingPoints;
+	this.ratingPoints = ratingPoints;
     }
-    
+
     /**
      * 
      * @return ratings of the {@link Video}.
      */
     public Integer getRatings() {
-        return this.ratings;
+	return this.ratings;
     }
 
     /**
@@ -240,15 +239,15 @@ public class Video {
      *            to set.
      */
     public void setRatings(Integer ratings) {
-        this.ratings = ratings;
+	this.ratings = ratings;
     }
-    
+
     /**
      * 
      * @return views of the {@link Video}.
      */
     public Integer getViews() {
-        return this.views;
+	return this.views;
     }
 
     /**
@@ -258,15 +257,15 @@ public class Video {
      *            to set.
      */
     public void setViews(Integer views) {
-        this.views = views;
+	this.views = views;
     }
-    
+
     /**
      * 
      * @return downloads of the {@link Video}.
      */
     public Integer getDownloads() {
-        return this.downloads;
+	return this.downloads;
     }
 
     /**
@@ -276,15 +275,15 @@ public class Video {
      *            to set.
      */
     public void setDownloads(Integer downloads) {
-        this.downloads = downloads;
+	this.downloads = downloads;
     }
-    
+
     /**
      * 
      * @return size of the {@link Video} in bytes.
      */
     public Long getSize() {
-        return this.size;
+	return this.size;
     }
 
     /**
@@ -294,15 +293,15 @@ public class Video {
      *            in bytes to set.
      */
     public void setSize(Long size) {
-        this.size = size;
+	this.size = size;
     }
-    
+
     /**
      * 
      * @return the author's id of the {@link Video}.
      */
     public Integer getAuthorId() {
-        return this.authorId;
+	return this.authorId;
     }
 
     /**
@@ -312,15 +311,15 @@ public class Video {
      *            to set.
      */
     public void setAuthorId(Integer authorId) {
-        this.authorId = authorId;
+	this.authorId = authorId;
     }
-    
+
     /**
      * 
      * @return creation date of the {@link Video}.
      */
     public Date getCreated() {
-        return this.created;
+	return this.created;
     }
 
     /**
@@ -330,15 +329,15 @@ public class Video {
      *            to set.
      */
     public void setCreated(Date created) {
-        this.created = created;
+	this.created = created;
     }
-    
+
     /**
      * 
      * @return last update date of the {@link Video}.
      */
     public Date getLastUpdated() {
-        return this.lastUpdated;
+	return this.lastUpdated;
     }
 
     /**
@@ -348,15 +347,15 @@ public class Video {
      *            to set.
      */
     public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+	this.lastUpdated = lastUpdated;
     }
-    
+
     /**
      * 
      * @return version of the {@link Video}.
      */
     public Integer getVersion() {
-        return this.version;
+	return this.version;
     }
 
     /**
@@ -366,16 +365,15 @@ public class Video {
      *            to set.
      */
     public void setVersion(Integer version) {
-        this.version = version;
+	this.version = version;
     }
 
     /**
      * 
-     * @return the {@link EParticipationRestriction} for the
-     *         {@link Video}.
+     * @return the {@link EParticipationRestriction} for the {@link Video}.
      */
     public EParticipationRestriction getParticipationRestriction() {
-        return this.participationRestriction;
+	return this.participationRestriction;
     }
 
     /**
@@ -384,9 +382,8 @@ public class Video {
      * @param participationRestriction
      *            to set.
      */
-    public void setParticipationRestriction(
-            EParticipationRestriction participationRestriction) {
-        this.participationRestriction = participationRestriction;
+    public void setParticipationRestriction(EParticipationRestriction participationRestriction) {
+	this.participationRestriction = participationRestriction;
     }
 
     /**
@@ -394,38 +391,39 @@ public class Video {
      * @return the id of the {@link Video}.
      */
     public Integer getId() {
-        return this.id;
+	return this.id;
     }
 
     @Override
     public String toString() {
-        return String.format("Video (%d) \"%s\"", this.id, this.title);
+	return String.format("Video (%d) \"%s\"", this.id, this.title);
     }
 
     @Override
     public int hashCode() {
-        return (this.id == null) ? 0 : this.id.hashCode();
+	return (this.id == null) ? 0 : this.id.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (this.getClass() != obj.getClass()) {
-            return false;
-        }
-        Video other = (Video) obj;
-        if (this.id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!this.id.equals(other.id)) {
-            return false;
-        }
-        return true;
+	if (this == obj) {
+	    return true;
+	}
+	if (obj == null) {
+	    return false;
+	}
+	if (this.getClass() != obj.getClass()) {
+	    return false;
+	}
+	Video other = (Video) obj;
+	if (this.id == null) {
+	    if (other.id != null) {
+		return false;
+	    }
+	} else if (!this.id.equals(other.id)) {
+	    return false;
+	}
+	return true;
     }
+
 }

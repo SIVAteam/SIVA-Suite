@@ -99,12 +99,13 @@
                  #{lang.videotable_options}  
                 </f:facet>
                 <h:outputLink value="#{request.contextPath}/xhtml/videos/accessVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.participationButtonAvailable}">#{lang.listVideos_participate_link}</h:outputLink>
+				<h:outputLink value="#{request.contextPath}/xhtml/videos/embeddVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.embeddButtonAvailable}">#{lang.listVideos_embedd_video_link}</h:outputLink>
                 <h:outputLink value="#{request.contextPath}/xhtml/videos/downloadVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.zipDownloadButtonAvailable}">#{lang.listVideos_zip_download_link}</h:outputLink>
                 <h:outputLink value="#{entry.video.chromeAppURL}" target="_blank" class="tableLink" rendered="#{entry.chromeAppDownloadButtonAvailable}">#{lang.listVideos_chromeApp_download_link}</h:outputLink>
                 <h:outputLink value="#{request.contextPath}/xhtml/videos/startVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.startButtonAvailable}">#{lang.listVideos_start_video_link}</h:outputLink>
                 <h:outputLink value="#{request.contextPath}/xhtml/videos/stopVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.stopButtonAvailable}">#{lang.listVideos_stop_video_link}</h:outputLink>
                 <h:outputLink value="#{request.contextPath}/xhtml/videos/editVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.editButtonAvailable}">#{lang.listVideos_edit_video_link}</h:outputLink>
-                <h:outputLink value="#{request.contextPath}/xhtml/videos/deleteVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.deleteButtonAvailable}">#{lang.listQuesitonnaires_delete_video_link}</h:outputLink> 
+                <h:outputLink value="#{request.contextPath}/xhtml/videos/deleteVideo.jsf?videoId=#{entry.video.id}" class="tableLink" rendered="#{entry.deleteButtonAvailable}">#{lang.listVideos_delete_video_link}</h:outputLink> 
                </h:column> 
             </h:dataTable>
 			<div class="pagination">

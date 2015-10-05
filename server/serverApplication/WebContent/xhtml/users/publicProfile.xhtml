@@ -16,7 +16,7 @@
 
 			<h1 class="narrowTitle">#{userBean.lastName}, #{userBean.firstName}#{userBean.academicTitle != null ? ', ' : ''}#{userBean.academicTitle}</h1>
 			<ul class="navigation">
-				<li><h:outputLink value="javascript:history:back()">#{lang.back}</h:outputLink></li>
+				<li><h:outputLink value="javascript:history.back()">#{lang.back}</h:outputLink></li>
 			</ul>
 			<form id="#publicProfileForm">
 				<div class="row">
@@ -28,7 +28,7 @@
 						<div class="col2">
 							<p>
 								<h:outputText value="#{lang.user_field_gender_male}" rendered="#{userBean.gender == 'Male'}" />
-								<h:outputText value="#{lang.user_field_gender_female}" rendered="#{userBean.gender != 'Male'}" />
+								<h:outputText value="#{lang.user_field_gender_female}" rendered="#{userBean.gender == 'Female'}" />
 							</p>
 							<p>
 								<h:outputText value="#{lang.user_field_country_germany}" rendered="#{userBean.country == 'Germany'}" />

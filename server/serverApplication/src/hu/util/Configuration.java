@@ -52,7 +52,6 @@ public class Configuration {
      * 
      * @param key
      *            of the entry.
-     * 
      * @return the value of the entry.
      */
     public String getString(String key) {

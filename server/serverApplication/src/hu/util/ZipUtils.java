@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * This class supports extracting ZIP files.
+ */
 public class ZipUtils {
 	private static final int BUFFER_SIZE = 4096;
 
@@ -35,7 +38,6 @@ public class ZipUtils {
 
 	/***
 	 * Extract zipfile to outdir with complete directory structure
-	 * 
 	 * @param zipfile
 	 *            Input .zip file
 	 * @param outdir

@@ -7,7 +7,7 @@ CREATE TABLE "user" (
     "firstName" VARCHAR(50) NOT NULL,
     "lastName" VARCHAR(50) NOT NULL,
     "email" VARCHAR(100) NOT NULL UNIQUE,
-    "gender" "enumGender" NOT NULL,
+    "gender" "enumGender" NULL,
     "birthday" DATE NULL,
     "street" VARCHAR(255) NULL,
     "zip" VARCHAR(20) NULL,
@@ -25,6 +25,7 @@ CREATE TABLE "user" (
     "registered" DATE DEFAULT NOW(),
     "lastLogin" DATE NULL,
 	"secretKey" varchar(50) NULL,
+	"externUserId" varchar(50) NULL,
     CONSTRAINT "HuConstraint0001" CHECK ("deletable" OR (NOT "banned")),
     CONSTRAINT "HuConstraint0002" CHECK ("deletable" OR ("type" = 'administrator'))
 );/*eoq*/
@@ -215,3 +216,29 @@ CREATE VIEW "sivaPlayerLogVideoNavigation" AS SELECT l.* FROM "sivaPlayerLogBySc
 CREATE VIEW "sivaPlayerLogAnnotation" AS SELECT l.* FROM "sivaPlayerLogByScene" l WHERE "event" IN ('openImageAnnotation', 'closeImageAnnotation', 'changeOpenedImage', 'clickMarkerAnnotation', 'manageMediaAnnotation', 'openAnnotationArea', 'closeAnnotationArea');
 CREATE VIEW "sivaPlayerSessionDurationByClientTime" AS SELECT s."id" AS "session", s."user", to_char(to_timestamp(l."clientTime" / 1000), 'YYYY-MM-DD') AS "day", (max(l."clientTime") - min(l."clientTime")) AS "duration" FROM "sivaPlayerLog" l, "sivaPlayerSession" s WHERE l."session" = s."id" AND s."deleted" = false AND l.deleted = false GROUP BY s."id", s."user", "day";
 CREATE VIEW "sivaPlayerSessionDurationByDayAndUser" AS SELECT "user", "day", SUM("duration") as "duration" FROM "sivaPlayerSessionDurationByClientTime" GROUP BY "user", "day";/*eoq*/
+
+CREATE TYPE "enumCollaborationThreadVisibility" AS ENUM ('all', 'me', 'administrator');/*eoq*/
+CREATE TABLE "collaborationThread"(
+"id" SERIAL PRIMARY KEY NOT NULL,
+"video" INT REFERENCES "video"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+"scene" VARCHAR(255) NOT NULL,
+"title" VARCHAR(255) NOT NULL,
+"durationFrom" INT NOT NULL,
+"durationTo" INT NOT NULL,
+"visibility" "enumCollaborationThreadVisibility" NOT NULL
+);/*eoq*/
+
+CREATE TABLE "collaborationPost"(
+"id" SERIAL PRIMARY KEY NOT NULL,
+"thread" INT REFERENCES "collaborationThread"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+"user" INT REFERENCES "user"("id"),
+"date" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+"post" TEXT,
+"active" BOOLEAN NOT NULL DEFAUlT FALSE
+);/*eoq*/
+
+CREATE TABLE "collaborationMedia"(
+"id" SERIAL PRIMARY KEY NOT NULL,
+"post" INT REFERENCES "collaborationPost"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+"filename" VARCHAR(255)
+);/*eoq*/

@@ -69,6 +69,9 @@ public class BrandingConfiguration {
                 return brandingProperties.getProperty(key + "_en");
             }
         }
+        else if (brandingProperties.containsKey(key)){
+            return brandingProperties.getProperty(key);
+        }
         return "! KEY NOT FOUND IN BrandingConfiguration.properties !";
     }
 

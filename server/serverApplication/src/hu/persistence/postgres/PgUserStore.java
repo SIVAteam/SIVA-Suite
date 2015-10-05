@@ -39,18 +39,19 @@ public class PgUserStore implements IUserStore {
     private static final String SELECT_USERS_OWNING_GROUPS_OF_VIDEOS = "SELECT q.\"id\" AS \"video\", u.* FROM \"video\" q INNER JOIN \"group\" e ON (e.\"id\" = q.\"group\") INNER JOIN \"userToGroup\" ute ON (ute.\"group\" = e.\"id\" AND ute.\"role\" = 'owner') INNER JOIN \"user\" u ON (ute.\"user\" = u.\"id\") WHERE q.\"id\" IN (%s)";
     private static final String SELECT_GROUP_ATTENDANTS_BY_GROUP_ID = "SELECT u.* FROM \"userToGroup\" e INNER JOIN \"user\" u ON (u.\"id\" = e.\"user\") WHERE e.\"group\" = ? AND e.\"role\" = 'attendant' ORDER BY u.\"id\" ASC";
     private static final String DELETE_USER = "DELETE FROM \"user\" WHERE \"id\" = ?";
-    private static final String UPDATE_USER_WITHOUT_PASSWORD = "UPDATE \"user\" SET \"title\" = ?, \"firstName\" = ?, \"lastName\" = ?, \"email\" = ?, \"gender\" = ?::\"enumGender\", \"birthday\" = ?, \"banned\" = ?, \"deletable\" = ?, \"type\" = ?::\"enumUserType\", \"street\" = ?, \"zip\" = ?, \"city\" = ?, \"country\" = ?, \"phone\" = ?, \"fax\" = ?, \"website\" = ?, \"visible\" = ?, \"photoAvailable\" = ? WHERE \"id\" = ?";
-    private static final String UPDATE_USER = "UPDATE \"user\" SET \"title\" = ?, \"firstName\" = ?, \"lastName\" = ?, \"email\" = ?, \"gender\" = ?::\"enumGender\", \"birthday\" = ?, \"banned\" = ?, \"deletable\" = ?, \"type\" = ?::\"enumUserType\", \"street\" = ?, \"zip\" = ?, \"city\" = ?, \"country\" = ?, \"phone\" = ?, \"fax\" = ?, \"website\" = ?, \"visible\" = ?, \"photoAvailable\" = ?, \"passwordHash\" = ? WHERE \"id\" = ?";
+    private static final String UPDATE_USER_WITHOUT_PASSWORD = "UPDATE \"user\" SET \"title\" = ?, \"firstName\" = ?, \"lastName\" = ?, \"email\" = ?, \"gender\" = ?::\"enumGender\", \"birthday\" = ?, \"banned\" = ?, \"deletable\" = ?, \"type\" = ?::\"enumUserType\", \"street\" = ?, \"zip\" = ?, \"city\" = ?, \"country\" = ?, \"phone\" = ?, \"fax\" = ?, \"website\" = ?, \"visible\" = ?, \"photoAvailable\" = ?, \"externUserId\" = ? WHERE \"id\" = ?";
+    private static final String UPDATE_USER = "UPDATE \"user\" SET \"title\" = ?, \"firstName\" = ?, \"lastName\" = ?, \"email\" = ?, \"gender\" = ?::\"enumGender\", \"birthday\" = ?, \"banned\" = ?, \"deletable\" = ?, \"type\" = ?::\"enumUserType\", \"street\" = ?, \"zip\" = ?, \"city\" = ?, \"country\" = ?, \"phone\" = ?, \"fax\" = ?, \"website\" = ?, \"visible\" = ?, \"photoAvailable\" = ?, \"passwordHash\" = ?, \"externUserId\" = ? WHERE \"id\" = ?";
     private static final String SELECT_BY_EMAIL = "SELECT * FROM \"user\" WHERE LOWER(\"email\") = LOWER(?)";
     private static final String SELECT_GROUP_OWNERS = "SELECT e.\"group\", u.* FROM \"userToGroup\" e INNER JOIN \"user\" u ON (u.\"id\" = e.\"user\") WHERE e.\"group\" IN (%s) AND e.\"role\" = 'owner' ORDER BY u.\"id\" ASC";
     private static final String SELECT_GROUP_OWNERS_BY_GROUP_ID = "SELECT u.* FROM \"userToGroup\" e INNER JOIN \"user\" u ON (u.\"id\" = e.\"user\") WHERE e.\"group\" = ? AND e.\"role\" = 'owner' ORDER BY u.\"id\" ASC";
     private static final String SELECT_BY_ID = "SELECT * FROM \"user\" WHERE id = ?";
+    private static final String SELECT_BY_EXTERN_USER_ID = "SELECT * FROM \"user\" WHERE \"externUserId\" = ?";
     private static final String SELECT_ALL = "SELECT * FROM \"user\"";
     private static final String SELECT_BY_SEARCH_TERM = "SELECT * FROM \"user\" WHERE (LOWER(\"firstName\") = LOWER(?) OR LOWER(\"lastName\") = LOWER(?) OR LOWER(\"email\") = LOWER(?))";
     private static final String COUNT_ALL = "SELECT COUNT(\"id\") FROM \"user\"";
     private static final String COUNT_BY_SEARCH_TERM = "SELECT COUNT(\"id\") FROM \"user\" WHERE (LOWER(\"firstName\") = LOWER(?) OR LOWER(\"lastName\") = LOWER(?) OR LOWER(\"email\") = LOWER(?))";
-    private static final String CREATE_USER = "INSERT INTO \"user\" (\"passwordHash\", \"email\", \"title\", \"firstName\", \"lastName\", \"type\", \"gender\", \"birthday\", \"banned\", \"deletable\", \"street\", \"zip\", \"city\", \"country\", \"phone\", \"fax\", \"website\", \"visible\") VALUES (?, ?, ?, ?, ?, ?::\"enumUserType\", ?::\"enumGender\", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATE_USER_WITH_ID = "INSERT INTO \"user\" (\"id\", \"passwordHash\", \"email\", \"title\", \"firstName\", \"lastName\", \"type\", \"gender\", \"birthday\", \"banned\", \"deletable\", \"street\", \"zip\", \"city\", \"country\", \"phone\", \"fax\", \"website\", \"visible\") VALUES (?, ?, ?, ?, ?, ?, ?::\"enumUserType\", ?::\"enumGender\", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_USER = "INSERT INTO \"user\" (\"passwordHash\", \"email\", \"title\", \"firstName\", \"lastName\", \"type\", \"gender\", \"birthday\", \"banned\", \"deletable\", \"street\", \"zip\", \"city\", \"country\", \"phone\", \"fax\", \"website\", \"visible\", \"externUserId\") VALUES (?, ?, ?, ?, ?, ?::\"enumUserType\", ?::\"enumGender\", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_USER_WITH_ID = "INSERT INTO \"user\" (\"id\", \"passwordHash\", \"email\", \"title\", \"firstName\", \"lastName\", \"type\", \"gender\", \"birthday\", \"banned\", \"deletable\", \"street\", \"zip\", \"city\", \"country\", \"phone\", \"fax\", \"website\", \"visible\", \"externUserId\") VALUES (?, ?, ?, ?, ?, ?, ?::\"enumUserType\", ?::\"enumGender\", ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SELECT_BY_ANSWERED_VIDEO = "SELECT \"user\" FROM \"answeredVideo\" WHERE \"id\" = ?";
     private static final String GET_USER_IS_OWNER_OF_VIDEO = "SELECT u.\"user\" FROM \"userToGroup\" u, \"video\" v WHERE u.\"group\" = v.\"group\" AND u.\"user\" = ? AND u.\"role\" = \'owner\' AND v.\"id\" = ?";
     private static final String GET_USER_IS_ATTENDANT_OF_VIDEO = "SELECT u.\"user\" FROM \"userToGroup\" u, \"video\" v WHERE u.\"group\" = v.\"group\" AND u.\"user\" = ? AND u.\"role\" = \'attendant\' AND v.\"id\" = ?";
@@ -117,11 +118,13 @@ public class PgUserStore implements IUserStore {
 
         String gender = user.getString("gender");
 
-        if (gender.equals(EGender.Female.toString().toLowerCase())) {
-            resultUser.setGender(EGender.Female);
-        } else {
-            resultUser.setGender(EGender.Male);
-        }
+	if (gender != null) {
+	    if (gender.equals(EGender.Female.toString().toLowerCase())) {
+		resultUser.setGender(EGender.Female);
+	    } else if (gender.equals(EGender.Male.toString().toLowerCase())) {
+		resultUser.setGender(EGender.Male);
+	    }
+	}
 
         if(user.getDate("birthday") != null)
         	resultUser.setBirthday(new java.util.Date(user.getDate("birthday")
@@ -134,12 +137,15 @@ public class PgUserStore implements IUserStore {
         resultUser.setZip(user.getString("zip"));
         resultUser.setCity(user.getString("city"));
         
-        String country = user.getString("country");
-        for (ECountry e : ECountry.values()) {
-        	if (country.equalsIgnoreCase(e.toString())) {
-                resultUser.setCountry(e);
-            }
-        }
+	String country = user.getString("country");
+	if (country != null) {
+	    for (ECountry e : ECountry.values()) {
+		if (country.equalsIgnoreCase(e.toString())) {
+		    resultUser.setCountry(e);
+		    break;
+		}
+	    }
+	}
         
         resultUser.setPhone(user.getString("phone"));
         resultUser.setFax(user.getString("fax"));
@@ -149,6 +155,8 @@ public class PgUserStore implements IUserStore {
         resultUser.setSecretKey(user.getString("secretKey").replaceAll("([^a-zA-Z0-9]+)", ""));
         resultUser.setBanned(user.getBoolean("banned"));
         resultUser.setDeletable(user.getBoolean("deletable"));
+        
+        resultUser.setExternUserId(user.getString("externUserId"));
 
         String type = user.getString("type");
         for (EUserType e : EUserType.values()) {
@@ -392,7 +400,7 @@ public class PgUserStore implements IUserStore {
                 stmt.setString(2, user.getFirstName());
                 stmt.setString(3, user.getLastName());
                 stmt.setString(4, user.getEmail());
-                stmt.setString(5, user.getGender().toString().toLowerCase());
+                stmt.setString(5, ((user.getGender() != null) ? user.getGender().toString().toLowerCase() : null));
                 if(user.getBirthday() != null)
                 	stmt.setDate(6, (new java.sql.Date(user.getBirthday()
                         .getTime())));
@@ -401,12 +409,13 @@ public class PgUserStore implements IUserStore {
                 
                 stmt.setBoolean(7, user.isBanned());
                 stmt.setBoolean(8, user.isDeletable());
-                stmt.setString(9, user.getUserType().toString().toLowerCase());
-
+                stmt.setString(9, ((user.getUserType() != null) ? user.getUserType().toString()
+                        .toLowerCase() : null));
+                
                 stmt.setString(10, user.getStreet());
                 stmt.setString(11, user.getZip());
                 stmt.setString(12, user.getCity());
-                stmt.setString(13, user.getCountry().toString());
+                stmt.setString(13, ((user.getCountry() != null) ? user.getCountry().toString() : null));
                 stmt.setString(14, user.getPhone());
                 stmt.setString(15, user.getFax());
                 stmt.setString(16, user.getWebsite());
@@ -415,10 +424,13 @@ public class PgUserStore implements IUserStore {
                 
                 if (user.getPasswordHash() != null) {
                     stmt.setString(19, user.getPasswordHash());
-                    stmt.setInt(20, user.getId());
+                    stmt.setString(20, user.getExternUserId());
+					stmt.setInt(21, user.getId());
                 } else {
-                    stmt.setInt(19, user.getId());
+					stmt.setString(19, user.getExternUserId());
+                    stmt.setInt(20, user.getId());
                 }
+                
                 stmt.executeUpdate();
             }
         }.executeI();
@@ -702,9 +714,9 @@ public class PgUserStore implements IUserStore {
 
                     stmt.setString(5, user.getFirstName());
                     stmt.setString(6, user.getLastName());
-                    stmt.setString(7, user.getUserType().toString()
-                            .toLowerCase());
-                    stmt.setString(8, user.getGender().toString().toLowerCase());
+                    stmt.setString(7, ((user.getUserType() != null) ? user.getUserType().toString()
+                            .toLowerCase() : null));
+                    stmt.setString(8, ((user.getGender() != null) ? user.getGender().toString().toLowerCase() : null));
                     if(user.getBirthday() != null)
                     	stmt.setDate(9, (new java.sql.Date(user.getBirthday()
                             .getTime())));
@@ -715,11 +727,12 @@ public class PgUserStore implements IUserStore {
                     stmt.setString(12, user.getStreet());
                     stmt.setString(13, user.getZip());
                     stmt.setString(14, user.getCity());
-                    stmt.setString(15, user.getCountry().toString());
+                    stmt.setString(15, ((user.getCountry() != null) ? user.getCountry().toString() : null));
                     stmt.setString(16, user.getPhone());
                     stmt.setString(17, user.getFax());
                     stmt.setString(18, user.getWebsite());
                     stmt.setBoolean(19, user.isVisible());
+                    stmt.setString(20, user.getExternUserId());
                     
                     // without user id (the common case!)
                 } else {
@@ -736,9 +749,9 @@ public class PgUserStore implements IUserStore {
 
                     stmt.setString(4, user.getFirstName());
                     stmt.setString(5, user.getLastName());
-                    stmt.setString(6, user.getUserType().toString()
-                            .toLowerCase());
-                    stmt.setString(7, user.getGender().toString().toLowerCase());
+                    stmt.setString(6, ((user.getUserType() != null) ? user.getUserType().toString()
+                            .toLowerCase() : null));
+                    stmt.setString(7, ((user.getGender() != null) ? user.getGender().toString().toLowerCase() : null));
                     if(user.getBirthday() != null)
                     	stmt.setDate(8, (new java.sql.Date(user.getBirthday()
                             .getTime())));
@@ -749,11 +762,12 @@ public class PgUserStore implements IUserStore {
                     stmt.setString(11, user.getStreet());
                     stmt.setString(12, user.getZip());
                     stmt.setString(13, user.getCity());
-                    stmt.setString(14, user.getCountry().toString());
+                    stmt.setString(14, ((user.getCountry() != null) ? user.getCountry().toString() : null));
                     stmt.setString(15, user.getPhone());
                     stmt.setString(16, user.getFax());
                     stmt.setString(17, user.getWebsite());
-                    stmt.setBoolean(18, user.isVisible());                    
+                    stmt.setBoolean(18, user.isVisible());   
+                    stmt.setString(19, user.getExternUserId());
                 }
 
                 stmt.executeUpdate();
@@ -817,6 +831,29 @@ public class PgUserStore implements IUserStore {
                 }
             }
         }.execute();
+        return user[0];
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public User findByExternUserId(final String externUserid) {
+        final User[] user = new User[1];
+
+        new SQLRunner(this.pool) {
+            @Override
+            public void run() throws SQLException {
+                stmt = conn.prepareStatement(SELECT_BY_EXTERN_USER_ID);
+                stmt.setString(1, externUserid);
+                ResultSet rset = stmt.executeQuery();
+                if (rset.next()) {
+                    user[0] = deserialize(rset);
+                }
+            }
+        }.execute();
+
         return user[0];
     }
 

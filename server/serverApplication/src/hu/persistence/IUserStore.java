@@ -122,6 +122,16 @@ public interface IUserStore {
     public User getByEmail(String email);
 
     /**
+     * Retrieve a {@link User} with a given external user id.
+     * 
+     * @param externUserId
+     *            of the {@link User} to fetch.
+     * @return the {@link User} with the specified id. Null, if no such
+     *         {@link User} exists.
+     */
+    public User findByExternUserId(String externUserId);
+    
+    /**
      * Retrieve a {@link User} with a given email.
      * 
      * @param email

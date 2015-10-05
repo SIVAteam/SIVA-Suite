@@ -288,6 +288,7 @@ public class VideoListAction extends AController {
                         && (video.getStop() == null || currentDate
                                 .compareTo(video.getStop()) < 0));
                 entry.setEditButtonAvailable(true);
+                entry.setEmbeddButtonAvailable(true);
                 entry.setDeleteButtonAvailable(true);
             }
             

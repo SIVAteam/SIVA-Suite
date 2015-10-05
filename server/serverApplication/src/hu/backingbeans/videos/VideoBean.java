@@ -20,6 +20,8 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.component.html.HtmlInputHidden;
 import javax.servlet.http.Part;
 
+import com.sun.scenario.Settings;
+
 /**
  * This is the backing bean for a {@link Video}.
  */
@@ -44,7 +46,20 @@ public class VideoBean {
     private Part video;
     private boolean videoAvailable;
     private SivaPlayerSession sivaPlayerSession;
-    
+    private Long size = 0l;
+    private Date lastUpdated = null;
+    private String width;
+    private String height;
+    private String screenResolution;
+    private String videoFormatSettings;
+    private boolean selfDefinedScreenResolution;
+    private boolean selfDefinedVideoFormat;
+    private String videoFormat;
+    private String audioFormat;
+    private boolean sendEmail;
+    private List<Settings> list;
+    private List<Settings> alreadyConvertedList;
+
     @ManagedProperty("#{PersistenceProvider}")
     private IPersistenceProvider persistenceProvider;
 
@@ -58,7 +73,7 @@ public class VideoBean {
      *            to inject.
      */
     public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
-        this.persistenceProvider = persistenceProvider;
+	this.persistenceProvider = persistenceProvider;
     }
 
     /**
@@ -68,7 +83,7 @@ public class VideoBean {
      *            to inject.
      */
     public void setSessionData(SessionData sessionData) {
-        this.sessionData = sessionData;
+	this.sessionData = sessionData;
     }
 
     /**
@@ -76,7 +91,7 @@ public class VideoBean {
      * @return id of the {@link Video}.
      */
     public Integer getId() {
-        return this.id;
+	return this.id;
     }
 
     /**
@@ -86,7 +101,7 @@ public class VideoBean {
      *            to set.
      */
     public void setId(Integer id) {
-        this.id = id;
+	this.id = id;
     }
 
     /**
@@ -94,7 +109,7 @@ public class VideoBean {
      * @return the id of the {@link Group} the {@link Video} belongs to.
      */
     public Integer getGroupId() {
-        return this.groupId;
+	return this.groupId;
     }
 
     /**
@@ -104,7 +119,7 @@ public class VideoBean {
      *            to set.
      */
     public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+	this.groupId = groupId;
     }
 
     /**
@@ -113,7 +128,7 @@ public class VideoBean {
      *         tutor.
      */
     public List<Group> getGroups() {
-        return this.groups;
+	return this.groups;
     }
 
     /**
@@ -123,7 +138,7 @@ public class VideoBean {
      *            to set.
      */
     public void setGroups(List<Group> groups) {
-        this.groups = groups;
+	this.groups = groups;
     }
 
     /**
@@ -131,7 +146,7 @@ public class VideoBean {
      * @return the title of the {@link Video}.
      */
     public String getTitle() {
-        return this.title;
+	return this.title;
     }
 
     /**
@@ -141,7 +156,7 @@ public class VideoBean {
      *            to set.
      */
     public void setTitle(String title) {
-        this.title = title;
+	this.title = title;
     }
 
     /**
@@ -149,7 +164,7 @@ public class VideoBean {
      * @return the description of the {@link Video}.
      */
     public String getDescription() {
-        return this.description;
+	return this.description;
     }
 
     /**
@@ -159,15 +174,15 @@ public class VideoBean {
      *            to set.
      */
     public void setDescription(String description) {
-        this.description = description;
+	this.description = description;
     }
-    
+
     /**
      * 
      * @return the starting time of the {@link Video}.
      */
     public Date getStart() {
-        return this.start;
+	return this.start;
     }
 
     /**
@@ -177,7 +192,7 @@ public class VideoBean {
      *            to set.
      */
     public void setStart(Date start) {
-        this.start = start;
+	this.start = start;
     }
 
     /**
@@ -185,7 +200,7 @@ public class VideoBean {
      * @return the end time of the {@link Video}.
      */
     public Date getStop() {
-        return this.stop;
+	return this.stop;
     }
 
     /**
@@ -195,14 +210,14 @@ public class VideoBean {
      *            to set.
      */
     public void setStop(Date stop) {
-        this.stop = stop;
+	this.stop = stop;
     }
-    
+
     /**
      * @return true if the {@link Video} can be downloaded as zip file.
      */
     public boolean isZipDownloadEnabled() {
-        return this.zipDownloadEnabled;
+	return this.zipDownloadEnabled;
     }
 
     /**
@@ -212,15 +227,15 @@ public class VideoBean {
      *            to set.
      */
     public void setZipDownloadEnabled(boolean zipDownloadEnabled) {
-        this.zipDownloadEnabled = zipDownloadEnabled;
+	this.zipDownloadEnabled = zipDownloadEnabled;
     }
-    
+
     /**
      * 
      * @return the ChromeApp URL for the {@link Video}.
      */
     public String getChromeAppURL() {
-        return this.chromeAppURL;
+	return this.chromeAppURL;
     }
 
     /**
@@ -230,15 +245,15 @@ public class VideoBean {
      *            to set.
      */
     public void setChromeAppURL(String chromeAppURL) {
-        this.chromeAppURL = chromeAppURL;
+	this.chromeAppURL = chromeAppURL;
     }
-    
+
     /**
      * 
      * @return the password of the {@link Video}.
      */
     public String getPassword() {
-        return this.password;
+	return this.password;
     }
 
     /**
@@ -248,15 +263,15 @@ public class VideoBean {
      *            to set.
      */
     public void setPassword(String password) {
-        this.password = password;
+	this.password = password;
     }
-    
+
     /**
      * 
      * @return the directory of the {@link Video}.
      */
     public String getDirectory() {
-        return this.directory;
+	return this.directory;
     }
 
     /**
@@ -266,14 +281,14 @@ public class VideoBean {
      *            to set.
      */
     public void setDirectory(String directory) {
-        this.directory = directory;
+	this.directory = directory;
     }
-    
+
     /**
      * @return true if the {@link Video} is protected with a password.
      */
     public boolean isPasswordAvailable() {
-        return passwordAvailable;
+	return passwordAvailable;
     }
 
     /**
@@ -283,15 +298,14 @@ public class VideoBean {
      *            to set.
      */
     public void setPasswordAvailable(boolean passwordAvailable) {
-        this.passwordAvailable = passwordAvailable;
+	this.passwordAvailable = passwordAvailable;
     }
 
     /**
-     * @return true if the {@link Video} is accessed by using
-     *         {@link Token}s.
+     * @return true if the {@link Video} is accessed by using {@link Token}s.
      */
     public boolean isTokenAvailable() {
-        return this.tokenAvailable;
+	return this.tokenAvailable;
     }
 
     /**
@@ -301,7 +315,7 @@ public class VideoBean {
      *            to set.
      */
     public void setTokenAvailable(boolean tokenAvailable) {
-        this.tokenAvailable = tokenAvailable;
+	this.tokenAvailable = tokenAvailable;
     }
 
     /**
@@ -311,20 +325,18 @@ public class VideoBean {
      *         {@link Video}.
      */
     public EParticipationRestriction getParticipationRestriction() {
-        return this.participationRestriction;
+	return this.participationRestriction;
     }
 
     /**
      * Set the {@link EParticipationRestriction} that defines which
-     * {@link EUserType}s are allowed to participate in the
-     * {@link Video}.
+     * {@link EUserType}s are allowed to participate in the {@link Video}.
      * 
      * @param participationRestriction
      *            to set.
      */
-    public void setParticipationRestriction(
-            EParticipationRestriction participationRestriction) {
-        this.participationRestriction = participationRestriction;
+    public void setParticipationRestriction(EParticipationRestriction participationRestriction) {
+	this.participationRestriction = participationRestriction;
     }
 
     /**
@@ -332,7 +344,7 @@ public class VideoBean {
      * @return the hiddenId field.
      */
     public HtmlInputHidden getHiddenId() {
-        return hiddenId;
+	return hiddenId;
     }
 
     /**
@@ -342,7 +354,7 @@ public class VideoBean {
      *            field to set.
      */
     public void setHiddenId(HtmlInputHidden hiddenId) {
-        this.hiddenId = hiddenId;
+	this.hiddenId = hiddenId;
     }
 
     /**
@@ -352,7 +364,7 @@ public class VideoBean {
      *            of hiddenId field to set.
      */
     public void setHiddenValue(Object hiddenValue) {
-        hiddenId.setValue(hiddenValue);
+	hiddenId.setValue(hiddenValue);
     }
 
     /**
@@ -360,33 +372,33 @@ public class VideoBean {
      * @return the value of the hiddenId field.
      */
     public Object getHiddenValue() {
-        return hiddenId.getValue();
+	return hiddenId.getValue();
     }
-    
+
     /**
      * 
      * @return the uploaded video.
      */
-    public Part getVideo() {  
-        return this.video;  
-    }  
-  
+    public Part getVideo() {
+	return this.video;
+    }
+
     /**
      * Set the uploaded video.
      * 
      * @param video
      *            to set.
      */
-    public void setVideo(Part video) {  
-        this.video = video;  
-    }  
-    
+    public void setVideo(Part video) {
+	this.video = video;
+    }
+
     /**
      * 
      * @return if a video has already been uploaded.
      */
     public boolean isVideoAvailable() {
-        return this.videoAvailable;
+	return this.videoAvailable;
     }
 
     /**
@@ -396,15 +408,15 @@ public class VideoBean {
      *            is true if a video has been uploaded, false otherwise.
      */
     public void setVideoAvailable(boolean videoAvailable) {
-        this.videoAvailable = videoAvailable;
+	this.videoAvailable = videoAvailable;
     }
-    
+
     /**
      * 
      * @return the {@link SivaPlayerSession} for watching the video.
      */
     public SivaPlayerSession getSivaPlayerSession() {
-        return this.sivaPlayerSession;
+	return this.sivaPlayerSession;
     }
 
     /**
@@ -414,7 +426,7 @@ public class VideoBean {
      *            for watching the video.
      */
     public void setSivaPlayerSession(SivaPlayerSession sivaPlayerSession) {
-        this.sivaPlayerSession = sivaPlayerSession;
+	this.sivaPlayerSession = sivaPlayerSession;
     }
 
     /**
@@ -422,14 +434,117 @@ public class VideoBean {
      */
     @PostConstruct
     private void setGroupList() {
-        User user = sessionData.getUserId() == null ? null
-                : this.persistenceProvider.getUserStore().findById(
-                        sessionData.getUserId());
-        if (user != null && user.getUserType() == EUserType.Administrator) {
-            this.groups = this.persistenceProvider.getGroupStore().getAll(user);
-        } else if (user != null) {
-            this.groups = this.persistenceProvider.getGroupStore().getByOwner(
-                    user.getId());
-        }
+	User user = sessionData.getUserId() == null ? null : this.persistenceProvider
+		.getUserStore().findById(sessionData.getUserId());
+	if (user != null && user.getUserType() == EUserType.Administrator) {
+	    this.groups = this.persistenceProvider.getGroupStore().getAll(user);
+	} else if (user != null) {
+	    this.groups = this.persistenceProvider.getGroupStore().getByOwner(user.getId());
+	}
     }
+
+    public Long getSize() {
+	return size;
+    }
+
+    public void setSize(Long size) {
+	this.size = size;
+    }
+
+    public Date getLastUpdated() {
+	return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+	this.lastUpdated = lastUpdated;
+    }
+
+    public String getWidth() {
+	return width;
+    }
+
+    public void setWidth(String width) {
+	this.width = width;
+    }
+
+    public String getHeight() {
+	return height;
+    }
+
+    public void setHeight(String height) {
+	this.height = height;
+    }
+
+    public String getScreenResolution() {
+	return screenResolution;
+    }
+
+    public void setScreenResolution(String screenResolution) {
+	this.screenResolution = screenResolution;
+    }
+
+    public boolean isSelfDefinedScreenResolution() {
+	return selfDefinedScreenResolution;
+    }
+
+    public void setSelfDefinedScreenResolution(boolean selfDefinedScreenResolution) {
+	this.selfDefinedScreenResolution = selfDefinedScreenResolution;
+    }
+
+    public boolean isSelfDefinedVideoFormat() {
+	return selfDefinedVideoFormat;
+    }
+
+    public void setSelfDefinedVideoFormat(boolean selfDefinedVideoFormat) {
+	this.selfDefinedVideoFormat = selfDefinedVideoFormat;
+    }
+
+    public String getVideoFormat() {
+	return videoFormat;
+    }
+
+    public void setVideoFormat(String videoFormat) {
+	this.videoFormat = videoFormat;
+    }
+
+    public String getVideoFormatSettings() {
+	return videoFormatSettings;
+    }
+
+    public void setVideoFormatSettings(String videoFormatSettings) {
+	this.videoFormatSettings = videoFormatSettings;
+    }
+
+    public String getAudioFormat() {
+	return audioFormat;
+    }
+
+    public void setAudioFormat(String audioFormat) {
+	this.audioFormat = audioFormat;
+    }
+
+    public boolean isSendEmail() {
+	return sendEmail;
+    }
+
+    public void setSendEmail(boolean sendEmail) {
+	this.sendEmail = sendEmail;
+    }
+
+    public List<Settings> getList() {
+	return list;
+    }
+
+    public void setList(List<Settings> list) {
+	this.list = list;
+    }
+
+    public List<Settings> getAlreadyConvertedList() {
+	return alreadyConvertedList;
+    }
+
+    public void setAlreadyConvertedList(List<Settings> alreadyConvertedList) {
+	this.alreadyConvertedList = alreadyConvertedList;
+    }
+
 }

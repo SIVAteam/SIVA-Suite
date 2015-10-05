@@ -1,12 +1,17 @@
 package hu.persistence;
 
 import hu.model.api.Client;
+import hu.model.api.CollaborationMedia;
+import hu.model.api.CollaborationPost;
+import hu.model.api.CollaborationThread;
 import hu.model.api.OauthSession;
 import hu.model.api.SivaPlayerLogEntry;
 import hu.model.api.SivaPlayerSession;
+import hu.model.users.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This interface describes how API elements are stored in and retrieved from
@@ -104,4 +109,107 @@ public interface IApiStore {
 	 * @return a {@link HashMap} containing the dates and the amounts.
 	 */
 	public HashMap<String, Integer> getSivaPlayerSessionDurationByDay(Integer userId);
+	
+	/**
+	 * Create a new {@link CollaborationThread}.
+	 * 
+	 * @param thread
+	 *           to create.
+	 * @return the created {@link CollaborationThread}.
+	 */
+	public CollaborationThread createCollaborationThread(final CollaborationThread thread) throws InconsistencyException;
+	
+        /**
+         * Delete the {@link CollaborationThread} and all related
+         * {@link CollaborationPost}s and {@link CollaborationMedia} elements.
+         * 
+         * @param id
+         *            to be deleted.
+         */
+        public void deleteCollaborationThread(final int id) throws InconsistencyException;
+	
+	/**
+	 * Retrieve the {@link CollaborationThread} with the given id.
+	 * 
+	 * @param id of the {@link CollaborationThread} to fetch
+	 * @return the {@link CollaborationThread} with the specified id.
+	 */
+	public CollaborationThread findCollaborationThreadById(final int id);
+	
+	/**
+	 * Retrieve all {@link CollaborationThread}s for the given video and scene.
+	 * 
+	 * @param videoId of the {@link CollaborationThread}s to fetch
+	 * @param scene of the {@link CollaborationThread}s to fetch
+	 * @return the {@link CollaborationThread}s.
+	 */
+	public List<CollaborationThread> listCollaborationThreads(final int videoId, final String scene);
+	
+	/**
+	 * Create a new {@link CollaborationPost}.
+	 * 
+	 * @param post
+	 *           to create.
+	 * @return the created {@link CollaborationPost}.
+	 */
+	public CollaborationPost createCollaborationPost(final CollaborationPost post) throws InconsistencyException;
+	
+	/**
+	 * Update a {@link CollaborationPost}.
+	 * 
+	 * @param post
+	 *           to update
+	 * @return updated {@link CollaborationPost}.
+	 */
+	public CollaborationPost saveCollaborationPost(final CollaborationPost post) throws InconsistencyException;
+	
+	/**
+         * Delete the {@link CollaborationPost} and all related
+         * {@link CollaborationMedia} elements.
+         * 
+         * @param id
+         *            to be deleted.
+         */
+        public void deleteCollaborationPost(final int id) throws InconsistencyException;
+	
+	/**
+	 * Retrieve the {@link CollaborationPost} with the given id.
+	 * 
+	 * @param id of the {@link CollaborationPost} to fetch
+	 * @return the {@link CollaborationPost} with the specified id.
+	 */
+	public CollaborationPost findCollaborationPostById(final int id);
+	
+	/**
+	 * Retrieve all {@link CollaborationPost}s for the given thread id.
+	 * 
+	 * @param threadId of the {@link CollaborationPost}s to fetch
+	 * @return the {@link CollaborationPost}s.
+	 */
+	public List<CollaborationPost> listCollaborationPosts(final int threadId);
+	
+	/**
+	 * Create a new {@link CollaborationMedia}.
+	 * 
+	 * @param media
+	 *           to create.
+	 * @return the created {@link CollaborationMedia}.
+	 */
+	public CollaborationMedia createCollaborationMedia(final CollaborationMedia media) throws InconsistencyException;
+	
+	/**
+	 * Retrieve the {@link CollaborationMedia} with the given id.
+	 * 
+	 * @param id of the {@link CollaborationMedia} to fetch
+	 * @return the {@link CollaborationMedia} with the specified id.
+	 */
+	public CollaborationMedia findCollaborationMediaById(final int id);
+	
+	/**
+	 * Retrieve all {@link CollaborationMedia}s for the given post id.
+	 * 
+	 * @param threadId of the {@link CollaborationMedia}s to fetch
+	 * @return the {@link CollaborationMedia}s.
+	 */
+	public List<CollaborationMedia> listCollaborationMedia(final int postId);
 }

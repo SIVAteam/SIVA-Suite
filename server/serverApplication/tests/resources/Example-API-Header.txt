@@ -1,0 +1,10 @@
+Authorization:Basic ${b64('androidApp:DAzf5631O-fgUJ-3jhUI6d')}
+
+Authorization:Bearer ${b64('esY952u1GOIEYrgDnDXwI2HHPUYzmjChumsUqEgQYPeQzwTHnF')}
+
+<form action="http://localhost:8080/MTT/token" target="_blank" method="post">
+   <input type="text" name="username" />
+   <input type="password" name="password" />
+   <input type="hidden" name="grant_type" value="password" />
+   <input type="submit" />
+</form>
