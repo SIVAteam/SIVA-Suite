@@ -45,4 +45,4 @@ Unfortunately the export wizard does not allow for the automatic extraction of s
 ### Commandline paramters
 The SIVA Producer uses log4j as a logging mechanism. A log file is stored in *AppData/Local/SIVA Producer*. To change the logging behavior you can specify a custom log4j logging configuration file by adding ``-debugconfig <file>`` as a commandline parameter.
 
-Currently, supported languages can not be switched inside the application. To change the language use ``-nl <locale>`` as a commandline parameter. Supported locales are: de, en.
+Currently, supported languages can not be switched inside the application. To change the language use ``-nl <locale>`` as a commandline parameter. Supported locales are *en* and *de*.
