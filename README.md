@@ -11,7 +11,7 @@ The SIVA Producer is licensed under the terms of the [Eclipse Public License v1]
 The SIVA Producer and the SIVA Server offer help functions which provide basic documentation. Additionally, an architectural overview of the producer can be found in the respective [subdirectory](./producer/ARCHITECTURE/). The SIVA Player uses known control concepts and offers a highly intuitive interface. Therefore, at the moment, no separate documentation is available.
 
 
-## How to build SIVA Producer
+## How to build and run SIVA Producer
 The SIVA Producer is a 32-bit Java 1.6 application based on the Eclipse Rich Client Platform. As such, building it from source code requires a 32-bit [Eclipse for RCP and RAP developers](http://www.eclipse.org/downloads/) platform and a compatible Java environment to be installed on the build system. Within Eclipse, the build process comprises three steps:
 - Import the source code into the Eclipse workbench
 - Set the correct target platform to compile against
@@ -41,3 +41,6 @@ Right now you can run the SIVA Producer from within the Eclipse environment. If 
 
 Unfortunately the export wizard does not allow for the automatic extraction of supplementary files and libraries directly to the selected root directory. Therefore, licensing information and native libraries have to be copied manually.
 - In the Package Explorer navigate into *org.iviPro.ui*. Select *libs-native*, *LICENSES* and *about.html*. Right click on your selection and select *Copy*. Open your file explorer and navigate to the root directory you chose during the export process. The correct directory will contain an executable file named *SIVA Producer.exe*. After inserting the copied selection into the root directory, you are done. You should now be able to run the SIVA Producer directly from the file explorer.
+
+### Logging
+The SIVA Producer uses log4j as a logging mechanism. A log file is stored in the user's AppData/Local directory. To change the logging behavior you can specify a custom log4j logging configuration file by adding "-debugconfig <file>" as a commandline parameter.
