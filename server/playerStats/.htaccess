@@ -4,4 +4,9 @@ ErrorDocument 401 /index.php?page=error401.php
 ErrorDocument 403 /index.php?page=error403.php
 ErrorDocument 404 /index.php?page=error404.php
 
+<Files "config.txt">
+Order Allow,Deny
+Deny from all
+</Files>
+
 RewriteRule ^(.*)\.html$ /index.php?page=$1.php&%{QUERY_STRING} [L]
