@@ -43,4 +43,4 @@ Unfortunately the export wizard does not allow for the automatic extraction of s
 - In the Package Explorer navigate into *org.iviPro.ui*. Select *libs-native*, *LICENSES* and *about.html*. Right click on your selection and select *Copy*. Open your file explorer and navigate to the root directory you chose during the export process. The correct directory will contain an executable file named *SIVA Producer.exe*. After inserting the copied selection into the root directory, you are done. You should now be able to run the SIVA Producer directly from the file explorer.
 
 ### Logging
-The SIVA Producer uses log4j as a logging mechanism. A log file is stored in the user's AppData/Local directory. To change the logging behavior you can specify a custom log4j logging configuration file by adding "-debugconfig <file>" as a commandline parameter.
+The SIVA Producer uses log4j as a logging mechanism. A log file is stored in the user's AppData/Local directory. To change the logging behavior you can specify a custom log4j logging configuration file by adding ``-debugconfig <file>`` as a commandline parameter.
