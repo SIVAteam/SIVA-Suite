@@ -3537,17 +3537,19 @@ function SivaPlayer(DOMObject, arrayPosition){
 				if(this.configuration.parentNodes){
 					for(var j = 0; this.configuration.parentNodes[entry.target] && j < this.configuration.parentNodes[entry.target].length && !enabled; j++){
 						var n = this.configuration.sceneNodes[(this.configuration.parentNodes[entry.target][j])];
-						for(var k = 0; k < n.next.length && !enabled; k++){
-							if(n.next[k].node == entry.target){
-								if(n.next[k].condition){
-									message = n.next[k].condition.message;
-									if(!n.next[k].condition.visible){
-										visible = false;
+						if(n){
+							for(var k = 0; k < n.next.length && !enabled; k++){
+								if(n.next[k].node == entry.target){
+									if(n.next[k].condition){
+										message = n.next[k].condition.message;
+										if(!n.next[k].condition.visible){
+											visible = false;
+										}
+										condition = true;
+										enabled = this.checkParentsConditionsFulfilled(entry.target);
 									}
-									condition = true;
-									enabled = this.checkParentsConditionsFulfilled(entry.target);
+									break;
 								}
-								break;
 							}
 						}
 					}

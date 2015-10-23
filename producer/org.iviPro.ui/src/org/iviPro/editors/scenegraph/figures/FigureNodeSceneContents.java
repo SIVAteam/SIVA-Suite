@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.iviPro.application.Application;
+import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.resources.Scene;
 import org.iviPro.theme.Icons;
 import org.iviPro.views.scenerepository.SceneRepository;
@@ -45,8 +46,9 @@ public class FigureNodeSceneContents extends IFigureNode {
 	private static final Color FONT_COLOR_BLACK = ColorConstants.black;
 
 	private static final Dimension SIZE = new Dimension(140, 40);
-
 	private static final int CORNER_RADIUS = 10;
+	private static final int SEPARATOR = 2;
+	
 
 	private static final Font TITLE_FONT = new Font(Display.getDefault(),
 			new FontData("Sans serif", 10, SWT.BOLD)); //$NON-NLS-1$
@@ -58,6 +60,7 @@ public class FigureNodeSceneContents extends IFigureNode {
 	private boolean isSelected;
 	// die zur Figure gehörende Scene
 	private Scene scene;
+	private NodeScene nodeScene;
 
 	//zoomlevelinformation zum zeichnen der zoomstufen-punkte
 	private int zoomlevel;
@@ -70,11 +73,12 @@ public class FigureNodeSceneContents extends IFigureNode {
 	
 	private Button annoEditorButton;
 
-	public FigureNodeSceneContents(Point pos, final String text, int annotationCount) {
+	public FigureNodeSceneContents(final NodeScene nodeScene, int annotationCount) {
+		this.nodeScene = nodeScene;
+		setText(nodeScene.getTitle());
 		this.annotationCount = annotationCount;
-		setLocation(pos);
+		setLocation(nodeScene.getPosition());
 		setSize(SIZE);
-		setText(text);
 		setLayoutManager(new XYLayout());
 		annoEditorButton = createAnnoEditorButton();
 		add(annoEditorButton);
@@ -140,8 +144,6 @@ public class FigureNodeSceneContents extends IFigureNode {
 		if(zoomlevel < 1) {
 			zoomlevel = 1;
 		}
-		
-		
 		// Kreis mit Gradient Fuellung zeichnen
 		AdvancedPath path = new AdvancedPath();
 		if(zoomlevel == 1) {
@@ -183,13 +185,15 @@ public class FigureNodeSceneContents extends IFigureNode {
 			g.setForegroundColor(FONT_COLOR_BLACK);
 		}
 		g.setFont(TITLE_FONT);
+		int indent = bounds.x + 30 + CORNER_RADIUS;
+		int vertIndent = bounds.y + CORNER_RADIUS + SEPARATOR;
 		g.drawText(getTruncatedText(text, TITLE_FONT, bounds.width - 30 - 2
-				* CORNER_RADIUS, false), bounds.x + 30 + CORNER_RADIUS, bounds.y
-				+ CORNER_RADIUS + 2);
-
+				* CORNER_RADIUS, false), indent, vertIndent);
+		
 		// Zoompunkte zeichnen
-		g.drawImage(getZoomlevelpointsIcon(), bounds.x
-				+ CORNER_RADIUS+32, bounds.y + CORNER_RADIUS + 18);
+		vertIndent += getFontHeight(TITLE_FONT) + SEPARATOR;
+		indent = bounds.x + CORNER_RADIUS + 32;
+		g.drawImage(getZoomlevelpointsIcon(), indent, vertIndent);
 
 		super.paintFigure(g);
 	}

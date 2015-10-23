@@ -24,6 +24,7 @@ import org.iviPro.editors.scenegraph.figures.FigureNodeSemanticAdditionAnnoDetai
 import org.iviPro.editors.scenegraph.figures.FigureNodeSemanticAdditionAnnoOverview;
 import org.iviPro.editors.scenegraph.figures.FigureNodeSemanticAdditionFisheye;
 import org.iviPro.editors.scenegraph.figures.FigureNodeSemanticAdditionFramepreview;
+import org.iviPro.editors.scenegraph.figures.FigureNodeSemanticAdditionNodeId;
 import org.iviPro.editors.scenegraph.figures.FigureNodeSemanticAdditionSceneInfo;
 import org.iviPro.editors.scenegraph.policies.DefaultConnectionPolicy;
 import org.iviPro.editors.scenegraph.policies.DefaultEditPolicy;
@@ -38,6 +39,7 @@ import org.iviPro.utils.ImageHelper;
 
 public class EditPartNodeScene extends IEditPartNode {
 
+	FigureNodeSemanticAdditionNodeId semanticAdditionFigureNodeId;
 	FigureNodeSemanticAdditionFramepreview semanticAdditionFigureFramepreview;
 	FigureNodeSemanticAdditionAnnoOverview semanticAdditionFigureAnnoOverview;
 	FigureNodeSemanticAdditionSceneInfo semanticAdditionFigureSceneInfo;
@@ -75,7 +77,7 @@ public class EditPartNodeScene extends IEditPartNode {
 		/***************************************/
 		int annoCount = nodeScene.getChildren(INodeAnnotationLeaf.class).size();
 		stdFigure = new FigureNodeScene(nodeScene.getPosition());
-		figureNodeSceneContents = new FigureNodeSceneContents(nodeScene.getPosition(),nodeScene.getTitle(), annoCount);
+		figureNodeSceneContents = new FigureNodeSceneContents(nodeScene, annoCount);
 		if (nodeScene != null) {
 			stdFigure.setScene(nodeScene.getScene());
 			figureNodeSceneContents.setScene(nodeScene.getScene());
@@ -133,7 +135,11 @@ public class EditPartNodeScene extends IEditPartNode {
 		//Wenn Figure bereits gesetzt: Aktualisiere nur die Annotationen (Detail)
 		if(nodeScene.getSemZoomlevel() == 3) {
 			semanticAdditionFigureAnnoDetails.setAnnotations(annotations);
-			Dimension d = new Dimension(140, semanticAdditionFigureAnnoDetails.getBounds().height + figureNodeSceneContents.getBounds().height + semanticAdditionFigureFramepreview.getBounds().height + semanticAdditionFigureSceneInfo.getBounds().height);
+			Dimension d = new Dimension(140, figureNodeSceneContents.getBounds().height
+					+ semanticAdditionFigureFramepreview.getBounds().height 
+					+ semanticAdditionFigureSceneInfo.getBounds().height
+					+ semanticAdditionFigureAnnoDetails.getBounds().height
+					+ semanticAdditionFigureNodeId.getBounds().height);
 			stdFigure.setSize(d);
 		}
 
@@ -194,7 +200,11 @@ public class EditPartNodeScene extends IEditPartNode {
 		//Wenn Figure bereits gesetzt: Aktualisiere nur die Annotationen (Detail)
 		if(nodeScene.getSemZoomlevel() == 3) {
 			semanticAdditionFigureAnnoDetails.setAnnotations(annotations);
-			Dimension d = new Dimension(140, semanticAdditionFigureAnnoDetails.getBounds().height + figureNodeSceneContents.getBounds().height + semanticAdditionFigureFramepreview.getBounds().height + semanticAdditionFigureSceneInfo.getBounds().height);
+			Dimension d = new Dimension(140, figureNodeSceneContents.getBounds().height
+					+ semanticAdditionFigureAnnoDetails.getBounds().height 
+					+ semanticAdditionFigureFramepreview.getBounds().height 
+					+ semanticAdditionFigureSceneInfo.getBounds().height
+					+ semanticAdditionFigureNodeId.getBounds().height);
 			stdFigure.setSize(d);
 		}
 
@@ -274,10 +284,11 @@ public class EditPartNodeScene extends IEditPartNode {
 		if(semanticFigureLevel2AlreadyAdded) {
 			stdFigure.remove(semanticAdditionFigureFramepreview);
 			stdFigure.remove(semanticAdditionFigureAnnoOverview);
+			stdFigure.remove(semanticAdditionFigureNodeId);
 			semanticFigureLevel2AlreadyAdded = false;
 		}
 		//Groesse der Parent-Figure setzen
-		Dimension d = new Dimension(140, 40);
+		Dimension d = new Dimension(140, figureNodeSceneContents.getBounds().height);
 		stdFigure.setSize(d);
 	}
 
@@ -313,25 +324,32 @@ public class EditPartNodeScene extends IEditPartNode {
 		semanticAdditionFigureAnnoOverview.setAnnotationTypes(annotations);
 
 		stdFigure.add(semanticAdditionFigureAnnoOverview);
-
+		
+		pos.y += semanticAdditionFigureAnnoOverview.getBounds().height;
+		semanticAdditionFigureNodeId = new FigureNodeSemanticAdditionNodeId(pos, nodeScene);
+		stdFigure.add(semanticAdditionFigureNodeId);
+				
 		semanticFigureLevel2AlreadyAdded = true;
 
 		//Groesse der Parent-Figure setzen
-		Dimension d = new Dimension(140, figureNodeSceneContents.getSize().height + semanticAdditionFigureFramepreview.getBounds().height + semanticAdditionFigureAnnoOverview.getBounds().height);
+		Dimension d = new Dimension(140, figureNodeSceneContents.getSize().height 
+				+ semanticAdditionFigureFramepreview.getBounds().height 
+				+ semanticAdditionFigureAnnoOverview.getBounds().height
+				+ semanticAdditionFigureNodeId.getBounds().height);
 		stdFigure.setSize(d);
 	}
 
 	private void createSemZoomlevel3Figures() {
 		if(semanticFigureLevel2AlreadyAdded) {
 			stdFigure.remove(semanticAdditionFigureAnnoOverview);
+			stdFigure.remove(semanticAdditionFigureNodeId);
 			semanticFigureLevel2AlreadyAdded = false;
 		}
-
-
-
+		
 		//Positionierung für Dauer und Quellvideo
 		Point pos = new Point(getCastedModel().getPosition().x,getCastedModel().getPosition().y);
-		pos.y += figureNodeSceneContents.getBounds().height + semanticAdditionFigureFramepreview.getBounds().height;
+		pos.y += figureNodeSceneContents.getBounds().height 
+				+ semanticAdditionFigureFramepreview.getBounds().height;
 		semanticAdditionFigureSceneInfo = new FigureNodeSemanticAdditionSceneInfo(pos);
 		//setze Dauer und Quellvideo
 		long duration = getCastedModel().getScene().getEnd() - getCastedModel().getScene().getStart();
@@ -342,17 +360,25 @@ public class EditPartNodeScene extends IEditPartNode {
 		stdFigure.add(semanticAdditionFigureSceneInfo);
 
 		//Positionierung für Annotationen
-		pos.y += 45;
+		pos.y += semanticAdditionFigureSceneInfo.getBounds().height;
 		semanticAdditionFigureAnnoDetails = new FigureNodeSemanticAdditionAnnoDetails(pos);
 		//setze Annotationen
 		semanticAdditionFigureAnnoDetails.setAnnotations(annotations);
 
 		stdFigure.add(semanticAdditionFigureAnnoDetails);
+		
+		pos.y += semanticAdditionFigureAnnoDetails.getBounds().height;
+		semanticAdditionFigureNodeId = new FigureNodeSemanticAdditionNodeId(pos, nodeScene);
+		stdFigure.add(semanticAdditionFigureNodeId);
 
 		semanticFigureLevel3AlreadyAdded = true;
 
 		//Groesse der Parent-Figure setzen (Abhaengig von #Annotationen)
-		Dimension d = new Dimension(140, semanticAdditionFigureAnnoDetails.getBounds().height + figureNodeSceneContents.getBounds().height + semanticAdditionFigureFramepreview.getBounds().height + semanticAdditionFigureSceneInfo.getBounds().height);
+		Dimension d = new Dimension(140, figureNodeSceneContents.getBounds().height
+				+ semanticAdditionFigureFramepreview.getBounds().height 
+				+ semanticAdditionFigureSceneInfo.getBounds().height
+				+ semanticAdditionFigureAnnoDetails.getBounds().height
+				+ semanticAdditionFigureNodeId.getBounds().height);
 		stdFigure.setSize(d);
 	}
 }

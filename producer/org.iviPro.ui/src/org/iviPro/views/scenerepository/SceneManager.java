@@ -130,7 +130,7 @@ public class SceneManager implements ApplicationListener,
 			}
 			HashSet<Scene> used = new HashSet<Scene>();
 			Collection<IGraphNode> sceneNodes = project.getSceneGraph()
-					.searchNodes(NodeScene.class, true);
+					.searchNodes(NodeScene.class);
 			Iterator<IGraphNode> nodeIt = sceneNodes.iterator();
 			while (nodeIt.hasNext()) {
 				NodeScene sceneNode = (NodeScene) nodeIt.next();				
@@ -170,7 +170,7 @@ public class SceneManager implements ApplicationListener,
 		boolean isUsed = false;
 		if (project != null) {
 			Collection<IGraphNode> sceneNodes = project.getSceneGraph()
-					.searchNodes(NodeScene.class, true);
+					.searchNodes(NodeScene.class);
 			for (IGraphNode node : sceneNodes) {
 				NodeScene sceneNode = (NodeScene) node;
 				if (sceneNode.getScene() == scene

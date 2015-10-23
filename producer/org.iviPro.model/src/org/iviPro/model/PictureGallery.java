@@ -40,6 +40,16 @@ public class PictureGallery extends IAbstractBean {
 	}
 	
 	/**
+	 * Returns a copy of the given <code>PictureGallery</code>.
+	 * @param toCopy gallery to be copied
+	 */
+	public PictureGallery(PictureGallery toCopy) {
+		this(toCopy.getTitle(), toCopy.getProject());
+		this.numberColumns = toCopy.getNumberColumns();
+		this.pictures = new ArrayList<Picture>(toCopy.getPictures());		
+	}
+	
+	/**
 	 * Setzt die Spaltenzahl der Bildergalerie 
 	 * @return
 	 * @uml.property name="numberColumns"

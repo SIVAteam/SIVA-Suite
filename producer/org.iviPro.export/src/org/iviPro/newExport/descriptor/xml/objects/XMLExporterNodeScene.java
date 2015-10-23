@@ -14,6 +14,7 @@ import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.graph.INodeAnnotationAction;
 import org.iviPro.model.graph.INodeAnnotationLeaf;
+import org.iviPro.model.graph.NodeMark;
 import org.iviPro.model.graph.NodeResume;
 import org.iviPro.model.graph.NodeScene;
 import org.iviPro.model.resources.Scene;
@@ -133,8 +134,7 @@ public class XMLExporterNodeScene extends IXMLExporter {
 
 		// Position der Szene errechnen
 		Graph graph = nodeScene.getGraph();
-		List<IGraphNode> allSceneNodes = graph.searchNodes(NodeScene.class,
-				false);
+		List<IGraphNode> allSceneNodes = graph.searchNodes(NodeScene.class);
 		double maxX = Integer.MIN_VALUE;
 		double maxY = Integer.MIN_VALUE;
 		for (IGraphNode node : allSceneNodes) {
@@ -213,7 +213,8 @@ public class XMLExporterNodeScene extends IXMLExporter {
 			if (child instanceof NodeResume) {
 				return idManager.getActionID(child.getChildren().get(0));
 			} else if (child instanceof NodeScene
-					|| child instanceof INodeAnnotationAction) {
+					|| (child instanceof INodeAnnotationAction
+							&& !(child instanceof NodeMark))) {
 				return idManager.getActionID(child);
 			} 
 		}

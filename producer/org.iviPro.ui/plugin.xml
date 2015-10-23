@@ -150,7 +150,7 @@
             <property name="aboutImage" value="branding/orange/about/about.png"/>
             <property
                   name="aboutText"
-                  value="SIVA Producer&#x0A;&#x0A;Version 0.7&#x0A;(c) 2015 - All rights reserved&#x0A;&#x0A;Programmers (alphabetic order):&#x0A;Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Grill, Christian Handschigl, Jürgen Hoffmann, Stefan John, Johannes Köstler, Andreas Lang, Britta Meixner, Florian Niederhuber, Tristan Schneider, Stefan Zwicklbauer"/>
+                  value="SIVA Producer&#x0A;&#x0A;Version 0.7.1&#x0A;(c) 2015 - All rights reserved&#x0A;&#x0A;Programmers (alphabetic order):&#x0A;Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Grill, Christian Handschigl, Jürgen Hoffmann, Stefan John, Johannes Köstler, Andreas Lang, Britta Meixner, Florian Niederhuber, Tristan Schneider, Stefan Zwicklbauer"/>
             <property name="appName" value="SIVA Producer"/>
             <property
                   name="preferenceCustomization"

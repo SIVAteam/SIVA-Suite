@@ -428,7 +428,7 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 //		}
 		
 		// refresh all gui elements when properties have been changed (also see
-		// listener added to contentAnnotation below
+		// listener added to contentAnnotation below)
 		annotation.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
@@ -606,12 +606,7 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 	}
 
 	@Override
-	public boolean executeSaveOperation() {
-		// prüfe ob der Inhalt gesetzt wurde
-		if (!checkContentSet()) {
-			return false;
-		}
-		
+	public boolean executeSaveOperationImpl() {
 		// Check if overlay path items are set and positional information for 
 		// the start time of the annotation exists
 		if (tmpScreenArea != null && tmpScreenArea.equals(ScreenArea.OVERLAY)) {
@@ -689,8 +684,8 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 						annotationType, nodeScene, tmpTitle.getText(), description, 
 						start, end, keywords, disableable, pause, mute, markType, 
 						markShapes,	tmpMarkDuration, buttonLabel, editorContent, 
-						tmpContentDescription, tmpThumbnailTime, tmpScreenArea, 
-						tmpOpItems);
+						replacementContent, tmpContentDescription, tmpThumbnailTime,
+						tmpScreenArea, tmpOpItems);
 				try {
 					OperationHistory.execute(op);
 				} catch (ExecutionException e) {
@@ -701,7 +696,6 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 		} else {
 			return false;
 		}
-		updateDirty();
 		return true;
 	}
 
@@ -1103,7 +1097,7 @@ public class AnnotationDefineWidget extends AbstractAnnotationDefineWidget {
 						if (pictureAnnoColumnField.getText().length() > 0) {
 							Integer cols = Integer
 									.parseInt(pictureAnnoColumnField.getText());
-							picEditor.setColumns(cols);
+							picEditor.setColumns(cols, userTriggeredColumnUpdate);
 							updateDirty();
 						}
 					}

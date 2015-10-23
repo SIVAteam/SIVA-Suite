@@ -193,7 +193,7 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 					if (picEditor != null && pictureAnnoColumnField != null) {
 						if (pictureAnnoColumnField.getText().length() > 0) {
 							Integer cols = Integer.parseInt(pictureAnnoColumnField.getText());
-							picEditor.setColumns(cols);
+							picEditor.setColumns(cols, userTriggeredColumnUpdate);
 						}					
 					}
 				}
@@ -400,12 +400,7 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 	}
 	
 	@Override
-	public boolean executeSaveOperation() {
-		// prüfe ob der Inhalt gesetzt wurde
-		if (!checkContentSet()) {
-			return false;
-		}
-				
+	public boolean executeSaveOperationImpl() {
 		// generiere den Namen
 		BeanNameGenerator nameGen = new BeanNameGenerator(tmpTitle.getText(), annotation, Application.getCurrentProject().getGlobalAnnotations(), Messages.GlobalAnnotationPrefix);
 		String newTitle = nameGen.generate();
@@ -420,8 +415,8 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 				IAbstractOperation op = new GlobalAnnotationSaveOperation(annotation, 
 						annotationType, tmpTitle.getText(), tmpDescription.getText(), 
 					Messages.GlobalAnnotationDefineWidget_4, mute, editorContent, 
-					tmpContentDescription, tmpThumbnailTime, tmpScreenArea, 
-					tmpOpItems);
+					replacementContent, tmpContentDescription, tmpThumbnailTime, 
+					tmpScreenArea, tmpOpItems);
 				try {
 					OperationHistory.execute(op);
 					tabItem.setText(annotation.getTitle());
@@ -433,7 +428,6 @@ public class GlobalAnnotationDefineWidget extends AbstractAnnotationDefineWidget
 		} else {
 			return false;
 		}
-		updateDirty();
 		return true;
 	}
 

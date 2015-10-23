@@ -65,6 +65,15 @@ public abstract class IFigureNode extends Figure {
 	protected Dimension getStringSize(String text, Font font) {
 		return TEXT_UTIL.getStringExtents(text, font);
 	}
+	
+	/**
+	 * Returns the height of the largest letter in the font. 
+	 * @param font font
+	 * @return height of the largest letter of the font
+	 */
+	protected int getFontHeight(Font font) {
+		return TEXT_UTIL.getAscent(font);
+	}
 
 	/**
 	 * Verschiebt alle Punkte in dem point-Array um transformX in horizontaler

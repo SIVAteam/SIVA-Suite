@@ -176,7 +176,7 @@ public class ExportAction extends Action implements IWorkbenchAction,
 		// Activates the export menu item if there are more than two nodes
 		// (start
 		// and end node are always available).
-		if (project.getSceneGraph().searchNodes(NodeScene.class, true).size() > 0) {
+		if (project.getSceneGraph().searchNodes(NodeScene.class).size() > 0) {
 			setEnabled(true);
 		}
 		// Activates the action, if there are more than two nodes in the scene
@@ -186,7 +186,7 @@ public class ExportAction extends Action implements IWorkbenchAction,
 					@Override
 					public void propertyChange(PropertyChangeEvent arg0) {
 						if (project.getSceneGraph()
-								.searchNodes(NodeScene.class, true).size() > 0) {
+								.searchNodes(NodeScene.class).size() > 0) {
 							setEnabled(true);
 						} else {
 							setEnabled(false);

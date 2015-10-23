@@ -17,12 +17,17 @@ public class Messages extends NLS {
 	public static String TreePanel_DefaultNewNodeTitle;
 	public static String TreePanel_Delete_Confirmation_Text;
 	public static String TreePanel_Delete_Confirmation_Title;
+	public static String TreePanel_EntryTitle_1;
+	public static String TreePanel_EntryTitle_2;
+	public static String TreePanel_EntryTitle_3;
 	public static String TreePanel_LabelTitleOfTableOfCotent;
 	public static String TreePanel_MenuDelete;
 	public static String TreePanel_MenuRemoveScene;
 	public static String TreePanel_MenuRename;
 	public static String TreePanel_LEFT_HEADER;
 	public static String TreePanel_RIGHT_HEADER;
+	public static String TreePanel_SceneId_1;
+	public static String TreePanel_SceneId_2;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

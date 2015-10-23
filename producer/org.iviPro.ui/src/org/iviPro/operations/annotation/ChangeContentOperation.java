@@ -1,11 +1,14 @@
 package org.iviPro.operations.annotation;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.internal.presentations.util.ReplaceDragHandler;
 import org.iviPro.application.Application;
 import org.iviPro.editors.common.BeanNameGenerator;
 import org.iviPro.model.BeanList;
@@ -13,7 +16,10 @@ import org.iviPro.model.DummyFile;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.PictureGallery;
 import org.iviPro.model.Project;
+import org.iviPro.model.graph.Graph;
+import org.iviPro.model.graph.IGraphNode;
 import org.iviPro.model.graph.INodeAnnotation;
+import org.iviPro.model.graph.INodeAnnotationLeaf;
 import org.iviPro.model.graph.NodeAnnotationAudio;
 import org.iviPro.model.graph.NodeAnnotationPdf;
 import org.iviPro.model.graph.NodeAnnotationPicture;
@@ -45,6 +51,12 @@ public class ChangeContentOperation extends IAbstractOperation {
 	private final INodeAnnotation target;
 	private IAbstractBean oldContent;
 	private IAbstractBean newContent;
+	/**
+	 * Replacement content refers to the content which was used to replace 
+	 * oldContent, but without any changes which might have been applied 
+	 * after the replacement took place (replacement + changes = newContent).   
+	 */
+	private IAbstractBean replacementContent;
 	private long oldThumbnailTime;
 	private long newThumbnailTime;
 	private String oldContentDescription;
@@ -64,14 +76,15 @@ public class ChangeContentOperation extends IAbstractOperation {
 	 *             Falls einer der obigen Parameter null ist.
 	 */
 	public ChangeContentOperation(INodeAnnotation target, IAbstractBean content, 
-			String contentDescription, long thumbnailTime)
-			throws IllegalArgumentException {
+			IAbstractBean replacementContent, String contentDescription,
+			long thumbnailTime)	throws IllegalArgumentException {
 		super(Messages.ChangeScreenPositionOperation_Label);
 		
 		if (target == null) {
 			throw new IllegalArgumentException(
-					"Neither of the parameters may be null."); //$NON-NLS-1$
+					"Target annotation may not be null."); //$NON-NLS-1$
 		}
+		this.replacementContent = replacementContent;
 				
 		if (target instanceof NodeAnnotationVideo) {
 			NodeAnnotationVideo videoAnnotation = (NodeAnnotationVideo) target;
@@ -112,27 +125,15 @@ public class ChangeContentOperation extends IAbstractOperation {
 				this.oldContent = audioAnno.getAudioPart();
 			}				
 		} else if (target instanceof NodeAnnotationPicture) {
-			NodeAnnotationPicture pictureAnno = (NodeAnnotationPicture) target;
-			if (content instanceof Picture) {
-				this.newContent = content;
-			} else if (content instanceof PictureGallery) {
-				// die Galerie aus dem Editor
-				PictureGallery contentGallery = (PictureGallery) content;
-				PictureGallery newGallery = pictureAnno.getPictureGallery();
-				newGallery.setPictures(((PictureGallery) content).getPictures());
-				newGallery.setTitle(contentGallery.getTitle());
-				newGallery.setNumberColumns(contentGallery.getNumberColumns());
-				this.newContent = newGallery;
-			}
-			
-			int contentType = pictureAnno.getContentType();
+			NodeAnnotationPicture picAnno = (NodeAnnotationPicture) target;
+			this.newContent = content;
+						
+			int contentType = picAnno.getContentType();
 			if (contentType == NodeAnnotationPicture.CONTENT_PICTURE) {
-				Picture old = pictureAnno.getPicture();
-				this.oldContent = old;				
+				this.oldContent = picAnno.getPicture();			
 			} else
 			if (contentType == NodeAnnotationPicture.CONTENT_PICTUREGALLERY) {
-				PictureGallery old = pictureAnno.getPictureGallery();
-				this.oldContent = old;
+				this.oldContent = picAnno.getPictureGallery();
 			}
 			
 		} else if (target instanceof NodeAnnotationSubtitle) {
@@ -211,44 +212,63 @@ public class ChangeContentOperation extends IAbstractOperation {
 				((NodeAnnotationAudio) target).setAudioPart((AudioPart) newContent);
 			}
 		} else if (target instanceof NodeAnnotationPicture) {
+			NodeAnnotationPicture picAnno = ((NodeAnnotationPicture) target);
 			if (newContent instanceof Picture) {
-				((NodeAnnotationPicture) target).setPicture((Picture) newContent);
-			} else if (newContent instanceof PictureGallery) {	
+				picAnno.setPicture((Picture) newContent);
+			} else if (newContent instanceof PictureGallery) {
 				PictureGallery newGallery = (PictureGallery) newContent;
-				// hole alle Gallerien 
+				Project project = Application.getCurrentProject();
+				
+				// Check if the gallery of the annotation is already stored in the 
+				// media repository. In this case we will just update its properties. 
+				addToRepository = true;
 				BeanList<IAbstractBean> beans = Application.getCurrentProject().getMediaObjects();
 				BeanList<PictureGallery> galleries = new BeanList<PictureGallery>(Application.getCurrentProject());
+				// Check if the actual gallery of the annotation is already part of media repository
 				for (IAbstractBean bean : beans) {
 					if (bean instanceof PictureGallery) {
-						galleries.add((PictureGallery) bean);					
-					}
-				}	
-
-				boolean found = false;
-				PictureGallery foundGallery = null;
-				// Suche ob die Galerie bereits vorhanden ist, falls nein wird
-				// sie ins Repository hinzugefügt und ein Name generiert
-				for (PictureGallery gal : galleries) {
-					if (gal.getTitle().equals(newGallery.getTitle())) {
-						found = true;
-						foundGallery = gal;
-						break;
+						galleries.add((PictureGallery)bean);
+						if (bean == oldContent) {
+							addToRepository = false;
+						}
 					}
 				}
-				if (!found) {
-					addToRepository = true;
-					BeanNameGenerator bng = new BeanNameGenerator("", newGallery, galleries, target.getTitle());					
+				
+				if (addToRepository) {
+					// Create title for new gallery					
+					String titlePrefix; 
+					if (picAnno.isTriggerAnnotation()) {
+						titlePrefix = picAnno.getParentMarkAnno().getTitle(); 
+					} else {
+						titlePrefix = picAnno.getTitle();
+					}
+					
+					BeanNameGenerator bng = new BeanNameGenerator("", newGallery, galleries, titlePrefix);					
 					String newName = bng.generateAuto();
 					newGallery.setTitle(newName);
-					Application.getCurrentProject().getMediaObjects().add(newGallery);
-				}	
-				// falls eine Gallerie bereits besteht verwendet die neue Annotation auch diese.
-				// => Gallerie wird in mehreren Annotationen verwendet.
-				if (foundGallery != null) {
-					((NodeAnnotationPicture) target).setPictureGallery(foundGallery);
+				}
+				
+				// Set gallery and update references before modifying the media list to avoid 
+				// deletion events being sent to open editors.
+				picAnno.setPictureGallery(newGallery);
+				if (replacementContent == null) {
+					updatePictureGalleryReferences((PictureGallery)oldContent,
+							newGallery);
 				} else {
-					((NodeAnnotationPicture) target).setPictureGallery(newGallery);	
-				}								
+					updatePictureGalleryReferences((PictureGallery)replacementContent,
+							newGallery);
+					
+				}
+					
+				if (addToRepository) {	
+					project.getMediaObjects().add(newGallery);
+				} else if (newContent != oldContent) {
+					if (replacementContent == null) {
+						project.getMediaObjects().remove(oldContent);
+						project.getMediaObjects().add(newContent);
+					}
+				}
+								
 			}
 		} else if (target instanceof NodeAnnotationSubtitle && newContent instanceof Subtitle) {	
 			Subtitle newSubtitle = (Subtitle) newContent;
@@ -286,7 +306,7 @@ public class ChangeContentOperation extends IAbstractOperation {
 			}
 		} else if (target instanceof NodeAnnotationRichtext) {
 			NodeAnnotationRichtext richtextAnnotation = (NodeAnnotationRichtext) target;
-			RichText richtext = (RichText)newContent;
+			RichText newRichtext = (RichText)newContent;
 			Project project = Application.getCurrentProject();
 			
 			/* Using setRichtext() fires an event which triggers 
@@ -317,14 +337,14 @@ public class ChangeContentOperation extends IAbstractOperation {
 				((RichText)newContent).createFileFromTitle();
 			}
 			
-			// Set richtext before modifying the media list to avoid deletion events
-			// being sent to open editors.
-			richtextAnnotation.setRichtext(richtext);
+			// Set richtext and update references before modifying the media list to avoid 
+			// deletion events being sent to open editors.
+			richtextAnnotation.setRichtext(newRichtext);
+			updateRichtextReferences((RichText)oldContent, newRichtext);
 				
 			if (addToRepository) {	
-				// Add richtext to repository
-				project.getMediaObjects().add(richtext);
-				project.getUnusedFiles().remove(richtext.getFile().getValue());			
+				project.getMediaObjects().add(newRichtext);
+				project.getUnusedFiles().remove(newRichtext.getFile().getValue());			
 			} else if (newContent != oldContent) {
 				project.getMediaObjects().remove(oldContent);
 				project.getMediaObjects().add(newContent);
@@ -359,12 +379,30 @@ public class ChangeContentOperation extends IAbstractOperation {
 			if (oldContent == null || oldContent instanceof Picture) {
 				((NodeAnnotationPicture) target).setPicture((Picture) oldContent);	
 			} else if (oldContent instanceof PictureGallery) {
-				((NodeAnnotationPicture) target).setPictureGallery((PictureGallery) oldContent);
-				// falls die PictureGallery hinzugefügt wurde, war das die erste Annotation die diesen verwendet hat
-				// => ihn nur wenn addToRepository gesetzt ist
-				if (addToRepository) {
-					Application.getCurrentProject().getMediaObjects().remove((PictureGallery) oldContent);
+				PictureGallery oldGallery = (PictureGallery) oldContent;
+				PictureGallery newGallery = (PictureGallery) newContent;
+				Project project = Application.getCurrentProject();
+					
+				// Set gallery before modifying the media list to avoid deletion events
+				// being sent to open editors.
+				((NodeAnnotationPicture) target).setPictureGallery(oldGallery);
+				if (replacementContent == null) {
+					updatePictureGalleryReferences(newGallery, oldGallery);
+				} else {
+					updatePictureGalleryReferences(newGallery, 
+							(PictureGallery) replacementContent);
 				}
+				
+				if (addToRepository) {
+					project.getMediaObjects().remove(newContent);
+					project.getUnusedFiles().add(((RichText)newContent).getFile().getValue());
+				} else if (oldContent != newContent) {
+					if (replacementContent == null) {
+						project.getMediaObjects().remove(newContent);
+						project.getMediaObjects().add(oldContent);
+					}
+				}
+				
 			}
 		} else if (target instanceof NodeAnnotationSubtitle) {
 			((NodeAnnotationSubtitle) target).setSubtitle((Subtitle) oldContent);
@@ -374,13 +412,14 @@ public class ChangeContentOperation extends IAbstractOperation {
 				Application.getCurrentProject().getMediaObjects().remove((Subtitle) oldContent);
 			}
 		} else if (target instanceof NodeAnnotationRichtext) {
-			NodeAnnotationRichtext richtextAnnotation = (NodeAnnotationRichtext) target;			
-			RichText richtext = (RichText)oldContent;
+			RichText oldRichtext = (RichText)oldContent;
 			Project project = Application.getCurrentProject();
 			
 			// Set richtext before modifying the media list to avoid deletion events
 			// being sent to open editors.
-			richtextAnnotation.setRichtext(richtext);	
+			((NodeAnnotationRichtext) target).setRichtext(oldRichtext);
+			updateRichtextReferences((RichText)newContent, oldRichtext);
+			
 			if (addToRepository) {
 				project.getMediaObjects().remove(newContent);
 				project.getUnusedFiles().add(((RichText)newContent).getFile().getValue());
@@ -396,5 +435,48 @@ public class ChangeContentOperation extends IAbstractOperation {
 			((NodeAnnotationPdf)target).setPdf((PdfDocument)oldContent);
 		}
 		return Status.OK_STATUS;
+	}
+	
+	/**
+	 * Update all richtext annotations referring to <code>oldRef</code> by setting
+	 * <code>newRef</code> as the new richtext.  
+	 * @param oldRef richtext reference which should be substituted 
+	 * @param nweRef richtext reference after the update
+	 */
+	private void updateRichtextReferences(RichText oldRef, RichText newRef) {
+		Graph scenegraph = Application.getCurrentProject().getSceneGraph();
+		List<IGraphNode> contentAnnotations = 
+				scenegraph.searchNodes(INodeAnnotationLeaf.class);
+		contentAnnotations.addAll(Application.getCurrentProject().getGlobalAnnotations());
+		for (IGraphNode node : contentAnnotations) {
+			if (node instanceof NodeAnnotationRichtext) {
+				NodeAnnotationRichtext anno = (NodeAnnotationRichtext) node;
+				if (anno.getRichtext() == oldRef) {
+					anno.setRichtext(newRef);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Update all picture gallery annotations referring to <code>oldRef</code> by 
+	 * setting <code>newRef</code> as the new picture gallery.  
+	 * @param oldRef picture gallery reference which should be substituted 
+	 * @param nweRef picture gallery reference after the update
+	 */
+	private void updatePictureGalleryReferences(PictureGallery oldRef, 
+			PictureGallery newRef) {
+		Graph scenegraph = Application.getCurrentProject().getSceneGraph();
+		List<IGraphNode> contentAnnotations = 
+				scenegraph.searchNodes(INodeAnnotationLeaf.class);
+		contentAnnotations.addAll(Application.getCurrentProject().getGlobalAnnotations());
+		for (IGraphNode node : contentAnnotations) {
+			if (node instanceof NodeAnnotationPicture) {
+				NodeAnnotationPicture anno = (NodeAnnotationPicture) node;
+				if (anno.getPictureGallery() == oldRef) {
+					anno.setPictureGallery(newRef);
+				}
+			}
+		}
 	}
 }

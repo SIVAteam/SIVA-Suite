@@ -199,7 +199,7 @@ public class MediaDeleteOperation extends IAbstractDeleteOperation {
 		List<AbstractNodeSelectionControl> imgRefs = new ArrayList<AbstractNodeSelectionControl>();
 		// Selection controls
 		List<IGraphNode> controlNodes = project.getSceneGraph()
-				.searchNodes(AbstractNodeSelectionControl.class, false);		
+				.searchNodes(AbstractNodeSelectionControl.class);		
 		for (IGraphNode node : controlNodes) {
 			AbstractNodeSelectionControl control = (AbstractNodeSelectionControl)node;
 			if (control.getButtonImage() == pic) {

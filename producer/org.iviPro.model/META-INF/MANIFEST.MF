@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.swt;bundle-version="3.4.2",
  org.eclipse.draw2d,
- org.apache.log4j.export;bundle-version="1.2.27"
+ org.apache.log4j;bundle-version="1.2.27"
 Export-Package: org.iviPro.model,
  org.iviPro.model.annotation,
  org.iviPro.model.graph,

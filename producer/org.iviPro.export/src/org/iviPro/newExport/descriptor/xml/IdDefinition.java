@@ -45,7 +45,7 @@ public interface IdDefinition {
 	/**
 	 * Action-ID fuer alle Mark Nodes
 	 */
-	public static final String ACTIONID_NODEMARK = "show"; //$NON-NLS-1$
+	public static final String ACTIONID_NODEMARK = "show-"; //$NON-NLS-1$
 
 	public static final String EMPTY = ""; //$NON-NLS-1$
 	public static final String ID_SEPARATOR = "-"; //$NON-NLS-1$

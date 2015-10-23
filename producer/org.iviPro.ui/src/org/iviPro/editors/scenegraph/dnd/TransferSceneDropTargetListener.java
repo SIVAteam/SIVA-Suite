@@ -94,7 +94,7 @@ public class TransferSceneDropTargetListener extends
 				Scene scene = (Scene) objects[0];
 				Graph graph = Application.getCurrentProject().getSceneGraph();
 				List<IGraphNode> sceneNodes = graph.searchNodes(
-						NodeScene.class, true);
+						NodeScene.class);
 				String newNodeName = scene.getTitle();
 				char baseChar = 'A';
 				boolean nameAlreadyUsed = true;

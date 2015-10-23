@@ -427,7 +427,9 @@ public class TreePanel extends SivaComposite {
 			String title = t.getTitle();
 
 			if (s != null) {
-				title = title.concat(" [" + s.getTitle() + " (id:" + s.getNodeID() + ")]"); //$NON-NLS-1$ //$NON-NLS-2$
+				title = title.concat(Messages.TreePanel_EntryTitle_1 + s.getTitle() 
+						+ Messages.TreePanel_EntryTitle_2 
+						+ s.getNodeID() + Messages.TreePanel_EntryTitle_3);
 			}
 			i.setText(title);
 			i.setData(t);
@@ -458,7 +460,9 @@ public class TreePanel extends SivaComposite {
 			NodeScene s = c.getScene();
 			String title = c.getTitle();
 			if (s != null) {
-				title = title.concat(" [" + s.getTitle() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+				title = title.concat(Messages.TreePanel_EntryTitle_1 + s.getTitle() 
+						+ Messages.TreePanel_EntryTitle_2 
+						+ s.getNodeID() + Messages.TreePanel_EntryTitle_3); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			ci.setText(title);
 			ci.setData(c);
@@ -644,7 +648,7 @@ public class TreePanel extends SivaComposite {
 		});
 		for (NodeScene scene : scenes) {
 			TreeItem item = new TreeItem(sceneList, SWT.None);
-			item.setText(scene.getTitle() + " (id:" + scene.getNodeID() + ")"); // Szenentitel
+			item.setText(scene.getTitle() + Messages.TreePanel_SceneId_1 + scene.getNodeID() + Messages.TreePanel_SceneId_2); // Szenentitel
 			item.setData(scene);
 		}
 	}

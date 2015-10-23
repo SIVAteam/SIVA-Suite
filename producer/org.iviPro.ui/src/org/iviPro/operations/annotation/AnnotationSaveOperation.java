@@ -71,12 +71,13 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 	 * @param editorContent
 	 */
 	public AnnotationSaveOperation(INodeAnnotation annotation,
-			AnnotationType annotationType, NodeScene nodeScene, String title, String description,
-			Long start, Long end, String keywords, boolean disableable,
-			boolean pause, boolean mute, NodeMarkType markType,
+			AnnotationType annotationType, NodeScene nodeScene, String title, 
+			String description,	Long start, Long end, String keywords, 
+			boolean disableable, boolean pause, boolean mute, NodeMarkType markType,
 			List<IMarkShape> markShapes, long markDuration, String buttonLabel,
-			IAbstractBean editorContent, String contentDescription, long thumbnailTime,  
-			ScreenArea screenArea, List<OverlayPathItem> opItems) {
+			IAbstractBean editorContent, IAbstractBean replacementContent,
+			String contentDescription, long thumbnailTime, ScreenArea screenArea, 
+			List<OverlayPathItem> opItems) {
 		
 		super(Messages.AnnotationSaveOperation_UndoLabel);
 		Project project = Application.getCurrentProject();
@@ -116,8 +117,8 @@ public class AnnotationSaveOperation extends IAbstractOperation {
 		// Some values have to be stored also/only in the content annotation, which 
 		// is the triggered annotation in case of a mark annotation
 		INodeAnnotation contentAnnotation = AnnotationFactory.getContentAnnotation(annotation);
-		changeAnnotation.addOperation(new ChangeContentOperation(contentAnnotation, editorContent, 
-				contentDescription, thumbnailTime));
+		changeAnnotation.addOperation(new ChangeContentOperation(contentAnnotation, editorContent,
+				replacementContent,	contentDescription, thumbnailTime));
 		changeAnnotation.addOperation(new ChangeDisableableOperation(contentAnnotation, disableable));	
 		changeAnnotation.addOperation(new ChangePauseOperation(contentAnnotation, pause));
 		changeAnnotation.addOperation(new ChangeMuteOperation(contentAnnotation, mute));

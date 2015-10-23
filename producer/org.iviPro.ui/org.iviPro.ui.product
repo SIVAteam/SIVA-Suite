@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SIVA Producer" uid="org.iviPro.ui.product" id="org.iviPro.ui.product" application="org.iviPro.ui.application" version="0.7" useFeatures="false" includeLaunchers="true">
+<product name="SIVA Producer" uid="org.iviPro.ui.product" id="org.iviPro.ui.product" application="org.iviPro.ui.application" version="0.7.1" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.iviPro.ui/branding/orange/about/about.png"/>
       <text>
          SIVA Producer
 
-Version 0.7
+Version 0.7.1
 (c) 2015 - All rights reserved
 
 Programmers (alphabetic order):
@@ -40,11 +40,9 @@ Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Gr
       </win>
    </launcher>
 
-
    <vm>
       <windows include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
-
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -53,7 +51,7 @@ Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Gr
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.jasper.glassfish"/>
-      <plugin id="org.apache.log4j.export"/>
+      <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>

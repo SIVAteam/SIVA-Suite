@@ -61,7 +61,7 @@ public class OpenTocEditorAction extends Action implements ApplicationListener,
 
 		// falls mehr als 2 Knoten (da Start und Endknoten immer vorhanden sind
 		// schalte den Export ein
-		if (project.getSceneGraph().searchNodes(NodeScene.class, true).size() > 0) {
+		if (project.getSceneGraph().searchNodes(NodeScene.class).size() > 0) {
 			setEnabled(true);	
 		}
 		
@@ -69,7 +69,7 @@ public class OpenTocEditorAction extends Action implements ApplicationListener,
 		Application.getCurrentProject().getSceneGraph().addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent arg0) {
-				if (project.getSceneGraph().searchNodes(NodeScene.class, true).size() > 0) {
+				if (project.getSceneGraph().searchNodes(NodeScene.class).size() > 0) {
 					setEnabled(true);	
 				} else {
 					setEnabled(false);

@@ -110,7 +110,7 @@ public class PathHelper {
 		try {
 			URL fileURL = FileLocator.find(Platform
 					.getBundle(Application.PLUGIN_ID), new Path(
-					"/etc/loggerconfig.ini"), null); //$NON-NLS-1$
+					"/configs/loggerconfig.ini"), null); //$NON-NLS-1$
 			return fileURL;
 		} catch (Exception e1) {
 			e1.printStackTrace();

@@ -104,6 +104,13 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 	protected long tmpThumbnailTime;
 	
 	/**
+	 * In case of a replacement of the content editors content, replacementContent
+	 * preserves the unmodified version of the content element used to replace the
+	 * former content. 
+	 */
+	protected IAbstractBean replacementContent;
+	
+	/**
 	 * Description of content (used for e.g. PDF documents) 
 	 */
 	protected String tmpContentDescription = null;
@@ -134,6 +141,11 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 	protected Button picButton;
 	protected Button galButton;
 	protected Text pictureAnnoColumnField;
+	/**
+	 * Used to prevent content change notification when the pictureAnnoColumnField
+	 * is changed programmatically.
+	 */
+	protected boolean userTriggeredColumnUpdate = true;
 
 	public AbstractAnnotationDefineWidget(Composite parent, int style,
 			INodeAnnotation annotation, AnnotationType annotationType,
@@ -261,6 +273,7 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 			}
 			
 			if (isGallery) {
+				userTriggeredColumnUpdate = false;
 				if (editorContent != null) {
 					pictureAnnoColumnField
 					.setText("" //$NON-NLS-1$
@@ -270,6 +283,7 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 					pictureAnnoColumnField.setText("" //$NON-NLS-1$
 							+ PictureGallery.PICGAL_COLS_STD);
 				}
+				userTriggeredColumnUpdate = true;
 			}
 			break;
 		
@@ -371,7 +385,21 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 	 * Tries to save the annotation and returns true if successful. 
 	 * @return true if the save operation was successful - false otherwise
 	 */
-	public abstract boolean executeSaveOperation();
+	public boolean executeSaveOperation() {
+		if (!checkContentSet()) {
+			return false;
+		}
+		boolean saved = executeSaveOperationImpl();
+		updateDirty();
+		replacementContent = null;
+		return saved;
+	}
+	
+	/**
+	 * AnnotationWidget specific implementation for saving the underlying annotation. 
+	 * @return true if the widget specific save operation was successful - false otherwise
+	 */
+	public abstract boolean executeSaveOperationImpl();
 
 	/**
 	 * prüft ob der Inhalt gesetzt wurde und gibt eine Fehlermeldung aus, wenn
@@ -716,6 +744,8 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 	public void handleEvent(SivaEvent event) {
 		// Listen to events triggered by the content editors
 		if (event.getEventType() == SivaEventType.CONTENT_CHANGED) {
+			// If there is one replacement in the chain of edits, the next
+			// save operation needs to account for that. 
 			// Remove listener on old content
 			if (editorContent != null) {
 				editorContent.removePropertyChangeListener(this);
@@ -728,7 +758,6 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 				((Scene) editorContent).getVideo().getScenes()
 						.removePropertyChangeListener(this);
 			}
-			
 			// Set new content
 			editorContent = (IAbstractBean) event.getValue();			
 			// Need to listen for deletion of an AudioPart/Scene on the related media 
@@ -753,6 +782,8 @@ public abstract class AbstractAnnotationDefineWidget extends Composite
 			if (editorContent != null) {
 				editorContent.addPropertyChangeListener(this);
 			}
+		} else if (event.getEventType() == SivaEventType.CONTENT_REPLACED) {
+			replacementContent = (IAbstractBean) event.getValue();
 		} else if (event.getEventType() == SivaEventType.TIME_SELECTION) {
 			tmpThumbnailTime = (Long) event.getValue();
 		} else if (event.getEventType() == SivaEventType.DESCRIPTION_CHANGED) {

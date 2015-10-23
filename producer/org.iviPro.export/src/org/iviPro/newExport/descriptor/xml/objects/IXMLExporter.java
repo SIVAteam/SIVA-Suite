@@ -307,8 +307,12 @@ public abstract class IXMLExporter implements SivaDefinition {
 		if (screenArea.equals(ScreenArea.OVERLAY)) {
 			Element overlay;
 			overlay = doc.createElement(TAG_PATH);
-			Scene scene = ((INodeAnnotation) annotation).getParentScene()
-						.getScene();
+			
+			Scene scene = null;
+			NodeScene nodeScene = ((INodeAnnotation) annotation).getParentScene();
+			if (nodeScene != null) {
+				scene = nodeScene.getScene();
+			}
 
 			List<OverlayPathItem> overlayPath = null;
 			if (annotation instanceof INodeAnnotation) {

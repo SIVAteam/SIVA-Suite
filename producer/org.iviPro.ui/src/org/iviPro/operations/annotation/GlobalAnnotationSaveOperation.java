@@ -47,7 +47,8 @@ public class GlobalAnnotationSaveOperation extends IAbstractOperation {
 	public GlobalAnnotationSaveOperation(INodeAnnotation annotation,
 			AnnotationType annotationType, String title, String description,
 			String keywords, boolean mute, IAbstractBean editorContent, 
-			String contentDescription, long thumbnailTime, ScreenArea screenArea,
+			IAbstractBean replaceContent, String contentDescription, 
+			long thumbnailTime, ScreenArea screenArea, 
 			List<OverlayPathItem> opItems) {
 		
 		super(Messages.AnnotationSaveOperation_UndoLabel);
@@ -71,8 +72,8 @@ public class GlobalAnnotationSaveOperation extends IAbstractOperation {
 
 		changeAnnotation.addOperation(new ChangeMuteOperation(annotation, mute));
 		
-		changeAnnotation.addOperation(new ChangeContentOperation(annotation, editorContent, 
-				contentDescription, thumbnailTime));
+		changeAnnotation.addOperation(new ChangeContentOperation(annotation, 
+				editorContent, replaceContent, contentDescription, thumbnailTime));
 
 		List<INodeAnnotationLeaf> globalAnnotations = Application.getCurrentProject().getGlobalAnnotations();
 		if (!globalAnnotations.contains(annotation)) {

@@ -82,7 +82,7 @@ public class SceneChangeOperation extends IAbstractOperation {
 		this.scene = scene;
 		// Adapt timings of annotations relying on this scene
 		List<IGraphNode> potentialAnnos = project.getSceneGraph()
-				.searchNodes(INodeAnnotation.class, true);
+				.searchNodes(INodeAnnotation.class);
 		for (IGraphNode potAnno : potentialAnnos) {
 			INodeAnnotation anno = (INodeAnnotation)potAnno;
 			NodeScene parentScene = anno.getParentScene();

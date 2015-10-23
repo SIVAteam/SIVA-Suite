@@ -248,7 +248,7 @@ public class ProjectOpenAction extends Action implements ISelectionListener,
 			// damit alte Subtitle Annotationen auch funktionieren, müssen diese
 			// zu den MediaObjects hinzugefügt werden
 			List<IGraphNode> subtitleNodes = Application.getCurrentProject()
-					.getSceneGraph().searchNodes(NodeAnnotationSubtitle.class, true);
+					.getSceneGraph().searchNodes(NodeAnnotationSubtitle.class);
 			for (IGraphNode gn : subtitleNodes) {
 				if (gn instanceof NodeAnnotationSubtitle) {
 					Subtitle newSub = ((NodeAnnotationSubtitle) gn)

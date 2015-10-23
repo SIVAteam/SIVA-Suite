@@ -201,15 +201,15 @@ public class GraphTests {
 
 		// Am Schluss muss die erwartete Anzahl an Knoten im Graphen stimmen
 		Assert.assertEquals(EXPECTED_NODESELECTION_COUNT, graph.searchNodes(
-				NodeSelection.class, true).size());
+				NodeSelection.class).size());
 		Assert.assertEquals(EXPECTED_NODESELECTIONCONTROL_COUNT, graph
-				.searchNodes(NodeSelectionControl.class, true).size());
+				.searchNodes(NodeSelectionControl.class).size());
 		Assert.assertEquals(EXPECTED_NODESCENE_COUNT, graph.searchNodes(
-				NodeScene.class, true).size());
+				NodeScene.class).size());
 		Assert.assertEquals(EXPECTED_NODEMARK_COUNT, graph.searchNodes(
-				NodeMark.class, true).size());
+				NodeMark.class).size());
 		Assert.assertEquals(EXPECTED_NODEANNOTATION_COUNT, graph
-				.searchNodes(INodeAnnotationLeaf.class, true).size());
+				.searchNodes(INodeAnnotationLeaf.class).size());
 		Assert.assertEquals(EXPECTED_NODE_COUNT, graph.getNodes().size());
 
 	}
@@ -222,7 +222,7 @@ public class GraphTests {
 		Assert.assertEquals(EXPECTED_NODE_COUNT, graph.getNodes().size());
 		// Teste ob Gesamtzahl an Szenen-Knoten erwarteter Anzahl entspricht
 		Assert.assertEquals(EXPECTED_NODESCENE_COUNT, graph.searchNodes(
-				NodeScene.class, true).size());
+				NodeScene.class).size());
 		// Suche Szenen-Knoten 1a
 		sceneNode = searchSceneNode(SCENE_NODE_01A);
 		Assert.assertNotNull(sceneNode);
@@ -747,7 +747,7 @@ public class GraphTests {
 	 */
 	private NodeScene searchSceneNode(String title) {
 		Graph graph = project.getSceneGraph();
-		for (IGraphNode node : graph.searchNodes(NodeScene.class, false)) {
+		for (IGraphNode node : graph.searchNodes(NodeScene.class)) {
 			if (node instanceof NodeScene) {
 				if (node.getTitle().equals(title)) {
 					return (NodeScene) node;
@@ -767,7 +767,7 @@ public class GraphTests {
 	 */
 	private NodeSelection searchSelectionNode(String title) {
 		Graph graph = project.getSceneGraph();
-		for (IGraphNode node : graph.searchNodes(NodeSelection.class, false)) {
+		for (IGraphNode node : graph.searchNodes(NodeSelection.class)) {
 			if (node instanceof NodeSelection) {
 				if (node.getTitle().equals(title)) {
 					return (NodeSelection) node;
@@ -787,8 +787,7 @@ public class GraphTests {
 	 */
 	private NodeSelectionControl searchSelectionControlNode(String title) {
 		Graph graph = project.getSceneGraph();
-		for (IGraphNode node : graph.searchNodes(NodeSelectionControl.class,
-				false)) {
+		for (IGraphNode node : graph.searchNodes(NodeSelectionControl.class)) {
 			if (node instanceof NodeSelectionControl) {
 				if (node.getTitle().equals(title)) {
 					return (NodeSelectionControl) node;
@@ -808,7 +807,7 @@ public class GraphTests {
 	 */
 	private NodeMark searchMarkNode(String title) {
 		Graph graph = project.getSceneGraph();
-		for (IGraphNode node : graph.searchNodes(NodeMark.class, false)) {
+		for (IGraphNode node : graph.searchNodes(NodeMark.class)) {
 			if (node instanceof NodeMark) {
 				if (node.getTitle().equals(title)) {
 					return (NodeMark) node;
@@ -828,8 +827,7 @@ public class GraphTests {
 	 */
 	private INodeAnnotationLeaf searchNodeAnnotationLeaf(String title) {
 		Graph graph = project.getSceneGraph();
-		for (IGraphNode node : graph.searchNodes(INodeAnnotationLeaf.class,
-				false)) {
+		for (IGraphNode node : graph.searchNodes(INodeAnnotationLeaf.class)) {
 			if (node instanceof INodeAnnotationLeaf) {
 				if (node.getTitle().equals(title)) {
 					return (INodeAnnotationLeaf) node;

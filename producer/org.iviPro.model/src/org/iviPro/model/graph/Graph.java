@@ -253,13 +253,8 @@ public class Graph extends IAbstractBean {
 	 * 
 	 * @param type
 	 *            Der Typ auf den die Knoten castbar sein müssen.
-	 * @param searchSceneSequences
-	 *            Gibt an, ob der in Knoten vom Typ NodeSceneSequence
-	 *            eingebettete Graph mit durchsucht werden soll, oder ob die
-	 *            Suche auf diesen Graph beschränkt sein soll.
 	 */
-	public List<IGraphNode> searchNodes(Class<? extends IGraphNode> type,
-			boolean searchSceneSequences) {
+	public List<IGraphNode> searchNodes(Class<? extends IGraphNode> type) {
 
 		List<IGraphNode> result = new ArrayList<IGraphNode>();
 
@@ -319,8 +314,7 @@ public class Graph extends IAbstractBean {
 		Set<IGraphNode> result = new HashSet<IGraphNode>();
 
 		// Alle direkt vom Medien-Objekt abhaengigen Knoten suchen
-		List<IGraphNode> allNodes = searchNodes(IGraphNode.class,
-				searchSequences);
+		List<IGraphNode> allNodes = searchNodes(IGraphNode.class);
 		for (IGraphNode node : allNodes) {
 			if (node.isDependentOn(object) && !result.contains(node)) {
 				result.add(node);

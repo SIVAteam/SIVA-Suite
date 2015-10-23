@@ -11,7 +11,7 @@ Require-Bundle: org.iviPro.model,
  org.eclipse.zest.layouts;bundle-version="1.1.0",
  org.eclipse.mylyn.htmltext;bundle-version="0.9.0",
  org.iviPro.export;bundle-version="1.0.0",
- org.apache.log4j.export;bundle-version="1.2.27"
+ org.apache.log4j;bundle-version="1.2.27"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.iviPro.actions.nondestructive;
   uses:="org.iviPro.application,
