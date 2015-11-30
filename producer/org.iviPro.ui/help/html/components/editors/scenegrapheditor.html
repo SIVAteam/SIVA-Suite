@@ -7,29 +7,141 @@
 
 <LINK REL="STYLESHEET" HREF="../../../help.css" CHARSET="ISO-8859-1" TYPE="text/css">
 
-<title>Szenengrapheditor</title>
+<title>Scenegrapheditor</title>
 </head>
 
 <body>
-<h1>Szenengrapheditor</h1>
+<h1>Scenegrapheditor</h1>
 <p align="justify">
 <br>
 
-<br>
-Der <b>Szenengrapheditor</b> 
-</p>
+The <b>szenengrapheditor</b> helps you to create and to merge your project. 
+It is used to put the defined scenes in a graph and thus define the sequence in the interactive video. 
+There exist two types content-nodes: <b>scene-nodes</b>, which represent a scene in the video, and <b>selection-nodes</b>, which 
+offer the uster a range of options for following scenes. Furthermore there exist <b>feature-nodes</b>, as for example a starting and 
+an ending node. 
+Every graph has to include a starting and an ending node as well as at least one scene-node. Furthermore from every node there 
+has to lead a path to the end of the video (no impasses). 
+</p> <br>
+
+The scenegraph-editor can be opened by clicking onto "<b>Scenengraph</b>" in the taskbar.
 <p align="left">
-<img src="images/editorSzenegrapheditor.PNG" alt="scene graph editor" width="600">
+<img src="../../../imagesNeu/editorSzenegrapheditorBearbeiten.PNG" alt="Bildeditor" width="1000">
 </p> 
+
+Moreover you can open the scenegraph by making a rightclick into the scene-repository and select "<b>Open Scenegraph</b>".
+<br>
+<img alt="Szenengrapheditor öffnen" src="../../../images/scenegraph-editor-open.jpg" width="70%"> <br><br>
+
+Now the scenegraph opens:
+<p align="left">
+<img alt="Szenengrapheditor" src="../../../images/scenegraph.jpg" width="60%">
+</p> <br>
+
+In the following you will learn more about the usage of the tools and objects in the scenegraph of the SIVA Suite:
+<br><br>
+
+On the left side of the scenegraph you find <b>5 buttons</b>: <br>
+	 <img alt="Zoom" src="../../../images/scenegraph-zoom-buttons.jpg"> With the upper two ones you can zoom in and out into the 
+	 indicating range.<br>
+	 <img alt="weitere Infos" src="../../../images/scenegraph-further-infos-buttons.jpg"> With the third and the fourth 
+	 further information towards the videos in the scenegraph can be displayed with help of the semantic zoom. This could be for 
+	 instance a thumbnail and the number of the annotations created for the video.<br>
+	 <img alt="semantisches Fisheye-Zooming" src="../../../images/scenegraph-fish-eye-zooming-button.jpg"> If you activate 
+	 the last button, the semantic fisheye-zooming, you can see for example a thumbnail.
+ 
+<br><br>
+
+On the white area of the scenegraph you already a starting and an ending element. "<b>Start</b>" marks the video with what the 
+videotool should start. The video that will be shown last has to be linked to "<b>End</b>". <br>
+<img alt="Start und Ende" src="../../../images/scenegraph-start-end.jpg"> <br>
+
+<h2>Create a scenegraph</h2>
 <p align="justify">
+Scenes that already have been defined are administered in a scene-repository where you can add single scenes to the scenegraph from. 
+The editor allows the author to put the scenes in the graph into different orders. The toolbar of the scenegraph-editor can be 
+positioned on the right or the left side of the graph (via drag and drop). Tools for deleting and adding nodes and edges are offered. 
 <br>
-Öffnen kann man ihn, indem man...
+Between the scenes you can add links to various paths/alternatives. With their help the user can decide the order of the 
+interactive video.<br>
 </p>
-<p align="left">
-<img src="images/editorSzenegrapheditorBearbeiten.PNG" alt="edit scene graph" width="1000">
-</p> 
+<img src="../../../images/scenegraph-task.jpg" alt="Szenengraph" width="60%"><br><br>
+
+Via drag and drop you add a video and link it with the help of the linking tool with the starting and ending element by 
+mouse clicking on both elements you want to link. Before that is possible, the video has to be converted into a scene by using 
+the  <a href="../../../html/components/editors/sceneneditor.html"> sceneeditor</a> as in the scenegrapheditor just single scenes 
+can be used.
+Now you have created your first scenegraph! <br>
+<img alt="Video einfügen" src="../../../images/scenegraph-add-scene.jpg"> <br><br>
+
+The <b>creation of a selection of videos</b> works as follows: Drag all the video scenes you want to use into the scenegraph. 
+Keep in mind that a there has to be a video at the beginning of the scenegraph directly after "start".<br>
+<img alt="Erstellen einer Videoauswahl" src="../../../images/scenegraph-add-more-scenes.jpg"> <br><br>
+
+Now you add a "<b>user selection</b>" and the according amount of "<b>selection alternatives</b>". Here you see how the structure 
+has to be linked: A video is followed by a selection, that is why this has to be linked via an arrow with "new selection". 
+As this is a selection alternative between two videos, two grey "selection alternative"-elements have to be linked with the 
+selection and the videos that should be played after clicking onto the selection alternative.<br>
+<img alt="Hinzufügen von Wahlmöglichkeiten" src="../../../images/scenegrah-add-selection-options.jpg"> <br><br>
+
+The name of the selection at the same time is the title that will appear in the exported project. The editor can be opened by 
+doubleclicking onto the selection. Here you can change the title, the order the selection alternatives should be shown in and decide 
+whether after a certain duration one of the selection alternatives should be played automatically.
+The title of the selection alternatives can also be be changed by clicking onto it in the scenegraph.<br>
+<img alt="Titel des Projekts" src="../../../images/scenegraph-title.jpg"> <br><br>
+
+The "<b>conditional user selection</b>" works the same manner as the usual "user selection". The only difference is that via 
+double click onto the selection alternatives in the "path editor" that will open, one or more scenes can be set as condition 
+to be able to use that selection alternative. If the required scene still has not be seen, the selection alternative will 
+remain invisible. You just have to select the hook and select the desired condition while keeping the STRG-key pressed. Moreover 
+you should write down the conditions for the user in the field below.<br>
+<img alt="Pfad-Editor" src="../../../images/scenegraph-path-editor.jpg"> <br><br>
+
+For a <b>random selection</b> you just have to link all the videos, from which one should be chosen from, with the selection. 
+There are no selection alternatives needed.<br>
+<img alt="Zufallsauswahl" src="../../../images/scenegraph-random-selection.jpg"> <br><br>
+
+Another element is the "<b>resume button</b>". If you use it between two videos, one video is played after the other one after 
+having pressed the button. <br>
+<img alt="Weiter-Knopf" src="../../../images/scenegraph-continue-button.jpg"> <br><br>
+
+Further information towards the <a href="../../../html/components/editors/toolbar-scenegrapheditor.html">
+toolbar</a> you find <a href="../../../html/components/editors/toolbar-scenegrapheditor.html">here</a>. <br><br>
+
+A finished SIVA-project coul look like this. Here just the usual "user selection" has been used.<br><br>
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-finished-SIVA-project.jpg" width="70%"> <br><br>
+
+<a href="../../../html/components/editors/annotationeditor/annotationeditor.html">Annotations</a> can be added to the scenes.
+<br><br>
+
+If the annotations have been added, there exists another view of the scenegraph that gives you a better overview. 
+Via right click onto one of the scenes a new window opens. Here you click onto "<b>Semantic Zoom In</b>" to receive a more 
+detailed view. Now you find an overview of the annotations that have been added to the scene directly below the scene.<br>
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-detailed-view-zoom-in.jpg" width="60%"> <br><br>
+
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-detailed-view.jpg" width="60%"> <br><br>
+
+
+If you choose "<b>Semantic Zoom In</b>" once more, all of the dots below the thumbnail will be coloured in black and you will see 
+the duration of the scene, what the source of the scene is and the single annotations will be listet with their names. <br>
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-detailed-view-3.jpg" width="60%"> <br><br>
+
+Finally you can check whether your graph is completely linked or if there are still some unlinked elements. You can do this by 
+clicking onto "<b>Check graph</b>" in the taskbar. 
+If everything is linked properly and the graph starts with a starting and an ending element, then a confirmation will appear 
+that informs you that your graph is valid and you project can be   
+<a href="../../../html/tutorial/saveAndExport.html">exported</a>.<br>
+<img alt="Graph prüfen" src="../../../images/scenegraph-valid.jpg" width="70%"> <br><br>
+
+If the graph is not completely linked, an error message appears. To receive further information you can click onto 
+"<b>More Information</b>"<br>
+<img alt="ungültiger Graph" src="../../../images/scenegraph-graph-not-valid.jpg" width="70%"> <br><br>
+
 <p align="justify">
 <br><br>
+
+
+
 
 </p>
 </body>

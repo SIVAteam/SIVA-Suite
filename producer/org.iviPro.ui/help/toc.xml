@@ -13,31 +13,47 @@
       </topic>
       <topic href="help/html/tutorial/addAnnotation.html" label="Adding scene annotations">
       </topic>
-      <topic href="help/html/tutorial/saveAndExport.html" label="Exporting a video project">
+      <topic href="help/html/tutorial/saveAndExport.html" label="Saving and exporting a video project">
       </topic>
    </topic>
    <topic href="help/html/components/overview.html" label="Components">
-      <topic href="help/html/components/overview.html" label="Overview">
+      <topic href="help/html/components/OverviewDetailedExplanation.html" label="Detailed overview">
       </topic>
       <topic href="help/html/components/menu.html" label="Menu">
       </topic>
-      <topic label="editors">
-         <topic href="help/html/components/editors/bildeditor.html" label="Picture editor">
+      <topic href="help/html/components/editors/editors.html" label="Editors">
+         <topic href="help/html/components/editors/sceneneditor.html" label="Scene-editor">
          </topic>
-         <topic href="help/html/components/editors/sceneneditor.html" label="Scene editor">
+         <topic href="help/html/components/editors/annotationeditor.html" label="Annotation-editor">
+            <topic href="help/html/components/editors/annotationeditor/createannotations.html" label="Create annotations">
+               <topic href="help/html/components/editors/annotationeditor/createannotationsaudio.html" label="Create Audio-Annotations">
+               </topic>
+               <topic href="help/html/components/editors/annotationeditor/createannotationsimage.html" label="Create Picture-Annotations">
+               </topic>
+               <topic href="help/html/components/editors/annotationeditor/createannotationsrichtext.html" label="Create Richtext-Annotations">
+               </topic>
+               <topic href="help/html/components/editors/annotationeditor/createannotationssubtitle.html" label="Create Subtitle-Annotations">
+               </topic>
+               <topic href="help/html/components/editors/annotationeditor/createannotationsvideo.html" label="Create Video-Annotations">
+               </topic>
+               <topic href="help/html/components/editors/annotationeditor/createannotationspdf.html" label="Create PDF-Annotations">
+               </topic>
+            </topic>
          </topic>
-         <topic href="help/html/components/editors/annotationeditor.html" label="Annotation editor">
+         <topic href="help/html/components/editors/scenegrapheditor.html" label="Scenegraph-editor">
+            <topic href="help/html/components/editors/toolbar-scenegrapheditor.html" label="Scenegraph - Toolbar">
+            </topic>
          </topic>
-         <topic href="help/html/components/editors/scenegrapheditor.html" label="Scene graph editor">
-         </topic>
-         <topic href="help/html/components/editors/toceditor.html" label="Toc editor">
+         <topic href="help/html/components/editors/contenteditor.html" label="Content-editor">
          </topic>
       </topic>
-      <topic label="views">
+      <topic label="Views">
          <topic href="help/html/components/views/views.html" label="Types of views">
          </topic>
          <topic href="help/html/components/views/viewsEdit.html" label="Editing views">
          </topic>
+      </topic>
+      <topic href="help/html/components/settings.html" label="Settings">
       </topic>
    </topic>
 </toc>

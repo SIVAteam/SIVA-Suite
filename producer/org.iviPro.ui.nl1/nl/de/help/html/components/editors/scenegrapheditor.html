@@ -35,22 +35,21 @@ im dann erscheinenden Menü geöffnet werden.<br>
 
 Nun öffnet sich der Szenengraph:
 <p align="left">
-<img src="../../../imagesNeu/editorSzenegrapheditor.PNG" alt="Szenengrapheditor" width="600">
+<img alt="Szenengrapheditor" src="../../../images/scenegraph.jpg" width="60%">
 </p> <br>
 
 Im Folgenden erfahren Sie mehr über die Anwendung der Werkzeuge und Objekte im Szenengraphen der SIVA Suite: <br><br>
 
 Auf der linken Seite des Szenengraphen befinden sich <b>5 Buttons</b>: <br>
-<ul>
-	<li><img alt="Zoom" src="../../../images/scenegraph-zoom-buttons.jpg"> Mit den oberen beiden kann in die Arbeitsfläche 
-	hinein- und herausgezoomt werden.</li>
-	<li><img alt="weitere Infos" src="../../../images/scenegraph-further-infos-buttons.jpg"> Mit dem dritten und 
-	vierten  können Sie durch den semantischen Zoom weitere Informationen zu den Videos im Szenengraphen anzeigen 
-	lassen, zum Beispiel ein Vorschaubild und die Anzahl der zu einem Video erstellten Annotationen.</li> 
-	<li><img alt="semantisches Fisheye-Zooming" src="../../../images/scenegraph-fish-eye-zooming-button.jpg">Wenn man 
+	 <img alt="Zoom" src="../../../images/scenegraph-zoom-buttons.jpg"> Mit den oberen beiden kann in die Arbeitsfläche 
+	hinein- und herausgezoomt werden.<br>
+	 <img alt="weitere Infos" src="../../../images/scenegraph-further-infos-buttons.jpg"> Mit dem dritten und 
+	vierten  können Sie sich durch den semantischen Zoom weitere Informationen zu den Videos im Szenengraphen anzeigen 
+	lassen, zum Beispiel ein Vorschaubild und die Anzahl der zu einem Video erstellten Annotationen. <br>
+	 <img alt="semantisches Fisheye-Zooming" src="../../../images/scenegraph-fish-eye-zooming-button.jpg">Wenn man 
 	den letzten Button, das semantische Fisheye-Zooming, aktiviert, so kann man, wenn man mit dem Maus-Pfeil über die 
-	Szene im Szenengraphen fährt, beispielsweise ein Vorschaubild sehen.</li>
-</ul>  
+	Szene im Szenengraphen fährt, beispielsweise ein Vorschaubild sehen.
+ 
 <br><br>
 
 Auf der weißen Fläche des Szenengraphen finden Sie bereits ein Start- und ein Endelement. "<b>Start</b>" markiert das 
@@ -65,21 +64,19 @@ wodurch neben einfachen linearen Abläufen auch Sprünge im Video oder nonlineare 
 übersichtlich visualisiert werden. 
 Die Toolbar des Szenengraph-Editors kann auf der rechten oder linken Seite des Graphen positioniert werden (durch Drag 
 and Drop). Sie bietet Tools zum Löschen und Hinzufügen von Knoten und Kanten. <br>
-Zwischen den Szenen kann man Verzweigungen mit mehreren Pfaden/Alternativen Einfügen. Durch diese kann der Nutzer
-den Ablauf des interaktiven-Videos auswählen.
+Zwischen den Szenen kann man Verzweigungen mit mehreren Pfaden/Alternativen einfügen. Durch diese kann der Nutzer
+den Ablauf des interaktiven-Videos auswählen.<br>
 </p>
-<p align="center">
-<img src="../../../images/scenegraph_task.PNG" alt="Szenengraph" width="600">
-</p> <br>
+<img src="../../../images/scenegraph-task.jpg" alt="Szenengraph" width="60%"><br><br>
 
 Per Drag-and-Drop fügen Sie ein Video ein und verknüpfen es mit Hilfe des Verbindungswerkzeugs mit dem Start- sowie 
 dem Endelement indem Sie die beiden Elemente, die Sie verbinden wollen, jeweils mit einem Mausklick auswählen. Bevor 
 dies möglich ist, muss das Video in eine Szene mit Hilfe des <a href="../../../html/components/editors/sceneneditor.html">
 Szeneneditors</a> umgewandelt werden, da im Szenengrapheditor nur mit einzelnen Szenen gearbeitet werden kann. 
-Schon hätten Sie ihren ersten funktionsfähigen Szenengraphen gebaut!<br>
+Schon hätten Sie Ihren ersten funktionsfähigen Szenengraphen gebaut!<br>
 <img alt="Video einfügen" src="../../../images/scenegraph-add-scene.jpg"> <br><br>
 
-Das Erstellen einer Videoauswahl funktioniert wie folgt: Ziehen Sie alle nötigen Videoszenen in den Szenengraph. 
+Das <b>Erstellen einer Videoauswahl</b> funktioniert wie folgt: Ziehen Sie alle nötigen Videoszenen in den Szenengraph. 
 Beachten Sie dabei, dass ein Video als Introvideo am Beginn des Szenengraphen direkt nach "Start" stehen muss.<br>
 <img alt="Erstellen einer Videoauswahl" src="../../../images/scenegraph-add-more-scenes.jpg"> <br><br>
 
@@ -112,20 +109,36 @@ Ein weiteres Objekt ist der "<b>Weiter-Knopf</b>". Wenn Sie diesen zwischen zwei
 eine Video mit Klick auf den Button direkt nach dem anderen abgespielt.<br>
 <img alt="Weiter-Knopf" src="../../../images/scenegraph-continue-button.jpg"> <br><br>
 
-Weitere Informationen zur <a href="../../../html/components/toolbar.html">
-Werkzeugleiste</a> finden Sie <a href="../../../html/components/toolbar.html">hier</a>. <br><br>
+Weitere Informationen zur <a href="../../../html/components/editors/toolbar-scenegrapheditor.html">
+Werkzeugleiste</a> finden Sie <a href="../../../html/components/editors/toolbar-scenegrapheditor.html">hier</a>. <br><br>
 
 Ein fertiges SIVA-Projekt könnte am Ende etwa so aussehen. Hier wurden nur die normale "Nutzerauswahl" verwendet.<br><br>
 <img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-finished-SIVA-project.jpg" width="70%"> <br><br>
 
-Den Szenen können Sie <a href="../../../html/components/editors/annotationeditor.html">Annotationen</a> hinzufügen.<br><br>
+Den Szenen können Sie <a href="../../../html/components/editors/annotationeditor/annotationeditor.html">Annotationen</a> hinzufügen.<br><br>
+
+Wurden Annotationen hinzugefügt, so gibt es eine weitere Ansicht des Szenengraphens, die einen besseren Überblick erlaubt. 
+Per Rechtsklick auf eine der Szenen öffnet sich ein Fenster. Hier klickt man auf "<b>Semantic Zoom In</b>" um eine detailliertere 
+Ansicht zu erhalten. Nun erhält man direkt unterhalb der Szene eine Übersicht über die Annotationen, die dieser Szene hinzugefügt
+wurden. <br>
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-detailed-view-zoom-in.jpg" width="60%"> <br><br>
+
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-detailed-view.jpg" width="60%"> <br><br>
+
+Wählt man "<b>Semantic Zoom In</b>" ein weiteres Mal aus, so werden alle drei Punkte unter dem Vorschaubild schwarz gefärbt und
+man sieht wie lange die Szene dauert, was die Quelle der Szene ist und die einzelnen Annotationen werden mit Namen aufgelistet.<br>
+<img alt="Fertiges SIVA-Projekt" src="../../../images/scenegraph-detailed-view-3.jpg" width="60%"> <br><br>
 
 Zum Schluss können Sie mit einem Klick auf "<b>Graph prüfen</b>" in der Funktionsleiste überprüfen, ob der Graph 
 vollständig verknüpft wurde, oder ob es noch unverknüpfte Elemente gibt. Wenn alles ordentlich verbunden ist und der 
-Graph mit dem "Start"-Objekt beginnt und dem "End"-Objekt endet, kann das Projekt erfolgreich 
-<a href="../../../html/tutorial/saveAndExport.html">exportiert</a> werden.<br>
+Graph mit dem "Start"-Objekt beginnt und dem "End"-Objekt endet, erscheint eine Bestätigung, dass der Graph gültig ist und 
+das Projekt kann 
+<a href="../../../html/tutorial/save-and-export.html">exportiert</a> werden.<br>
 <img alt="Graph prüfen" src="../../../images/scenegraph-valid.jpg" width="70%"> <br><br>
 
+Ist der Graph nicht vollständig verknüpft, so erscheint eine Fehlermeldung, dass der Graph ungültig ist. Um genauere Informationen
+darüber zu erhalten, was an dem Graph unvollständig ist, kann man auf "<b>Mehr Informationen</b>" klicken.<br>
+<img alt="ungültiger Graph" src="../../../images/scenegraph-graph-not-valid.jpg" width="70%"> <br><br>
 
 <p align="justify">
 <br><br>

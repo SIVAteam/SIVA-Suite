@@ -3,41 +3,60 @@
 
 <toc label="Inhalt" topic="help/html/toc.html">
    <topic href="nl/de/help/html/tutorial/overview.html" label="Tutorial">
-      <topic href="nl/de/help/html/tutorial/createNewProject.html" label="Anlegen eines Videoprojekts">
-      </topic>
-      <topic href="nl/de/help/html/tutorial/loadMedium.html" label="Hinzufügen von Mediendateien">
-      </topic>
-      <topic href="nl/de/help/html/tutorial/cutVideo.html" label="Schneiden von Videos">
-      </topic>
-      <topic href="nl/de/help/html/tutorial/addSceneToScenegrapheditor.html" label="Zusammenstellen eines Szenengraphen">
-      </topic>
-      <topic href="nl/de/help/html/tutorial/addAnnotation.html" label="Hinzufügen von Szenenannotationen">
-      </topic>
-      <topic href="nl/de/help/html/tutorial/saveAndExport.html" label="Exportieren eines Videoprojekts">
-      </topic>
+      	<topic href="nl/de/help/html/tutorial/create-new-project.html" label="Anlegen eines Videoprojekts">
+      	</topic>
+      	<topic href="nl/de/help/html/tutorial/load-medium.html" label="Hinzufügen von Mediendateien">
+      	</topic>
+      	<topic href="nl/de/help/html/tutorial/cut-video.html" label="Schneiden von Videos">
+      	</topic>
+      	<topic href="nl/de/help/html/tutorial/add-scene-to-scenegrapheditor.html" label="Zusammenstellen eines Szenengraphen">
+      	</topic>
+      	<topic href="nl/de/help/html/tutorial/add-annotation.html" label="Hinzufügen von Szenenannotationen">
+      	</topic>
+      	<topic href="nl/de/help/html/tutorial/save-and-export.html" label="Speichern und Exportieren eines Videoprojektes">
+      	</topic>
    </topic>
+   
    <topic href="nl/de/help/html/components/overview.html" label="Komponenten">
-      <topic href="nl/de/help/html/components/overview.html" label="Überblick">
+      	<topic href="nl/de/help/html/components/overview-detailed-explanation.html" label="Detaillierter Überblick">
+      	</topic>
+      	<topic href="nl/de/help/html/components/settings.html" label="Einstellungen">
+      	</topic>
+      	<topic href="nl/de/help/html/components/menu.html" label="Menü">
+     	</topic>
+      
+      <topic href="nl/de/help/html/components/editors/editors.html" label="Editoren">
+         	<topic href="nl/de/help/html/components/editors/sceneneditor.html" label="Szeneneditor">
+        	</topic>
+         	<topic href="nl/de/help/html/components/editors/annotationeditor/annotationeditor.html" label="Annotationseditor">
+         		<topic href="nl/de/help/html/components/editors/annotationeditor/createannotations.html" label="Erstellen von Annotationen">
+         			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationsaudio.html" label="Erstellen von Audio-Annotationen">
+         			</topic>
+         			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationsimage.html" label="Erstellen von Bild-Annotationen">
+         			</topic>
+         			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationsrichtext.html" label="Erstellen von Richtext-Annotationen">
+         			</topic>
+         			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationssubtitle.html" label="Erstellen von Untertitel-Annotationen">
+         			</topic>
+         			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationsvideo.html" label="Erstellen von Video-Annotationen">
+         			</topic>
+         			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationspdf.html" label="Erstellen von PDF-Annotationen">
+         			</topic>
+         		</topic>
+         	</topic>
+         	<topic href="nl/de/help/html/components/editors/scenegrapheditor.html" label="Szenengrapheditor">
+         		<topic href="nl/de/help/html/components/editors/toolbar-scenegrapheditor.html" label="Szenengrapheditor-Werkzeugleiste">
+         		</topic>
+         	</topic>
+         	<topic href="nl/de/help/html/components/editors/contenteditor.html" label="Inhaltsverzeichniseditor">
+         	</topic>
       </topic>
-      <topic href="nl/de/help/html/components/menu.html" label="Menü">
-      </topic>
-      <topic label="Editoren">
-         <topic href="nl/de/help/html/components/editors/bildeditor.html" label="Bildeditor">
-         </topic>
-         <topic href="nl/de/help/html/components/editors/sceneneditor.html" label="Szeneneditor">
-         </topic>
-         <topic href="nl/de/help/html/components/editors/annotationeditor.html" label="Annotationseditor">
-         </topic>
-         <topic href="nl/de/help/html/components/editors/scenegrapheditor.html" label="Szenengrapheditor">
-         </topic>
-         <topic href="nl/de/help/html/components/editors/contenteditor.html" label="Inhaltsverzeichniseditor">
-         </topic>
-      </topic>
+      
       <topic label="Views">
          <topic href="nl/de/help/html/components/views/views.html" label="Arten von Views">
          </topic>
-         <topic href="nl/de/help/html/components/views/viewsEdit.html" label="Views editieren">
-         </topic>
+         	<topic href="nl/de/help/html/components/views/viewsEdit.html" label="Views editieren">
+         	</topic>
       </topic>
    </topic>
 </toc>
