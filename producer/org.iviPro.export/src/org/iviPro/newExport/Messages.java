@@ -33,6 +33,8 @@ public class Messages extends NLS {
 	public static String Exception_UnknownExportEntity;
 	public static String Exception_WritingDescriptorFileFailed;
 
+	public static String Exception_WritingJSONFileFailed;
+
 	public static String Exception_WrongHtmlFileFormat;
 	public static String Exception_CopyRichPageFailed;
 	public static String Exception_CreatingStaticAnnotationDirectoryFailed;

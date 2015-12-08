@@ -1,6 +1,7 @@
 package org.iviPro.operations;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -12,8 +13,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.iviPro.application.Application;
 import org.iviPro.model.IAbstractBean;
 import org.iviPro.model.Project;
+import org.iviPro.model.TocItem;
 import org.iviPro.model.graph.DependentConnection;
 import org.iviPro.model.graph.Graph;
 import org.iviPro.model.graph.IConnection;
@@ -38,7 +41,11 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 	private List<GraphDependency> graphDependencies;
 	protected List<INodeAnnotationLeaf> globalAnnoDependencies;
 	protected List<IAbstractBean> dependencies;
-	protected List<IAbstractBean> references;
+	protected List<IAbstractBean> references;	
+	
+	/** List of TOC entries where a reference had to be deleted */
+	private HashMap<IGraphNode, List<TocItem>> affectedTocEntries = 
+			new HashMap<IGraphNode, List<TocItem>>();
 	
 	/**
 	 * Das Projekt, wo nach abhaengigen Objekten gesucht wird.
@@ -232,12 +239,37 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 	protected abstract boolean deleteObjects();
 
 	protected abstract void restoreObjects();
+	
+	/**
+	 * Checks for the table of contents subtree rooted at the given TocItem if
+	 * there are references to the deleted node and removes them.
+	 * @param parent root of the subtree which should be checked
+	 * @param node node for which references need to be deleted
+	 */
+	private void checkTocSubtree(TocItem parent, IGraphNode node) {
+		for (TocItem child : parent.getChildren()) {
+			if (node.equals(child.getScene())) {
+				if (affectedTocEntries.get(node) == null) {
+					affectedTocEntries.put(node, new ArrayList<TocItem>());
+				}
+				affectedTocEntries.get(node).add(child);
+				child.setScene(null);
+			}
+			checkTocSubtree(child, node);
+		}	
+	}
 
 	@Override
 	public final IStatus redo(IProgressMonitor monitor, IAdaptable info)
 			throws ExecutionException {
 		// Erst abhaengig Objekte loeschen...
 		for (GraphDependency dependency : graphDependencies) {
+			IGraphNode node = dependency.getNode();
+			if (dependency.getNode() instanceof NodeScene) {
+				// Update table of contents deleting references to the NodeScene
+				TocItem root = Application.getCurrentProject().getTableOfContents();
+				checkTocSubtree(root, node);				
+			}			
 			Graph graph = dependency.getGraph();
 			// Abhaengigen Knoten aus seinem Graphen loeschen
 			// Kanten muessen nicht extra geloescht werden, da sie automatisch
@@ -253,18 +285,6 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 		// gelöscht werden) stelle die abhängigkeiten wieder her
 		if (!deleteObjects()) {
 			recreateDependencies();
-		}
-		return Status.OK_STATUS;
-	}
-
-	@Override
-	public final IStatus undo(IProgressMonitor monitor, IAdaptable info)
-			throws ExecutionException {
-		// Erst wieder die urspruenglichen Basis-Objekte wiederherstellen...
-		restoreObjects();
-		recreateDependencies();
-		for (INodeAnnotationLeaf anno : globalAnnoDependencies) {
-			project.getGlobalAnnotations().add(anno);
 		}
 		return Status.OK_STATUS;
 	}
@@ -291,6 +311,34 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Restores the TOC references to NodeScenes which have been deleted 
+	 * throughout this operation.
+	 */
+	private void restoreTocEntries() {
+		// Undo changes to the table of contents 
+		if (!affectedTocEntries.isEmpty()) {
+			for (IGraphNode node : affectedTocEntries.keySet()) {
+				for (TocItem item : affectedTocEntries.get(node)) {
+					item.setScene((NodeScene)node);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public final IStatus undo(IProgressMonitor monitor, IAdaptable info)
+			throws ExecutionException {
+		// Erst wieder die urspruenglichen Basis-Objekte wiederherstellen...
+		restoreObjects();
+		recreateDependencies();
+		for (INodeAnnotationLeaf anno : globalAnnoDependencies) {
+			project.getGlobalAnnotations().add(anno);
+		}
+		restoreTocEntries();
+		return Status.OK_STATUS;
 	}
 
 	/**
@@ -350,6 +398,5 @@ public abstract class IAbstractDeleteOperation extends IAbstractOperation {
 			}
 			return false;
 		}
-
 	}
 }

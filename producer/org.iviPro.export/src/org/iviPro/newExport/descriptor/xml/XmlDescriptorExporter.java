@@ -133,25 +133,29 @@ public class XmlDescriptorExporter implements XmlExportSettings {
 					new SivaPlayerXML2JSONConvertor();
 			XML2JSONConvertor convertor = new XML2JSONConvertor(xmlFile, 
 					jsonFile, sivaConfigurationConvertor, true,
-					"if(!sivaVideoConfiguration){var sivaVideoConfiguration=[];}"
-							+ ";sivaVideoConfiguration.push(",
-					");");
+					"if(!sivaVideoConfiguration){var sivaVideoConfiguration=[];}" //$NON-NLS-1$
+							+ ";sivaVideoConfiguration.push(", //$NON-NLS-1$
+					");"); //$NON-NLS-1$
 			convertor.convert();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new ExportException(Messages.Exception_WritingDescriptorFileFailed,
+			throw new ExportException(Messages.Exception_WritingJSONFileFailed,
 					e);
 		} catch (SAXException e) {
 			logger.error(e.getMessage());
-			throw new ExportException(Messages.Exception_WritingDescriptorFileFailed,
+			throw new ExportException(Messages.Exception_WritingJSONFileFailed,
 					e);
 		} catch (XML2JSONConvertorException e) {
 			logger.error(e.getMessage());
-			throw new ExportException(Messages.Exception_WritingDescriptorFileFailed,
+			throw new ExportException(Messages.Exception_WritingJSONFileFailed,
 					e);
 		} catch (ParserConfigurationException e) {
 			logger.error(e.getMessage());
-			throw new ExportException(Messages.Exception_WritingDescriptorFileFailed,
+			throw new ExportException(Messages.Exception_WritingJSONFileFailed,
+					e);
+		} catch (NullPointerException e) {
+			logger.error(e.getMessage());
+			throw new ExportException(Messages.Exception_WritingJSONFileFailed,
 					e);
 		}
 	}

@@ -148,7 +148,7 @@ public class NodeDeleteOperation extends IAbstractOperation {
 		}
 		
 		if (node instanceof NodeScene) {
-			// Update table of contents by deleting references to this scene
+			// Update table of contents deleting references to the NodeScene
 			TocItem root = Application.getCurrentProject().getTableOfContents();
 			checkTocSubtree(root);
 		}
