@@ -42,7 +42,7 @@ Right now you can run the SIVA Producer from within the Eclipse environment. If 
 Unfortunately the export wizard does not allow for the automatic extraction of supplementary files and libraries directly to the selected root directory. Therefore, licensing information and native libraries have to be copied manually.
 - In the Package Explorer navigate into *org.iviPro.ui*. Select *libs-native*, *LICENSES* and *about.html*. Right click on your selection and select *Copy*. Open your file explorer and navigate to the root directory you chose during the export process. The correct directory will contain an executable file named *SIVA Producer.exe*. After inserting the copied selection into the root directory, you are done. You should now be able to run the SIVA Producer directly from the file explorer.
 
-### Commandline paramters
+### Commandline parameters
 The SIVA Producer uses log4j as a logging mechanism. A log file is stored in *AppData/Local/SIVA Producer*. To change the logging behavior you can specify a custom log4j logging configuration file by adding ``-debugconfig <file>`` as a commandline parameter.
 
 Currently, supported languages can not be switched inside the application. To change the language use ``-nl <locale>`` as a commandline parameter. Supported locales are *en* and *de*.
