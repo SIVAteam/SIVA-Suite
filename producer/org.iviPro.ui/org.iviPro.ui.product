@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SIVA Producer" uid="org.iviPro.ui.product" id="org.iviPro.ui.product" application="org.iviPro.ui.application" version="0.7.1" useFeatures="false" includeLaunchers="true">
+<product name="SIVA Producer" uid="org.iviPro.ui.product" id="org.iviPro.ui.product" application="org.iviPro.ui.application" version="0.7.2" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.iviPro.ui/branding/orange/about/about.png"/>
       <text>
          SIVA Producer
 
-Version 0.7.1
+Version 0.7.2
 (c) 2015 - All rights reserved
 
 Programmers (alphabetic order):
-Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Grill, Christian Handschigl, Jürgen Hoffmann, Stefan John, Johannes Köstler, Andreas Lang, Britta Meixner, Florian Niederhuber, Tristan Schneider, Stefan Zwicklbauer
+Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Grill, Christian Handschigl, Jürgen Hoffmann, Stefan John, Johannes Köstler, Andreas Lang, Britta Meixner, Florian Niederhuber, Tristan Schneider, Florian Stegmaier, Stefan Zwicklbauer
       </text>
    </aboutInfo>
 
@@ -39,6 +39,7 @@ Emanuel Berndl, Christian Dellwo, Mailan Dinh-Thanh, Manuel Feifel, Christoph Gr
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
       <windows include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>

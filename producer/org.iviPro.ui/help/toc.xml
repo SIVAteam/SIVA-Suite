@@ -22,9 +22,9 @@
       <topic href="help/html/components/menu.html" label="Menu">
       </topic>
       <topic href="help/html/components/editors/editors.html" label="Editors">
-         <topic href="help/html/components/editors/sceneneditor.html" label="Scene-editor">
+         <topic href="help/html/components/editors/sceneneditor.html" label="Scene editor">
          </topic>
-         <topic href="help/html/components/editors/annotationeditor.html" label="Annotation-editor">
+         <topic href="help/html/components/editors/annotationeditor.html" label="Annotation editor">
             <topic href="help/html/components/editors/annotationeditor/createannotations.html" label="Create annotations">
                <topic href="help/html/components/editors/annotationeditor/createannotationsaudio.html" label="Create Audio-Annotations">
                </topic>
@@ -40,11 +40,11 @@
                </topic>
             </topic>
          </topic>
-         <topic href="help/html/components/editors/scenegrapheditor.html" label="Scenegraph-editor">
+         <topic href="help/html/components/editors/scenegrapheditor.html" label="Scenegraph editor">
             <topic href="help/html/components/editors/toolbar-scenegrapheditor.html" label="Scenegraph - Toolbar">
             </topic>
          </topic>
-         <topic href="help/html/components/editors/contenteditor.html" label="Content-editor">
+         <topic href="help/html/components/editors/contenteditor.html" label="Content editor">
          </topic>
       </topic>
       <topic label="Views">

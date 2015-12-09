@@ -28,7 +28,7 @@
       <topic href="nl/de/help/html/components/editors/editors.html" label="Editoren">
          	<topic href="nl/de/help/html/components/editors/sceneneditor.html" label="Szeneneditor">
         	</topic>
-         	<topic href="nl/de/help/html/components/editors/annotationeditor/annotationeditor.html" label="Annotationseditor">
+         	<topic href="nl/de/help/html/components/editors/annotationeditor.html" label="Annotationseditor">
          		<topic href="nl/de/help/html/components/editors/annotationeditor/createannotations.html" label="Erstellen von Annotationen">
          			<topic href="nl/de/help/html/components/editors/annotationeditor/createannotationsaudio.html" label="Erstellen von Audio-Annotationen">
          			</topic>
